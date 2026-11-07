@@ -1,0 +1,1 @@
+PRIVATE LOCAL CANDIDATE ONLY. Original R5 source license/publication/name decision is pending. Earlier MIT authority covers R1-R4 only. Vendored public Integrity CSV code retains its separate complete MIT license and attribution. Signing does not grant distribution rights.

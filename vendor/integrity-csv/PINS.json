@@ -1,0 +1,40 @@
+{
+  "commit": "eecf14a1fdeecedb55ceb6c4947ac57e70bd4a41",
+  "files": [
+    {
+      "file": "CsvContract.cs",
+      "sourcePath": "src/Integrity/CsvContract.cs",
+      "gitBlob": "6ad8ed023f6c8a30f7c8e6a70c5d7c249c0c91aa",
+      "bytes": 7475,
+      "sha256": "7deaf13af27054f178948fa18f0768fb3be290e2a4888f131536e75a057a288f"
+    },
+    {
+      "file": "CsvValidator.cs",
+      "sourcePath": "src/Integrity/CsvValidator.cs",
+      "gitBlob": "2b0cc21ef232e74afb2d9e89828d0718714621cb",
+      "bytes": 7081,
+      "sha256": "48d89c4553b619d80f8997e27233075ff0f76eb3410859735834c7454ec084a0"
+    },
+    {
+      "file": "Contracts.cs",
+      "sourcePath": "src/Integrity/Contracts.cs",
+      "gitBlob": "8330babc7673ff51d070549bea8fdba482b875c6",
+      "bytes": 6844,
+      "sha256": "3327218bf7ad83861ff2498cff4f9687248d0343e98564827b38921c1593fa60"
+    },
+    {
+      "file": "BoundedReader.cs",
+      "sourcePath": "src/Integrity/BoundedReader.cs",
+      "gitBlob": "db3616d4b81f6d958da65c3b70b219974bb9719e",
+      "bytes": 2266,
+      "sha256": "f2c7b639509aafed2fe66cfc6364f89f6962e5a66506a4ae05237911e1f8ca05"
+    },
+    {
+      "file": "LICENSE",
+      "sourcePath": "LICENSE",
+      "gitBlob": "e67e64a5ab7fcec5def82845d73fc7f96f82c9ba",
+      "bytes": 1070,
+      "sha256": "64a019c3d9ae2e3f44fa8e3de6f91fd762ca917cbad6339401baace445f7ff83"
+    }
+  ]
+}
