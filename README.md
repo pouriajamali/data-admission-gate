@@ -17,7 +17,7 @@ data, configuration, deployments and unpublished commercial additions stay priva
 The preview includes self-contained Windows x64 and Ubuntu24.04/glibc x64
 directory bundles. No installed .NET SDK is required to run those bundles; native
 OS prerequisites still apply. Verify the local signed checksum manifest first,
-using [PROVENANCE.md](PROVENANCE.md), then extract the whole directory.
+using [current online verification guide](https://github.com/pouriajamali/data-admission-gate/blob/main/PROVENANCE.md), then extract the whole directory.
 
 ```powershell
 .\admission.exe --version
@@ -119,3 +119,5 @@ code/data/configuration/deployment, secrets and unpublished commercial additions
 belong in separate private work. No private/shared/employer source, tests, data,
 schema, contracts or ideas were transferred. CV/profile and existing repos/releases
 remain outside this work.
+
+Documentation update: v0.1.0-preview.1 runtime/source archives remain exact79b55551092ba427c457c8e87eb094b31ebe81be, including their historical raw-key guide. Use the current online guide above for immutable release-key retrieval. Archive/tag/SUMS/signature bytes are unchanged.

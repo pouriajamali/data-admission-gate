@@ -54,7 +54,7 @@ archive='data-admission-gate-v0.1.0-preview.1-source.zip'
 for name in "$archive" SHA256SUMS.txt SHA256SUMS.txt.sig; do
   curl --fail --location --output "$name" "https://github.com/$repo/releases/download/$tag/$name" || exit 1
 done
-curl --fail --location --output SIGNING-PUBLIC-KEY.pub "https://raw.githubusercontent.com/$repo/main/SIGNING-PUBLIC-KEY.pub" || exit 1
+curl --fail --location --output SIGNING-PUBLIC-KEY.pub "https://github.com/$repo/releases/download/$tag/SIGNING-PUBLIC-KEY.pub" || exit 1
 ```
 
 ```sh
@@ -86,7 +86,7 @@ $archive = 'data-admission-gate-v0.1.0-preview.1-source.zip'
 foreach ($name in @($archive, 'SHA256SUMS.txt', 'SHA256SUMS.txt.sig')) {
     Invoke-WebRequest -Uri "https://github.com/$repo/releases/download/$tag/$name" -OutFile $name
 }
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/$repo/main/SIGNING-PUBLIC-KEY.pub" -OutFile SIGNING-PUBLIC-KEY.pub
+Invoke-WebRequest -Uri "https://github.com/$repo/releases/download/$tag/SIGNING-PUBLIC-KEY.pub" -OutFile SIGNING-PUBLIC-KEY.pub
 ```
 
 ```powershell
@@ -125,3 +125,5 @@ Do not normalize/edit the downloaded checksum file before verification. A valid
 signature over different bytes or a matching hash for another filename does not
 verify the chosen archive. Preserve failures and obtain a trusted copy rather
 than skipping a failed signature or fingerprint check.
+
+The v0.1.0-preview.1 runtime/source archives remain bound to commit79b55551092ba427c457c8e87eb094b31ebe81be and contain the historical raw-key URL. This current online guide uses the immutable release key asset; no archive/tag/checksum/signature bytes were replaced.

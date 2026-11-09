@@ -12,3 +12,7 @@ decisions. No live feed, account, trade, downstream action, legal certification,
 general quality engine, performance or production claim. Native-OS CI executes each
 actual archive; aggregation reuses those exact tested archives without rebuilding.
 SSH provenance is separate from OS signing or restrictions on permitted MIT reuse.
+
+## Current verification guide
+
+Runtime and source archives remain exact79b55551092ba427c457c8e87eb094b31ebe81be and include the historical raw-key URL. Use the [current online verification guide](https://github.com/pouriajamali/data-admission-gate/blob/main/PROVENANCE.md), which retrieves the same independently fingerprint-pinned key from the immutable release asset. Two Windows raw-host transport failures were preserved; they were not hash/signature/computation failures. No old archive, tag, SUMS or signature was changed.
