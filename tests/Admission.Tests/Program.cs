@@ -33,7 +33,7 @@ internal static class Program
         if (args is not ["--work", var work]) return 90; Root = Safe.Normalize(work); Safe.Fresh(Root, Guid.NewGuid().ToString("N"));
         PolicyAndDecisions(); Mechanical(); SnapshotsAndBounds(); PathsAndSurface();
         Test("software-mit-is-independent-of-data-rights", () => { var r = Assess("software-license", decision: b => Fixtures.Decision(b), ack: true); Assert(r.OriginalSoftwareLicense == "MIT" && r.LegalRights == "NOT_PROVEN" && r.Authenticity == "NOT_PROVEN" && r.Provenance.Basis == "OWNER_DECISION_ACCEPTED"); });
-        var receipt = new { schema = "admission-tests-v1", passed = Passed, failed = Failed, skipped = Skipped, cases = Results, limits = "Synthetic local fixtures only; no actual ownership/rights/market/freshness proof; original software license pending." };
+        var receipt = new { schema = "admission-tests-v1", passed = Passed, failed = Failed, skipped = Skipped, cases = Results, limits = "Synthetic local fixtures only; no actual ownership/rights/market/freshness proof; original reusable software MIT." };
         Safe.WriteNew(PathFor("receipt.json"), Bytes(Contract.Serialize(receipt) + "\n")); Console.WriteLine($"SUMMARY passed={Passed} failed={Failed} skipped={Skipped}"); return Failed == 0 ? 0 : 1;
     }
     private static void PolicyAndDecisions()
