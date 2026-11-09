@@ -8,7 +8,7 @@ internal static class Program
     {
         try
         {
-            if (args is ["--version"]) { Console.WriteLine("Data Admission Gate " + Contract.Version + " - private local candidate"); return 0; }
+            if (args is ["--version"]) { Console.WriteLine("Data Admission Gate " + Contract.Version + ""); return 0; }
             object result; int exit;
             switch (args)
             {
@@ -21,7 +21,7 @@ internal static class Program
         }
         catch (Exception e) when (e is not OutOfMemoryException)
         {
-            Console.WriteLine(Contract.Serialize(new { schema = "data-admission-error-v1", version = Contract.Version, toolBuild = Contract.Build, complete = false, outcome = "INCOMPLETE", exitCode = 1, reason = e is Problem p ? p.Code : "IO_OR_CONFIGURATION_FAILURE", identity = "NOT_PROVEN", authenticity = "NOT_PROVEN", legalRights = "NOT_PROVEN", originalSoftwareLicense = "PENDING_OWNER_DECISION" })); return 1;
+            Console.WriteLine(Contract.Serialize(new { schema = "data-admission-error-v1", version = Contract.Version, toolBuild = Contract.Build, complete = false, outcome = "INCOMPLETE", exitCode = 1, reason = e is Problem p ? p.Code : "IO_OR_CONFIGURATION_FAILURE", identity = "NOT_PROVEN", authenticity = "NOT_PROVEN", legalRights = "NOT_PROVEN", originalSoftwareLicense = "MIT" })); return 1;
         }
     }
 }
@@ -64,9 +64,9 @@ internal static class Demo
         Case("wrong-binding", "REJECT", false, b => Fixtures.Decision(b, datasetHash: new string('0', 64)));
         Case("license-denied", "REJECT", true, b => Fixtures.Decision(b, license: "deny"));
         if (reports[0].Provenance.Status != "UNKNOWN" || reports[0].UseLicense.Status != "UNKNOWN" || reports[1].Provenance.Basis != "OWNER_DECISION_ACCEPTED" || reports[2].Coverage.Status != "FAIL" || reports[2].Freshness.Status != "FAIL" || reports[3].DecisionBindingMatches != false || reports[4].UseLicense.Status != "FAIL") throw new Problem("DEMO_ASSERTION_FAILED");
-        var result = new { schema = "data-admission-demo-v1", version = Contract.Version, toolBuild = Contract.Build, complete = true, outcome = "EXPECTED_OUTCOMES_OBSERVED", cases, identity = "NOT_PROVEN", authenticity = "NOT_PROVEN", legalRights = "NOT_PROVEN", originalSoftwareLicense = "PENDING_OWNER_DECISION", limits = "Five generated synthetic cases only; demo success means expected HOLD/ADMIT/REJECT observations, not actual origin/rights, live freshness or external completeness proof." };
+        var result = new { schema = "data-admission-demo-v1", version = Contract.Version, toolBuild = Contract.Build, complete = true, outcome = "EXPECTED_OUTCOMES_OBSERVED", cases, identity = "NOT_PROVEN", authenticity = "NOT_PROVEN", legalRights = "NOT_PROVEN", originalSoftwareLicense = "MIT", limits = "Five generated synthetic cases only; demo success means expected HOLD/ADMIT/REJECT observations, not actual origin/rights, live freshness or external completeness proof." };
         byte[] json = Encoding.UTF8.GetBytes(Contract.Serialize(result) + "\n"); if (json.Length > Contract.JsonOutputLimit) throw new Problem("REPORT_BYTE_LIMIT"); Safe.Owned(destination, nonce);
-        Safe.WriteNew(Path.Combine(destination, "summary.txt.pending"), Encoding.UTF8.GetBytes("Data Admission Gate demo: expected outcomes observed\nHOLD, ADMIT under synthetic owner assertion, REJECT missing/stale, REJECT wrong binding, REJECT license denial.\nNot verified identity/authenticity/rights; private local candidate, original software license pending.\n"));
+        Safe.WriteNew(Path.Combine(destination, "summary.txt.pending"), Encoding.UTF8.GetBytes("Data Admission Gate demo: expected outcomes observed\nHOLD, ADMIT under synthetic owner assertion, REJECT missing/stale, REJECT wrong binding, REJECT license denial.\nNot verified identity/authenticity/rights; original software MIT; input rights remain unproven.\n"));
         Safe.WriteNew(Path.Combine(destination, "summary.json.pending"), json); Safe.Owned(destination, nonce); File.Move(Path.Combine(destination, "summary.txt.pending"), Path.Combine(destination, "summary.txt")); File.Move(Path.Combine(destination, "summary.json.pending"), Path.Combine(destination, "summary.json")); return result;
     }
 }

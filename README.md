@@ -1,20 +1,20 @@
-# Data Admission Gate - local candidate
+# Data Admission Gate
 
 A bounded companion to the public Integrity Lab CSV validator. Four separate
 policy axes make the decision inspectable: declared-grid coverage, freshness
 relative to an explicit historical asOf, provenance decision and data-use decision.
 **A quality pass or an owner assertion is not authenticity or legal-rights proof.**
 
-This is a **private/local candidate**. A reusable public showcase/core is the goal;
-the original software license/name/publication decision is pending review. There
-is no public repository/release/download for this candidate. The earlier tools'
-MIT choice does not grant an original R5 license. Vendored public code retains
-its complete separate MIT licenses. Signing establishes origin, not publication
-permission or ownership of input data.
+The original reusable companion is [MIT](LICENSE); public dependencies retain
+their separate full notices. [Preview v0.1.0-preview.1 and downloads](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.1)
+provide Windows/Linux x64 bundles and source. Verify the signed checksums before
+extraction; missing signature assets mean incomplete publication. Software licensing
+does not prove ownership or legal use rights of input data. Customer-specific code,
+data, configuration, deployments and unpublished commercial additions stay private.
 
 ## Run the generated example
 
-The tested candidate includes self-contained Windows x64 and Ubuntu24.04/glibc x64
+The preview includes self-contained Windows x64 and Ubuntu24.04/glibc x64
 directory bundles. No installed .NET SDK is required to run those bundles; native
 OS prerequisites still apply. Verify the local signed checksum manifest first,
 using [PROVENANCE.md](PROVENANCE.md), then extract the whole directory.
@@ -64,7 +64,7 @@ to that invocation and never overrides failed mechanical checks.
 ADMIT requires row quality and all four policy axes PASS; any known failure gives
 REJECT, otherwise UNKNOWN gives HOLD. ADMIT performs no downstream action.
 Identity/authenticity/legal rights always remain NOT_PROVEN. Data-use decisions
-are separate from the pending license of this software.
+are separate from the MIT license of this software.
 
 ## Supported local bundle
 

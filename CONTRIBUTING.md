@@ -1,4 +1,4 @@
-# Local candidate review
+# Contributing
 
 Use generated synthetic bundles only. Include exact source/version, OS, command,
 expected/actual exit/outcome/basis and the smallest invented fixture. Preserve
@@ -15,6 +15,5 @@ deduplicate/reorder/round to obtain ADMIT.
 Do not fork the pinned public CSV rules, add live/real-account/trading integrations,
 plugins/SQL/executable overrides, automatic downstream actions or arbitrary generic
 quality-engine features. No old repo/release, CV/profile or production changes.
-Keep vendored MIT source/license bytes exact and all attribution. Original software
-license/publication is a separate pending owner decision; do not create a remote or
-publish this local candidate by treating previous projects' MIT as new authority.
+Keep vendored MIT source/license bytes exact and all attribution. Original reusable software is MIT; retain its full attribution and upstream notices.
+Do not rewrite historical tags/assets or include customer/private material.

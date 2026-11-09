@@ -67,7 +67,7 @@ ack/binding/basis, four statuses/counts/asOf/vendor revision and unproven flags.
 It excludes raw rows/owner labels/absolute private paths/raw exceptions. Private
 CSV artifacts contain parsed input values and must not be published from real data.
 
-Local candidate original software license/name/publication pending; vendored public
-MIT grants/notices remain. Intended future public reusable sample, with customer
+Original reusable software MIT; vendored public MIT grants/notices remain.
+Public reusable sample, with customer
 code/data/config/deployments/secrets/commercial unpublished additions private. No
 shared/private/employer source, tests, schemas, contracts or ideas were transferred.

@@ -12,7 +12,7 @@ def main():
  assert platform.system() in {'Windows','Linux'},'Supported build hosts are Windows and Linux'
  if not a.local_candidate:assert platform.system()==('Windows' if a.rid=='win-x64' else 'Linux'),'Public releases require matching build OS'
  version=ET.parse(ROOT/'Directory.Build.props').findtext('.//Version');assert version
- assert a.local_candidate and (ROOT/'ORIGINAL-LICENSE-PENDING.txt').is_file(),'Private/local R5 packaging only; no original license/publication authority yet'
+ assert (ROOT/'LICENSE').is_file(),'Explicit original-source license required before distribution'
  work=a.work.resolve();work.mkdir(parents=True,exist_ok=False);a.out.mkdir(parents=True,exist_ok=True)
  published=work/'published';command=[a.dotnet,'publish','src/Admission/Admission.csproj','-c','Release','-r',a.rid,'--self-contained','true','-p:RuntimeFrameworkVersion=10.0.14','-p:PublishTrimmed=false','-p:PublishAot=false','-p:PublishReadyToRun=false','-p:DebugType=None','-p:DebugSymbols=false','-p:SourceRevisionId='+a.commit,'-o',str(published)]
  if a.source:
@@ -23,10 +23,9 @@ def main():
  name=f'data-admission-gate-v{version}-{a.rid}';package=work/name;shutil.copytree(published,package)
  assert a.commit.encode() in (package/'admission.dll').read_bytes(),'Source revision missing'
  for f in ['README.md','PROVENANCE.md','SIGNING-PUBLIC-KEY.pub','NOTICE.md']:shutil.copy2(ROOT/f,package/f)
- shutil.copy2(ROOT/'ORIGINAL-LICENSE-PENDING.txt',package/'ORIGINAL-LICENSE-PENDING.txt')
+ shutil.copy2(ROOT/'LICENSE',package/'LICENSE')
  shutil.copy2(ROOT/'CONTRIBUTING.md',package/'CONTRIBUTING.md')
- shutil.copytree(ROOT/'docs',package/'docs')
- shutil.copytree(ROOT/'vendor',package/'vendor',dirs_exist_ok=True)
+ shutil.copytree(ROOT/'docs',package/'docs');shutil.copytree(ROOT/'vendor',package/'vendor',dirs_exist_ok=True)
  licenses=package/'licenses';licenses.mkdir()
  assets=json.loads((ROOT/'src/Admission/obj/project.assets.json').read_text(encoding='utf-8'))
  folders=[Path(f) for f in assets['packageFolders']];dependencies=[]
@@ -52,7 +51,7 @@ def main():
  assert any(f.name.upper().startswith('LICENSE') for f in notices) and any(f.name.upper().startswith('THIRD-PARTY-NOTICES') for f in notices),'Runtime redistribution notices required'
  for f in notices:shutil.copy2(f,licenses/(runtime_id+'-'+f.name))
  if runtime_id.lower() not in {d['id'].lower() for d in dependencies}:dependencies.append({'id':runtime_id,'version':'10.0.14','license':'MIT','copyright':'.NET Foundation and contributors; see bundled runtime notices'})
- (package/'DEPENDENCIES.json').write_text(json.dumps({'packages':dependencies,'runtime':'Bundled .NET runtime retains Microsoft/.NET Foundation notices.'},indent=2)+'\n',encoding='utf-8')
+ (package/'DEPENDENCIES.json').write_text(json.dumps({'packages':dependencies,'sqlite':'SQLite core is public domain; SQLitePCLRaw wrappers retain their notices.','runtime':'Bundled .NET runtime retains Microsoft/.NET Foundation notices.'},indent=2)+'\n',encoding='utf-8')
  config=json.loads((package/'admission.runtimeconfig.json').read_text(encoding='utf-8'))['runtimeOptions'];assert 'includedFrameworks' in config and 'frameworks' not in config
  files=[]
  for f in sorted(package.rglob('*')):
@@ -60,7 +59,7 @@ def main():
   if not f.is_file():continue
   path=f.relative_to(package).as_posix();assert not path.lower().endswith(('.pdb','.sqlite','.db')) and '.tests' not in path.lower()
   files.append({'path':path,'bytes':f.stat().st_size,'sha256':sha(f)})
- manifest={'schema':1,'version':version,'rid':a.rid,'sourceCommit':a.commit,'sourceTree':git('rev-parse','HEAD^{tree}'),'selfContained':True,'localCandidate':a.local_candidate,'originalLicense':'PENDING_OWNER_DECISION','distribution':'PRIVATE_LOCAL_ONLY','releaseAuthorized':False,'buildHost':{'os':platform.system(),'architecture':platform.machine()},'runtimeConfig':config,'files':files}
+ manifest={'schema':1,'version':version,'rid':a.rid,'sourceCommit':a.commit,'sourceTree':git('rev-parse','HEAD^{tree}'),'selfContained':True,'localCandidate':a.local_candidate,'originalLicense':'present' if (package/'LICENSE').exists() else 'PENDING_OWNER_DECISION','buildHost':{'os':platform.system(),'architecture':platform.machine()},'runtimeConfig':config,'files':files}
  (package/'BUILD-MANIFEST.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
  archive=a.out/(name+('.zip' if a.rid=='win-x64' else '.tar.gz'));assert not archive.exists()
  if a.rid=='win-x64':

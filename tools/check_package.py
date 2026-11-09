@@ -3,10 +3,11 @@ from pathlib import Path
 import argparse,hashlib,json,os,shutil,subprocess
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
- p=argparse.ArgumentParser();p.add_argument('--package',type=Path,required=True);p.add_argument('--work',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--local-candidate',action='store_true',required=True);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--package',type=Path,required=True);p.add_argument('--work',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--local-candidate',action='store_true');a=p.parse_args()
  package=a.package.resolve();work=a.work.resolve();work.mkdir(parents=True,exist_ok=False);m=json.loads((package/'BUILD-MANIFEST.json').read_text(encoding='utf-8'))
- assert m['sourceCommit']==a.commit and m['selfContained'] and m['localCandidate'] and m['distribution']=='PRIVATE_LOCAL_ONLY' and not m['releaseAuthorized'] and m['originalLicense']=='PENDING_OWNER_DECISION' and m['rid']==('win-x64' if os.name=='nt' else 'linux-x64')
- assert not (package/'LICENSE').exists() and (package/'ORIGINAL-LICENSE-PENDING.txt').is_file()
+ assert m['sourceCommit']==a.commit and m['selfContained'] and m['originalLicense']=='present' and m['rid']==('win-x64' if os.name=='nt' else 'linux-x64')
+ assert (package/'LICENSE').is_file() and not (package/'ORIGINAL-LICENSE-PENDING.txt').exists()
+ if not a.local_candidate:assert not m['localCandidate']
  assert {f.relative_to(package).as_posix() for f in package.rglob('*') if f.is_file()}=={f['path'] for f in m['files']}|{'BUILD-MANIFEST.json'}
  for f in m['files']:
   file=package/f['path'];assert not file.is_symlink() and file.stat().st_size==f['bytes'] and sha(file)==f['sha256']
@@ -21,9 +22,9 @@ def main():
   r=subprocess.run([str(exe),*map(str,args)],cwd=work,env=env,text=True,encoding='utf-8',capture_output=True,timeout=30)
   (work/(name+'.json')).write_text(json.dumps({'exit':r.returncode,'stdout':r.stdout,'stderr':r.stderr,'command':[str(exe),*map(str,args)]},indent=2)+'\n',encoding='utf-8')
   assert r.returncode==code and not r.stderr,(name,r.returncode)
-  if name=='version':value=r.stdout;assert m['version'] in value and 'private' in value
+  if name=='version':value=r.stdout;assert m['version'] in value
   else:
-   value=json.loads(r.stdout);assert value['version']==m['version'] and a.commit in value['toolBuild'] and value['originalSoftwareLicense']=='PENDING_OWNER_DECISION'
+   value=json.loads(r.stdout);assert value['version']==m['version'] and a.commit in value['toolBuild'] and value['originalSoftwareLicense']=='MIT'
   checks.append(name);return value
  run('version',['--version'],0)
  demo=work/'demo with spaces';d=run('demo',['demo',demo],0);assert d['complete'] and d['outcome']=='EXPECTED_OUTCOMES_OBSERVED' and len(d['cases'])==5
@@ -43,6 +44,6 @@ def main():
  existing=work/'existing';existing.mkdir();(existing/'sentinel').write_text('untouched',encoding='utf-8');run('existing-output-preserved',['assess',bundle,existing],1);assert (existing/'sentinel').read_text(encoding='utf-8')=='untouched'
  for flag in ['--force-admit','--host']:assert run('refuse-'+flag[2:],[flag],1)['reason']=='CLI_INVALID'
  assert len(checks)==16
- receipt={'status':'ACTUAL_PRIVATE_SELF_CONTAINED_ADMISSION_PACKAGE_PASS','commit':a.commit,'rid':m['rid'],'checkCount':len(checks),'checks':checks,'manifestSha256':sha(package/'BUILD-MANIFEST.json'),'scope':'Private/local synthetic candidate only; original R5 license/publication pending; owner decision never proves identity/authenticity/legal rights; existing hosts not cleanOS proof'}
+ receipt={'status':'ACTUAL_SELF_CONTAINED_ADMISSION_PACKAGE_PASS','commit':a.commit,'rid':m['rid'],'checkCount':len(checks),'checks':checks,'manifestSha256':sha(package/'BUILD-MANIFEST.json'),'scope':'Synthetic offline companion; original MIT software; owner decision never proves identity/authenticity/legal rights; existing hosts not cleanOS proof'}
  (work/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps({'status':receipt['status'],'checks':len(checks),'rid':m['rid']}))
 if __name__=='__main__':main()

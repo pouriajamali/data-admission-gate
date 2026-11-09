@@ -1,9 +1,9 @@
 # Attribution and current scope
 
-Original R5 companion code for Pouria Jamali, November2026, created with AI
-assistance. Its software license/publication decision is pending: see
-ORIGINAL-LICENSE-PENDING.txt. This is temporary local preparation for a reusable
-public showcase, not permanent privacy of every future component.
+Original reusable companion for Pouria Jamali, November2026, created with AI
+assistance, under the complete root MIT LICENSE. Customer-specific components,
+data, configurations, deployments and unpublished commercial additions remain
+separate private work. Software licensing is distinct from input data-use decisions.
 
 Unmodified public MIT dependency: Market Data Integrity Lab revision
 eecf14a1fdeecedb55ceb6c4947ac57e70bd4a41, four CSV/hash/reader files enumerated in
@@ -15,7 +15,7 @@ Path/file and packaging/provenance patterns are adapted from the author's public
 MIT Release Doctor and Financial Reconciliation Ledger; the full original notice
 is retained in vendor/PUBLIC-PATH-GUARDS-LICENSE. .NET runtime10.0.14 retains its
 MIT and third-party notices in the self-contained bundle's licenses directory.
-These upstream grants do not choose the original R5 license, authenticate data,
+These upstream grants do not authenticate data,
 or grant a dataset's legal use rights. No private/shared/customer/employer/Stratino
 code, data, tests, schema, contracts or ideas are included.
 
