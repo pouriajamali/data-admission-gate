@@ -1,8 +1,9 @@
 using System.Text.Json;
+
 namespace DataAdmission;
 internal static class VendorPins
 {
-    internal static readonly Dictionary<string,(string Path,string Blob,int Bytes,string Sha)> Expected = new(StringComparer.Ordinal)
+    internal static readonly Dictionary<string, (string Path, string Blob, int Bytes, string Sha)> Expected = new(StringComparer.Ordinal)
     {
         ["CsvContract.cs"] = ("src/Integrity/CsvContract.cs", "6ad8ed023f6c8a30f7c8e6a70c5d7c249c0c91aa", 7475, "7deaf13af27054f178948fa18f0768fb3be290e2a4888f131536e75a057a288f"),
         ["CsvValidator.cs"] = ("src/Integrity/CsvValidator.cs", "2b0cc21ef232e74afb2d9e89828d0718714621cb", 7081, "48d89c4553b619d80f8997e27233075ff0f76eb3410859735834c7454ec084a0"),
@@ -12,13 +13,33 @@ internal static class VendorPins
     };
     public static void Check(string? directory = null)
     {
-        directory ??= Path.Combine(AppContext.BaseDirectory,"vendor","integrity-csv");
-        Safe.NoLinks(directory);var names = Directory.EnumerateFileSystemEntries(directory).Select(Path.GetFileName).ToArray();
-        if(names.Length!=6 || !names.ToHashSet(StringComparer.Ordinal).SetEquals(Expected.Keys.Append("PINS.json")))throw new Problem("VENDOR_PIN_INVALID");
-        foreach(var p in Expected){byte[] bytes=Safe.Read(Path.Combine(directory,p.Key),16384);if(bytes.Length!=p.Value.Bytes||Contract.Hash(bytes)!=p.Value.Sha)throw new Problem("VENDOR_PIN_INVALID");}
-        using var d=Contract.Document(Safe.Read(Path.Combine(directory,"PINS.json"),16384),16384);var r=d.RootElement;Contract.Fields(r,"commit","files");
-        if(Contract.Text(r,"commit")!=Contract.VendorRevision)throw new Problem("VENDOR_PIN_INVALID");var files=r.GetProperty("files");if(files.ValueKind!=JsonValueKind.Array||files.GetArrayLength()!=5)throw new Problem("VENDOR_PIN_INVALID");HashSet<string> seen=[];
-        foreach(var f in files.EnumerateArray())
-        {Contract.Fields(f,"file","sourcePath","gitBlob","bytes","sha256");string name=Contract.Text(f,"file");if(!seen.Add(name)||!Expected.TryGetValue(name,out var p)||Contract.Text(f,"sourcePath")!=p.Path||Contract.Text(f,"gitBlob")!=p.Blob||Contract.Integer(f,"bytes")!=p.Bytes||Contract.Text(f,"sha256")!=p.Sha)throw new Problem("VENDOR_PIN_INVALID");}
+        directory ??= Path.Combine(AppContext.BaseDirectory, "vendor", "integrity-csv");
+        Safe.NoLinks(directory);
+        var names = Directory.EnumerateFileSystemEntries(directory).Select(Path.GetFileName).ToArray();
+        if (names.Length != 6 || !names.ToHashSet(StringComparer.Ordinal).SetEquals(Expected.Keys.Append("PINS.json")))
+            throw new Problem("VENDOR_PIN_INVALID");
+        foreach (var p in Expected)
+        {
+            byte[] bytes = Safe.Read(Path.Combine(directory, p.Key), 16384);
+            if (bytes.Length != p.Value.Bytes || Contract.Hash(bytes) != p.Value.Sha)
+                throw new Problem("VENDOR_PIN_INVALID");
+        }
+
+        using var d = Contract.Document(Safe.Read(Path.Combine(directory, "PINS.json"), 16384), 16384);
+        var r = d.RootElement;
+        Contract.Fields(r, "commit", "files");
+        if (Contract.Text(r, "commit") != Contract.VendorRevision)
+            throw new Problem("VENDOR_PIN_INVALID");
+        var files = r.GetProperty("files");
+        if (files.ValueKind != JsonValueKind.Array || files.GetArrayLength() != 5)
+            throw new Problem("VENDOR_PIN_INVALID");
+        HashSet<string> seen = [];
+        foreach (var f in files.EnumerateArray())
+        {
+            Contract.Fields(f, "file", "sourcePath", "gitBlob", "bytes", "sha256");
+            string name = Contract.Text(f, "file");
+            if (!seen.Add(name) || !Expected.TryGetValue(name, out var p) || Contract.Text(f, "sourcePath") != p.Path || Contract.Text(f, "gitBlob") != p.Blob || Contract.Integer(f, "bytes") != p.Bytes || Contract.Text(f, "sha256") != p.Sha)
+                throw new Problem("VENDOR_PIN_INVALID");
+        }
     }
 }

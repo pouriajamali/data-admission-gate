@@ -123,3 +123,11 @@ remain outside this work.
 Documentation update: v0.1.0-preview.1 runtime/source archives remain exact79b55551092ba427c457c8e87eb094b31ebe81be, including their historical raw-key guide. Use the current online guide above for immutable release-key retrieval. Archive/tag/SUMS/signature bytes are unchanged.
 
 [CI resource policy](docs/CI-POLICY.md): documentation-only changes get real lightweight document/pipeline checks; source, tag and manual runs retain native validation. Published runtime tags and release assets remain unchanged.
+
+## Source readability
+
+The current source expands compact C# layout for review. The published preview links identify its frozen runtime release. Formatting preserves complete syntax, token text and values, comments and directives; it does not introduce a runtime behavior or performance claim.
+
+Pinned vendor sources retain their original bytes and are excluded from formatting.
+
+To reproduce a published package, use its exact original runtime source: [v0.1.0-preview.1 source](https://github.com/pouriajamali/data-admission-gate/tree/79b55551092ba427c457c8e87eb094b31ebe81be) (`79b55551092ba427c457c8e87eb094b31ebe81be`). Later `main` layout is reviewed separately from those frozen release commits.
