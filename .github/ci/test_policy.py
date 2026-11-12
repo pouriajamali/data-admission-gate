@@ -98,5 +98,27 @@ class EventPolicyTests(unittest.TestCase):
                 policy.check_source_inventory(root)
 
 
+class LintAdmissionRouteTests(unittest.TestCase):
+    def test_default_lint_delegates_to_guard_and_preserves_failure(self):
+        import subprocess
+        import sys
+        with patch.object(policy.subprocess,'run',side_effect=subprocess.CalledProcessError(1,['guard'])) as invoke:
+            with self.assertRaises(subprocess.CalledProcessError): policy.lint()
+        args=invoke.call_args.args[0]
+        self.assertEqual([sys.executable,'-B',str(Path(policy.__file__).resolve().parents[2]/'tools/run_actionlint.py')],args)
+        self.assertTrue(invoke.call_args.kwargs['check'])
+        self.assertEqual(90,invoke.call_args.kwargs['timeout'])
+
+    def test_direct_cli_has_no_reference_or_binary_override(self):
+        import ast
+        root=Path(policy.__file__).resolve().parents[2]
+        tree=ast.parse((root/'tools/run_actionlint.py').read_text(encoding='utf-8'))
+        arguments=[call.args[0].value for call in ast.walk(tree) if isinstance(call,ast.Call) and isinstance(call.func,ast.Attribute) and call.func.attr=='add_argument']
+        self.assertEqual(['files'],arguments)
+        functions=[call.func.id for call in ast.walk(tree) if isinstance(call,ast.Call) and isinstance(call.func,ast.Name)]
+        self.assertIn('admitted_artifact',functions)
+        self.assertIn('phase_permission',functions)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

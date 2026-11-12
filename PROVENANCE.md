@@ -127,3 +127,37 @@ verify the chosen archive. Preserve failures and obtain a trusted copy rather
 than skipping a failed signature or fingerprint check.
 
 The v0.1.0-preview.1 runtime/source archives remain bound to commit79b55551092ba427c457c8e87eb094b31ebe81be and contain the historical raw-key URL. This current online guide uses the immutable release key asset; no archive/tag/checksum/signature bytes were replaced.
+
+
+## Locally admitted actionlint tooling
+
+The maintainer actionlint1.7.12 source is commit
+914e7df21a07ef503a81201c76d2b11c789d3fca, tree
+ecee8c9c752f012b2da57a5fc59863624539b43b. All850 original members retain
+Git blob/mode and SHA256/size pins. Original go.mod/go.sum remain immutable;
+the separate exact20-module overlay selects x/sys0.44.0. Actual admitted
+Go1.26.11 and govulncheck1.9.0 inputs are reused from the single producer.
+Module authentication used canonical SumDB signatures/checkpoints and full
+container/member/h1 verification; no version-only or raw-HTTPS admission.
+
+Four supervised fresh builds produced byte-identical target pairs. Actual
+source/package/init and binary evidence binds36 metadata dispositions to the
+same frozen official advisory snapshot. The Windows SDK DNS member is tied to
+its exact fixed upstream blob; module absence alone does not clear that import.
+All90 original tooling notice texts are retained in the separate sealed bundles.
+The full50-vector suite passed in optimization modes0/1/2 with zero candidate
+executions. Actual native version/valid/invalid/default/direct controls then
+passed on Windows and Linux, with real aggregate caps and owned teardown.
+
+The checker trusts independently reviewed source-held byte/proof identities,
+never candidate PASS/self-hashes. Linux executes a sealed memfd copy; Windows
+holds executable/ancestor identity through suspended-child Job assignment.
+The default/direct entries have no vendor/cache/latest/download fallback.
+The old upstream executable was never executed. These project entry guards do
+not claim OS prevention of manual executable invocation or future security.
+
+This establishes local shared tooling readiness. No tooling signature, tag,
+public release/download, hosted CI or portable-import profile is claimed.
+The tooling graph/output stays separate from application runtime SBOMs and
+the six application release assets. Public delivery requires its own exact
+candidate gate. See [docs/ACTIONLINT-BUILD.md](docs/ACTIONLINT-BUILD.md).

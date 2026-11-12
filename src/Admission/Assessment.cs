@@ -113,7 +113,16 @@ internal static class Engine
         var afterArtifacts = ReadArtifacts(csvRoot);
         if (!artifacts.Inventory.SequenceEqual(afterArtifacts.Inventory))
             throw new Problem("CSV_ARTIFACT_CHANGED");
-        byte[] json = Encoding.UTF8.GetBytes(Contract.Serialize(report) + "\n"), text = Encoding.UTF8.GetBytes($"Data Admission Gate: {outcome}\nProfile {Contract.Profile}; purpose {Contract.Purpose}\nRow quality {rowQuality.Status}; coverage {coverage.Status}; freshness {freshness.Status}; provenance {provenance.Status}; useLicense {license.Status}\nCoverage DECLARED_GRID_ONLY; freshness DECLARED_ASOF_ONLY.\nOwner basis is an assertion, not verified identity/authenticity/legal rights.\nIdentity/authenticity/legal rights/external completeness NOT_PROVEN.\nCSV row artifacts may contain input values; keep them private.\nOriginal reusable software MIT; upstream notices retained.\n");
+        byte[] json = Encoding.UTF8.GetBytes(Contract.Serialize(report) + "\n"), text = Encoding.UTF8.GetBytes(
+            $"Data Admission Gate: {outcome}\nProfile {Contract.Profile}; purpose {Contract.Purpose}\nRow quality {rowQuality.Status}; coverage {coverage.Status}; freshness {freshness.Status}; provenance {provenance.Status}; useLicense {license.Status}\n" +
+            $"rowQuality {rowQuality.Status}; basis {rowQuality.Basis}; reason {rowQuality.Reason}\n" +
+            $"coverage {coverage.Status}; basis {coverage.Basis}; reason {coverage.Reason}\n" +
+            $"freshness {freshness.Status}; basis {freshness.Basis}; reason {freshness.Reason}\n" +
+            $"provenance {provenance.Status}; basis {provenance.Basis}; reason {provenance.Reason}\n" +
+            $"useLicense {license.Status}; basis {license.Basis}; reason {license.Reason}\n" +
+            $"Freshness context: asOf {policy.AsOf}; latestAccepted {latest ?? "NONE"}; ageSeconds {age?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "UNKNOWN"}; thresholdSeconds {policy.MaxAgeSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture)}\n" +
+            "Decision meaning: offline policy only; PASS is not authenticity, legal-rights or actual-source-freshness proof.\n" +
+            "Coverage DECLARED_GRID_ONLY; freshness DECLARED_ASOF_ONLY.\nOwner basis is an assertion, not verified identity/authenticity/legal rights.\nIdentity/authenticity/legal rights/external completeness NOT_PROVEN.\nCSV row artifacts may contain input values; keep them private.\nOriginal reusable software MIT; upstream notices retained.\n");
         if (json.Length > Contract.JsonOutputLimit || text.Length > Contract.TextOutputLimit)
             throw new Problem("REPORT_BYTE_LIMIT");
         Safe.WriteNew(Path.Combine(destination, "summary.txt.pending"), text);

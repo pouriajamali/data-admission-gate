@@ -86,6 +86,7 @@ internal static class Program
             return 90;
         Root = Safe.Normalize(work);
         Safe.Fresh(Root, Guid.NewGuid().ToString("N"));
+        DecisionOracle.Run(Root, Test);
         PolicyAndDecisions();
         Mechanical();
         SnapshotsAndBounds();

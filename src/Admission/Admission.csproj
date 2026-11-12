@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>admission</AssemblyName><RuntimeFrameworkVersion>10.0.14</RuntimeFrameworkVersion></PropertyGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><AssemblyName>admission</AssemblyName><RuntimeFrameworkVersion>10.0.15</RuntimeFrameworkVersion></PropertyGroup>
   <ItemGroup>
     <Compile Include="../../vendor/integrity-csv/*.cs" Link="Vendor/%(Filename)%(Extension)" />
     <Content Include="../../vendor/integrity-csv/*" Link="vendor/integrity-csv/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

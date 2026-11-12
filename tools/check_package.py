@@ -43,7 +43,40 @@ def main():
  assert (work/'ack report/summary.json').stat().st_size<=128*1024 and (work/'ack report/summary.txt').stat().st_size<=32*1024 and sum(f.stat().st_size for f in (work/'ack report/csv-private').iterdir())<=2*1024*1024
  existing=work/'existing';existing.mkdir();(existing/'sentinel').write_text('untouched',encoding='utf-8');run('existing-output-preserved',['assess',bundle,existing],1);assert (existing/'sentinel').read_text(encoding='utf-8')=='untouched'
  for flag in ['--force-admit','--host']:assert run('refuse-'+flag[2:],[flag],1)['reason']=='CLI_INVALID'
- assert len(checks)==16
+ # W2 source-only draft, UNTESTED: independent literal data, not generated demo data.
+ for folder,owner_line in [('hold report','provenance UNKNOWN; basis UNACKNOWLEDGED_OWNER_ASSERTION; reason EXPLICIT_ACK_REQUIRED\n'),('ack report','provenance PASS; basis OWNER_DECISION_ACCEPTED; reason OWNER_ASSERTION_ALLOW\n')]:
+  explanation=(work/folder/'summary.txt').read_text(encoding='utf-8')
+  assert owner_line in explanation and 'Decision meaning: offline policy only; PASS is not authenticity, legal-rights or actual-source-freshness proof.\n' in explanation
+  assert 'Freshness context: asOf 2026-01-01T00:02:00Z; latestAccepted 2026-01-01T00:02:00Z; ageSeconds 0; thresholdSeconds 60\n' in explanation
+ oracle=work/'literal unknown provenance';oracle.mkdir()
+ oracle_csv=b'timestamp,open,high,low,close,volume\n2026-01-01T00:02:00Z,100.00,102.00,99.00,101.00,5\n'
+ oracle_policy=b'{"schema":"data-admission-policy-v1","profile":"admission-ohlc-csv-v1","purpose":"offline-analysis","asOf":"2026-01-01T00:03:00Z","maxAgeSeconds":60,"expectedTimestamps":["2026-01-01T00:02:00Z"]}\n'
+ (oracle/'input.csv').write_bytes(oracle_csv);(oracle/'policy.json').write_bytes(oracle_policy)
+ oracle_decision={'schema':'owner-decision-v1','datasetSha256':hashlib.sha256(oracle_csv).hexdigest(),'policySha256':hashlib.sha256(oracle_policy).hexdigest(),'purpose':'offline-analysis','ownerLabel':'ORACLE_SYNTHETIC_OWNER','evidenceRefs':['LABEL_ONLY_NOT_AUTHENTICATED'],'provenance':'unknown','useLicense':'allow'}
+ (oracle/'owner-decision.json').write_bytes((json.dumps(oracle_decision,separators=(',',':'))+'\n').encode('utf-8'))
+ oracle_before={f.name:sha(f) for f in oracle.iterdir()};oracle_report=work/'literal unknown provenance report'
+ counter=run('literal-unknown-provenance',['assess',oracle,oracle_report,'--ack-owner-decision'],2)
+ assert counter['complete'] and counter['outcome']=='HOLD' and counter['exitCode']==2 and counter['decisionBindingMatches'] is True and counter['ownerDecisionAcknowledged'] is True
+ assert [counter[k]['status'] for k in ['rowQuality','coverage','freshness','provenance','useLicense']]==['PASS','PASS','PASS','UNKNOWN','PASS']
+ assert counter['provenance']=={'status':'UNKNOWN','basis':'OWNER_DECISION_ACCEPTED','reason':'OWNER_ASSERTION_UNKNOWN'} and counter['useLicense']=={'status':'PASS','basis':'OWNER_DECISION_ACCEPTED','reason':'OWNER_ASSERTION_ALLOW'}
+ assert counter['coverageDetails']=={'expected':1,'accepted':1,'excludedQuarantined':0,'missing':0,'unexpected':0,'duplicates':0,'nonAscending':0,'diagnosticCodes':[],'scope':'DECLARED_GRID_ONLY','externalCompleteness':'NOT_PROVEN'}
+ assert counter['freshnessDetails']=={'asOf':'2026-01-01T00:03:00Z','latestAccepted':'2026-01-01T00:02:00Z','ageSeconds':60,'thresholdSeconds':60,'clockAccuracy':'NOT_PROVEN','actualSourceFreshness':'NOT_PROVEN'}
+ assert counter['identity']==counter['authenticity']==counter['legalRights']=='NOT_PROVEN' and counter['csvSourceProvenance']=='UNVERIFIED'
+ assert counter['dataSha256']==oracle_before['input.csv'] and counter['policySha256']==oracle_before['policy.json'] and counter['decisionSha256']==oracle_before['owner-decision.json']
+ assert oracle_before=={f.name:sha(f) for f in oracle.iterdir()} and len(oracle_before)==3
+ counter_text=(oracle_report/'summary.txt').read_bytes()
+ expected_explanation=('rowQuality PASS; basis PINNED_PUBLIC_CSV_ROW_CHECKS_ONLY; reason NO_QUARANTINED_ROWS\n'
+  'coverage PASS; basis DECLARED_GRID_ONLY; reason EXACT_ACCEPTED_GRID_AGREEMENT\n'
+  'freshness PASS; basis DECLARED_ASOF_ONLY; reason AGE_WITHIN_DECLARED_THRESHOLD\n'
+  'provenance UNKNOWN; basis OWNER_DECISION_ACCEPTED; reason OWNER_ASSERTION_UNKNOWN\n'
+  'useLicense PASS; basis OWNER_DECISION_ACCEPTED; reason OWNER_ASSERTION_ALLOW\n'
+  'Freshness context: asOf 2026-01-01T00:03:00Z; latestAccepted 2026-01-01T00:02:00Z; ageSeconds 60; thresholdSeconds 60\n'
+  'Decision meaning: offline policy only; PASS is not authenticity, legal-rights or actual-source-freshness proof.\n').encode('utf-8')
+ assert expected_explanation in counter_text and len(counter_text)<=32*1024 and (oracle_report/'summary.json').stat().st_size<=128*1024
+ assert sum(f.stat().st_size for f in (oracle_report/'csv-private').iterdir())<=2*1024*1024 and not list(oracle_report.glob('*.pending'))
+ counter_main=(oracle_report/'summary.json').read_bytes()+counter_text
+ assert b'ORACLE_SYNTHETIC_OWNER' not in counter_main and b'100.00' not in counter_main and str(work).encode('utf-8') not in counter_main
+ assert len(checks)==17
  receipt={'status':'ACTUAL_SELF_CONTAINED_ADMISSION_PACKAGE_PASS','commit':a.commit,'rid':m['rid'],'checkCount':len(checks),'checks':checks,'manifestSha256':sha(package/'BUILD-MANIFEST.json'),'scope':'Synthetic offline companion; original MIT software; owner decision never proves identity/authenticity/legal rights; existing hosts not cleanOS proof'}
  (work/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8');print(json.dumps({'status':receipt['status'],'checks':len(checks),'rid':m['rid']}))
 if __name__=='__main__':main()

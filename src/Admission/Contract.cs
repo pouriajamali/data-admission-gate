@@ -12,7 +12,7 @@ internal sealed class Problem(string code) : Exception(code)
 
 internal static partial class Contract
 {
-    public const string Version = "0.1.0-preview.1", Profile = "admission-ohlc-csv-v1", Purpose = "offline-analysis";
+    public const string Version = "0.1.0-preview.2", Profile = "admission-ohlc-csv-v1", Purpose = "offline-analysis";
     public const int InputLimit = 1024 * 1024, PolicyLimit = 128 * 1024, DecisionLimit = 16 * 1024;
     public const int JsonOutputLimit = 128 * 1024, TextOutputLimit = 32 * 1024, ArtifactLimit = 2 * 1024 * 1024;
     public const string VendorRevision = "eecf14a1fdeecedb55ceb6c4947ac57e70bd4a41";

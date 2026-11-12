@@ -66,6 +66,65 @@ REJECT, otherwise UNKNOWN gives HOLD. ADMIT performs no downstream action.
 Identity/authenticity/legal rights always remain NOT_PROVEN. Data-use decisions
 are separate from the MIT license of this software.
 
+## Unreleased preview.2 source — partial local validation
+
+The current source adds a more explicit human report and has local build/unit
+evidence. Full acceptance is pending; the preview.1 downloads above remain the
+published baseline.
+It preserves the JSON v1 contract and ADMIT/HOLD/REJECT decision rules.
+
+The proposed `summary.txt` shows each of `rowQuality`, `coverage`, `freshness`,
+`provenance` and `useLicense` with its status, basis and reason. It also prints the
+declared historical asOf, latest accepted timestamp, age and threshold. A displayed
+PASS describes that axis's policy basis; it does not verify authenticity, legal
+rights, external completeness or actual source freshness.
+
+The new independent oracle uses one invented row at `2026-01-01T00:02:00Z`, an
+explicit one-slot grid, asOf `2026-01-01T00:03:00Z` and a 60-second threshold.
+Its literal expectations are:
+
+| Bound owner assertion | Per-invocation ACK | Expected policy result |
+|---|---|---|
+| provenance unknown; useLicense allow | yes | HOLD/2, although row quality, coverage, freshness and useLicense PASS |
+| provenance allow; useLicense allow | yes | ADMIT/0; identity/authenticity/legal rights still NOT_PROVEN |
+| provenance allow; useLicense unknown | yes | HOLD/2 |
+| exact same allow/allow bundle bytes as the second case | no | HOLD/2; both owner axes UNKNOWN |
+
+Local evidence: Windows units **107 passed, 0 failed, 2 skipped** (symlink
+privilege and Linux-only FIFO). On 2026-11-12 the complete unchanged Ubuntu/WSL
+suite passed **109 passed, 0 failed, 0 skipped**, including the FIFO regression
+using the approved native-filesystem fixture. All four literal CLI oracles passed.
+The fixture evidence was exported and verified before owned cleanup; the actual
+SDK child inherited a 4GiB memory/zero-swap, two-CPU, 64-task cgroup. This replaces
+the earlier Windows-mounted-fixture failure; it does not establish clean-OS or
+packaged apphost acceptance.
+
+All twelve CI-policy checks passed, retaining the original ten classification
+checks. The local maintainer actionlint1.7.12 build is now admitted by exact
+source/compiler/module/binary/proof identity. Four fresh builds produced two
+byte-identical outputs per target. Source and exact-binary analyses completed
+for Windows and Linux; all36 metadata matches have target-specific dispositions.
+The imported Windows SDK DNS source is tied to its exact upstream-fixed blob.
+All90 original tooling notice texts are retained separately from the app runtime.
+
+The same50 negative vectors passed in normal Python, `-O`, and real
+`PYTHONOPTIMIZE=2`: **150 rejections, zero candidate executions**. Actual version,
+fixed valid/invalid YAML, default and direct lint controls then passed on both
+native hosts under4GiB/two-CPU/64-task supervision, with zero Linux swap. The old
+vendor executable remains unexecuted. Missing, mutated or unadmitted input still
+fails closed. See [tooling recipe and limits](docs/ACTIONLINT-BUILD.md).
+
+Each extracted self-contained app archive has a separate17-check acceptance
+suite, including an independent literal unknown-provenance/HOLD counterexample.
+Locked restores, native Release builds and exact runtime-package
+signature/content/notices observations exist; the observed official-feed
+snapshot had no range matching either selected10.0.15 runtime package. This is
+scoped version evidence, not general security certification. Exact candidate
+archive acceptance, signatures, CI, actual downloads and public metadata are
+separate delivery checks. The shared linter handoff does not establish them.
+No preview.2 public download is claimed by these local results.
+
+
 ## Supported local bundle
 
 Flat directory: `input.csv`, `policy.json`, optionally `owner-decision.json`.
@@ -98,7 +157,10 @@ completed all-quarantined input is REJECT even when freshness is UNKNOWN.
   inventory and conservative byte limits; no performance benchmark.
 - `report-*`, `artifact-*`: report/marker/inventory failures are incomplete.
 
-SDK10.0.403, bundled runtime10.0.14. No external application packages, framework
+Published preview.1 uses SDK10.0.403/runtime10.0.14. The UNRELEASED preview.2
+source pins SDK10.0.404/runtime10.0.15; local restore/build/units and both runtime
+identities are observed. Native archive packaging and full acceptance are pending.
+No external application packages, framework
 cloud integrations, CSV rewrite, real account/API, live feed, arbitrary executable,
 plugin, force-admit, reset or deployment option.
 
@@ -126,7 +188,11 @@ Documentation update: v0.1.0-preview.1 runtime/source archives remain exact79b55
 
 ## Source readability
 
-The current source expands compact C# layout for review. The published preview links identify its frozen runtime release. Formatting preserves complete syntax, token text and values, comments and directives; it does not introduce a runtime behavior or performance claim.
+The source readability baseline expanded compact C# layout for review while
+preserving syntax, token values, comments and directives. The current UNRELEASED
+preview.2 source additionally changes human report text as described above; it
+has the partial local evidence above. Published preview.1 links identify its frozen runtime
+release. No performance claim follows from either layout or report text.
 
 Pinned vendor sources retain their original bytes and are excluded from formatting.
 
