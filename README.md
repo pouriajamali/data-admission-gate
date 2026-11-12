@@ -6,7 +6,7 @@ relative to an explicit historical asOf, provenance decision and data-use decisi
 **A quality pass or an owner assertion is not authenticity or legal-rights proof.**
 
 The original reusable companion is [MIT](LICENSE); public dependencies retain
-their separate full notices. [Preview v0.1.0-preview.1 and downloads](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.1)
+their separate full notices. [Preview v0.1.0-preview.2 and downloads](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.2)
 provide Windows/Linux x64 bundles and source. Verify the signed checksums before
 extraction; missing signature assets mean incomplete publication. Software licensing
 does not prove ownership or legal use rights of input data. Customer-specific code,
@@ -66,14 +66,20 @@ REJECT, otherwise UNKNOWN gives HOLD. ADMIT performs no downstream action.
 Identity/authenticity/legal rights always remain NOT_PROVEN. Data-use decisions
 are separate from the MIT license of this software.
 
-## Unreleased preview.2 source — partial local validation
+## Preview.2 report and evidence
 
-The current source adds a more explicit human report and has local build/unit
-evidence. Full acceptance is pending; the preview.1 downloads above remain the
-published baseline.
+The preview.2 app tag and its runtime/source archives are bound to signed commit
+b1012c1dec61c8d1a23cd604a77b36fb0062f0b0, tree
+09c3bf9b6da12eacdb6df903b2cc9452e9a620a0. The release notes link its exact
+Windows/Linux hosted native verification and actual archive checks. Later main
+documentation is separate from these frozen app assets.
+
+Earlier private localCandidate archives and their17-check receipts belong to
+9893583976da8d5042d063cabc58f65885001858. They were neither relabelled nor uploaded.
+Public archives were produced and checked by the exact app-tag pipeline.
 It preserves the JSON v1 contract and ADMIT/HOLD/REJECT decision rules.
 
-The proposed `summary.txt` shows each of `rowQuality`, `coverage`, `freshness`,
+The preview.2 `summary.txt` shows each of `rowQuality`, `coverage`, `freshness`,
 `provenance` and `useLicense` with its status, basis and reason. It also prints the
 declared historical asOf, latest accepted timestamp, age and threshold. A displayed
 PASS describes that axis's policy basis; it does not verify authenticity, legal
@@ -124,7 +130,8 @@ snapshot had no range matching either selected10.0.15 runtime package. This is
 scoped version evidence, not general security certification. Exact candidate
 archive acceptance, signatures, CI, actual downloads and public metadata are
 separate delivery checks. The shared linter handoff does not establish them.
-No preview.2 public download is claimed by these local results.
+The local results retain their original commit/host boundary; public delivery
+is established separately by the exact app-tag CI and six verified release assets.
 
 
 ## Supported local bundle
@@ -159,9 +166,9 @@ completed all-quarantined input is REJECT even when freshness is UNKNOWN.
   inventory and conservative byte limits; no performance benchmark.
 - `report-*`, `artifact-*`: report/marker/inventory failures are incomplete.
 
-Published preview.1 uses SDK10.0.403/runtime10.0.14. The UNRELEASED preview.2
-source pins SDK10.0.404/runtime10.0.15; local restore/build/units and both runtime
-identities are observed. Native archive packaging and full acceptance are pending.
+Historical preview.1 uses SDK10.0.403/runtime10.0.14. Preview.2 source and
+matching-host self-contained archives use SDK10.0.404/runtime10.0.15.
+Use its exact signed tag and source archive when reproducing the release.
 No external application packages, framework
 cloud integrations, CSV rewrite, real account/API, live feed, arbitrary executable,
 plugin, force-admit, reset or deployment option.
@@ -191,18 +198,24 @@ Documentation update: v0.1.0-preview.1 runtime/source archives remain exact79b55
 ## Source readability
 
 The source readability baseline expanded compact C# layout for review while
-preserving syntax, token values, comments and directives. The current UNRELEASED
-preview.2 source additionally changes human report text as described above; it
-has the partial local evidence above. Published preview.1 links identify its frozen runtime
-release. No performance claim follows from either layout or report text.
+preserving syntax, token values, comments and directives. Preview.2 additionally
+changes human report text as described above. Its tag identifies its frozen
+runtime source; main may contain subsequent documentation. No performance claim
+follows from either layout or report text.
 
 Pinned vendor sources retain their original bytes and are excluded from formatting.
 
-To reproduce a published package, use its exact original runtime source: [v0.1.0-preview.1 source](https://github.com/pouriajamali/data-admission-gate/tree/79b55551092ba427c457c8e87eb094b31ebe81be) (`79b55551092ba427c457c8e87eb094b31ebe81be`). Later `main` layout is reviewed separately from those frozen release commits.
+Reproduce preview.2 from [its exact runtime source](https://github.com/pouriajamali/data-admission-gate/tree/b1012c1dec61c8d1a23cd604a77b36fb0062f0b0).
+[Historical preview.1 source](https://github.com/pouriajamali/data-admission-gate/tree/79b55551092ba427c457c8e87eb094b31ebe81be)
+and its six release assets remain unchanged. Later main documentation is separate
+from each frozen runtime commit.
 
 ## Build-time sealed linter
 
 Fresh CI/contributor lint imports the exact reviewed public sealed archive; no
 producer drive/private receipts or local compiler are required. Managed task
 checkouts retain the canonical gate. See [native profile and signed input setup](docs/ACTIONLINT-BUILD.md).
-Archive availability and hosted cap acceptance require actual release/CI readback.
+The [five-asset tooling release](https://github.com/pouriajamali/data-admission-gate/releases/tag/tooling-actionlint-v1.7.12-go1.26.11-r1)
+and [single producer CI](https://github.com/pouriajamali/data-admission-gate/actions/runs/43275123686)
+have actual download/signature and Windows import/default-lint Job evidence.
+This tooling result is separate from app native verification and consumer05/06.

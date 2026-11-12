@@ -1,6 +1,6 @@
-# Maintainer actionlint build — local shared readiness
+# Maintainer actionlint build — delivered sealed input
 
-This unreleased build-time tool is locally admitted by reviewed source-held
+This build-time tool is admitted by reviewed source-held
 identities. The same50 negative vectors passed in normal Python, -O and actual
 PYTHONOPTIMIZE=2 (optimize0/1/2),150 rejections with zero candidate executions.
 Actual version, fixed valid/invalid YAML, default and direct controls then passed
@@ -165,3 +165,14 @@ modification attribution are retained under producer-proofs/vulndb-* in each ZIP
 Tooling inputs are separate from the app runtime, data contracts and release assets.
 Public asset availability, exact-commit CI and actual downloads/signatures require
 separate publication/readback evidence. No private or paid fallback is selected.
+
+## Actual producer publication
+
+The [tooling release](https://github.com/pouriajamali/data-admission-gate/releases/tag/tooling-actionlint-v1.7.12-go1.26.11-r1)
+is bound to signed b1012c1. All five assets (8001056bytes total) were actually
+downloaded publicly and size/hash/known-key signature verified. Exactly one
+[producer CI](https://github.com/pouriajamali/data-admission-gate/actions/runs/43275123686)
+passed12 policy tests and actual Windows2025 import/default-lint with Job4GiB,
+CPU2,64processes, membership before resume and zero descendants. App jobs were
+skipped; it produced no Actions artifacts/cache uploads. This closes the shared
+public-import subgate only; app/consumer native and exact-commit proofs are separate.

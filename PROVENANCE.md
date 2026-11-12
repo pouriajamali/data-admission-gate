@@ -14,12 +14,12 @@ identity proof. The key is public; never share or request the private signing ke
 
 ## What is signed
 
-The example below verifies **v0.1.0-preview.1**. Its
+The example below verifies **v0.1.0-preview.2**. Its
 `SHA256SUMS.txt.sig` is an SSH signature over the exact `SHA256SUMS.txt` bytes in
 the `file` namespace. Verify that signature first, then the chosen archive's hash.
 A matching unsigned hash alone is not authenticated provenance.
 
-Use the [release page](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.1)
+Use the [release page](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.2)
 and its exact tag/commit when selecting assets. An annotated signed tag and
 exact-source package manifests accompany public previews. Missing assets or a
 missing checksum signature are an incomplete publication; do not skip verification.
@@ -49,8 +49,8 @@ from the signed checksum file to verify a different OS archive.
 
 ```sh
 repo='pouriajamali/data-admission-gate'
-tag='v0.1.0-preview.1'
-archive='data-admission-gate-v0.1.0-preview.1-source.zip'
+tag='v0.1.0-preview.2'
+archive='data-admission-gate-v0.1.0-preview.2-source.zip'
 for name in "$archive" SHA256SUMS.txt SHA256SUMS.txt.sig; do
   curl --fail --location --output "$name" "https://github.com/$repo/releases/download/$tag/$name" || exit 1
 done
@@ -81,8 +81,8 @@ These commands do not install tools or change security settings.
 ```powershell
 $ErrorActionPreference = 'Stop'
 $repo = 'pouriajamali/data-admission-gate'
-$tag = 'v0.1.0-preview.1'
-$archive = 'data-admission-gate-v0.1.0-preview.1-source.zip'
+$tag = 'v0.1.0-preview.2'
+$archive = 'data-admission-gate-v0.1.0-preview.2-source.zip'
 foreach ($name in @($archive, 'SHA256SUMS.txt', 'SHA256SUMS.txt.sig')) {
     Invoke-WebRequest -Uri "https://github.com/$repo/releases/download/$tag/$name" -OutFile $name
 }
@@ -156,8 +156,11 @@ The default/direct entries have no vendor/cache/latest/download fallback.
 The old upstream executable was never executed. These project entry guards do
 not claim OS prevention of manual executable invocation or future security.
 
-This establishes local shared tooling readiness. Public release/download and hosted CI acceptance require their actual
-publication/readback evidence; local source/profile/signatures alone do not prove them.
+The [tooling release](https://github.com/pouriajamali/data-admission-gate/releases/tag/tooling-actionlint-v1.7.12-go1.26.11-r1)
+has five actual public downloads with size/hash/known-key signature verification.
+[Producer CI43275123686](https://github.com/pouriajamali/data-admission-gate/actions/runs/43275123686)
+observed Windows import/default-lint Job4GiB/CPU2/64, membership before resume
+and zero descendants. It was tooling-only; app/consumer exact-commit CI is separate.
 The tooling graph/output stays separate from application runtime SBOMs and
 the six application release assets. Public delivery requires its own exact
 candidate gate. See [docs/ACTIONLINT-BUILD.md](docs/ACTIONLINT-BUILD.md).
