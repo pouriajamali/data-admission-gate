@@ -114,7 +114,9 @@ native hosts under4GiB/two-CPU/64-task supervision, with zero Linux swap. The ol
 vendor executable remains unexecuted. Missing, mutated or unadmitted input still
 fails closed. See [tooling recipe and limits](docs/ACTIONLINT-BUILD.md).
 
-Each extracted self-contained app archive has a separate17-check acceptance
+Packaging disables extra runtime/targeting-pack downloads for frameworks the
+console project does not reference; its declared .NETCore runtime and NuGet
+auditing remain enabled. Each extracted self-contained app archive has a separate17-check acceptance
 suite, including an independent literal unknown-provenance/HOLD counterexample.
 Locked restores, native Release builds and exact runtime-package
 signature/content/notices observations exist; the observed official-feed

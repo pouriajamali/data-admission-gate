@@ -18,6 +18,8 @@ remain matching-host self-contained Windows x64 and Ubuntu24.04/glibc x64
 bundles plus exact source, using existing aggregation without rebuilding tested
 archives. Nine action references select five exact Node24 upstream releases.
 The app matrix, permissions, retention and six release assets retain their scope.
+Packaging disables downloads of frameworks not referenced by this console app;
+the declared .NETCore runtime and NuGet auditing stay enabled.
 Locked restores with unchanged managed locks, native Release builds and exact
 runtime-package signature/content/license/notice evidence were observed. The
 official-feed snapshot had no range matching either selected10.0.15 runtime

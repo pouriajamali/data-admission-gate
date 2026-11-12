@@ -14,7 +14,7 @@ def main():
  version=ET.parse(ROOT/'Directory.Build.props').findtext('.//Version');assert version
  assert (ROOT/'LICENSE').is_file(),'Explicit original-source license required before distribution'
  work=a.work.resolve();work.mkdir(parents=True,exist_ok=False);a.out.mkdir(parents=True,exist_ok=True)
- published=work/'published';command=[a.dotnet,'publish','src/Admission/Admission.csproj','-c','Release','-r',a.rid,'--self-contained','true','-p:RuntimeFrameworkVersion=10.0.15','-p:PublishTrimmed=false','-p:PublishAot=false','-p:PublishReadyToRun=false','-p:DebugType=None','-p:DebugSymbols=false','-p:SourceRevisionId='+a.commit,'-o',str(published)]
+ published=work/'published';command=[a.dotnet,'publish','src/Admission/Admission.csproj','-c','Release','-r',a.rid,'--self-contained','true','-p:RuntimeFrameworkVersion=10.0.15','-p:DisableTransitiveFrameworkReferenceDownloads=true','-p:PublishTrimmed=false','-p:PublishAot=false','-p:PublishReadyToRun=false','-p:DebugType=None','-p:DebugSymbols=false','-p:SourceRevisionId='+a.commit,'-o',str(published)]
  if a.source:
   for source in a.source:command+=['--source',source]
   command+=['-p:NuGetAudit=false']
