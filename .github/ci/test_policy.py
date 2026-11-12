@@ -114,7 +114,7 @@ class LintAdmissionRouteTests(unittest.TestCase):
         root=Path(policy.__file__).resolve().parents[2]
         tree=ast.parse((root/'tools/run_actionlint.py').read_text(encoding='utf-8'))
         arguments=[call.args[0].value for call in ast.walk(tree) if isinstance(call,ast.Call) and isinstance(call.func,ast.Attribute) and call.func.attr=='add_argument']
-        self.assertEqual(['files'],arguments)
+        self.assertEqual(['--portable','files'],arguments)
         functions=[call.func.id for call in ast.walk(tree) if isinstance(call,ast.Call) and isinstance(call.func,ast.Name)]
         self.assertIn('admitted_artifact',functions)
         self.assertIn('phase_permission',functions)

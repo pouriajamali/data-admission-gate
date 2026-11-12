@@ -199,3 +199,10 @@ release. No performance claim follows from either layout or report text.
 Pinned vendor sources retain their original bytes and are excluded from formatting.
 
 To reproduce a published package, use its exact original runtime source: [v0.1.0-preview.1 source](https://github.com/pouriajamali/data-admission-gate/tree/79b55551092ba427c457c8e87eb094b31ebe81be) (`79b55551092ba427c457c8e87eb094b31ebe81be`). Later `main` layout is reviewed separately from those frozen release commits.
+
+## Build-time sealed linter
+
+Fresh CI/contributor lint imports the exact reviewed public sealed archive; no
+producer drive/private receipts or local compiler are required. Managed task
+checkouts retain the canonical gate. See [native profile and signed input setup](docs/ACTIONLINT-BUILD.md).
+Archive availability and hosted cap acceptance require actual release/CI readback.

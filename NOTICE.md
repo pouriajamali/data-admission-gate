@@ -39,3 +39,10 @@ Tooling binaries and their Go graph are not included in application runtime
 bundles or the application SBOM. Existing CSV vendor pins remain unchanged.
 Tooling publication requires a separate exact public gate. See
 docs/ACTIONLINT-BUILD.md and tools/actionlint-notices.json.
+
+Go Vulnerability Database data in the tooling proof streams is licensed
+CC-BY-4.0, separately from the module/compiler/auditor notice graph. Source:
+https://vuln.go.dev/ and https://github.com/golang/vulndb/tree/master/data.
+The public sealed tooling ZIPs retain the complete original Go vulnerability
+database LICENSE and an attribution/formatting/analysis note under
+producer-proofs/vulndb-*. No upstream endorsement is claimed.

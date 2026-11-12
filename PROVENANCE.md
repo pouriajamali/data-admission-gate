@@ -156,8 +156,20 @@ The default/direct entries have no vendor/cache/latest/download fallback.
 The old upstream executable was never executed. These project entry guards do
 not claim OS prevention of manual executable invocation or future security.
 
-This establishes local shared tooling readiness. No tooling signature, tag,
-public release/download, hosted CI or portable-import profile is claimed.
+This establishes local shared tooling readiness. Public release/download and hosted CI acceptance require their actual
+publication/readback evidence; local source/profile/signatures alone do not prove them.
 The tooling graph/output stays separate from application runtime SBOMs and
 the six application release assets. Public delivery requires its own exact
 candidate gate. See [docs/ACTIONLINT-BUILD.md](docs/ACTIONLINT-BUILD.md).
+
+## Sealed tooling release provenance
+
+The shared input tag is tooling-actionlint-v1.7.12-go1.26.11-r1 in
+pouriajamali/data-admission-gate. Its two ZIP hashes/sizes are pinned in the
+reviewed source lock. Verify the file-namespace signed SHA256SUMS against the
+independently trusted ED25519 fingerprint printed above and principal
+pouriajamali. Candidate PASS/self-hashes and a co-downloaded key alone are not
+trust anchors. The archive carries all original tooling notices plus the
+Go Vulnerability Database CC-BY-4.0 license/attribution. Producer path strings
+are observations; fresh runtime reads only reviewed source and archive-relative
+inputs. See docs/ACTIONLINT-BUILD.md for controlled import/default/direct routes.

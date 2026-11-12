@@ -2,7 +2,7 @@ name: Windows and Ubuntu offline admission verification
 on:
   push:
     branches: [main]
-    tags: ['*']
+    tags: ['*', '!tooling-actionlint-v1.7.12-go1.26.11-r1']
   pull_request:
   workflow_dispatch:
 permissions:
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   ci_policy:
     name: Changed files and documentation policy
-    runs-on: ubuntu-24.04
+    runs-on: windows-2025
     timeout-minutes: 5
     permissions:
       contents: read
@@ -31,15 +31,17 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Verify event and documentation contracts
-        run: python3 -m unittest discover -s .github/ci -p test_policy.py -v
+        run: python -m unittest discover -s .github/ci -p test_policy.py -v
       - name: Classify complete change and validate documentation
         id: scope
-        run: python3 .github/ci/policy.py gate
+        run: python .github/ci/policy.py gate
+      - name: Import exact reviewed sealed maintainer linter
+        run: python tools/build_actionlint.py prepare-ci-sealed --target windows-amd64
       - name: Check actual workflow syntax and expressions
-        run: python3 .github/ci/policy.py lint
+        run: python .github/ci/policy.py lint
   verify:
     needs: ci_policy
-    if: needs.ci_policy.outputs.native == 'true'
+    if: needs.ci_policy.outputs.native == 'true' && github.ref != 'refs/tags/tooling-actionlint-v1.7.12-go1.26.11-r1'
     strategy:
       max-parallel: 1
       matrix:
