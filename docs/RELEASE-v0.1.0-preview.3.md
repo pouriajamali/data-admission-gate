@@ -43,3 +43,14 @@ The final inert source delta preserves failure cause/terminal metadata in the
 existing bounded proof artifact and adds own-unit Linux finally cleanup plus
 fixed Windows Git lookup. Reused coordinator108 source-value denials ran on
 Windows Python3.12.10; no Linux/native/SDK/CI acceptance is implied.
+
+Windows diagnostic source functions passed the focused V01..V08 synthetic
+normal/-O/env2 checks, including invalid metadata preserving primary failure;
+these are SDK-free source checks, not actual Windows predicate observations.
+The next qualification-only source route selects exactly one existing Windows
+row, with a mode-aware900s profile (60/120/180/480/60), same4GiB/64/CPU2 and
+existing proof-win-x64 <=8MiB/3days. Linux/ci_policy/release are excluded only
+from that mode; ordinary two-row/policy routes remain. Linux fact757abf2d from
+803eb716 is immutable and reused without replay. Global SDK_READY remains false.
+No public push, dispatch, SDK/native/product qualification or release is
+authorized or claimed by this source candidate.

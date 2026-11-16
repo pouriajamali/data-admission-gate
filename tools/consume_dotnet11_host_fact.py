@@ -5,13 +5,13 @@ from pathlib import Path
 HERE=Path(__file__).resolve().parent
 # Controllers are source-bound siblings in the exact signed/approved CI projection.
 def module(name):
- p=HERE/(name+'.py');expected={'qualify_dotnet11_windows': '1d6b9a6cb7cfbac0c46be6de519b65a4f913475d87544528cc4c405632446244', 'qualify_dotnet11_linux': '2182f7989e9d7c4bf3aa4fb7d8878106fbf75de9f49f0746dea2cad8c0e35d4e'}[name]
+ p=HERE/(name+'.py');expected={'qualify_dotnet11_windows': 'f7d79ad4f3496dd9aec86e6b7c8d6d97488a1e61acf956ceba1d482486461723', 'qualify_dotnet11_linux': '459074adfe4bca8d94aaad1a41747a1d40e2684c51af179ae81106bf802b9c67'}[name]
  if hashlib.sha256(p.read_bytes()).hexdigest()!=expected:raise RuntimeError('CONSUMER_BACKEND_SOURCE_IDENTITY')
  spec=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(spec);sys.modules[name]=m;spec.loader.exec_module(m);return m
 Q=module('qualify_dotnet11_windows' if os.name=='nt' else 'qualify_dotnet11_linux');R=Q.R;j=Q.j
 STAGES=['locked-tests','package','extract','package-checks','technology-checks']
 def consumer_work(spec,backend):
- root=Path(spec['root']);rid=spec['rid'];budget=R.Budget(spec);env=R.job_environment(root);host=R.host(rid);cap=backend.caps();R.f.caps(cap,rid);source=R.source_context(spec['expectedCommit'],backend.run,env,budget,root,qualification=False)
+ root=Path(spec['root']);rid=spec['rid'];budget=R.Budget(spec);env=R.job_environment(root);host=R.host(rid,root);cap=backend.caps();R.f.caps(cap,rid);source=R.source_context(spec['expectedCommit'],backend.run,env,budget,root,qualification=False)
  lock=R.read(HERE/'dotnet11-consumer04-admission.lock.json');R.f.need(lock.get('state')=='ADMITTED_EXACT_SUPPORTED_HOST_CLASS' and lock.get('projectId')=='04','CONSUMER_ADMISSION_REQUIRED');binding=lock.get('producerFactsByRid',{}).get(rid);R.f.need(type(binding) is dict,'CONSUMER_RID_FACT_UNBOUND')
  base=HERE/'accepted-sdk11-ci';factpath=R.a.scoped(base/binding['factFile'],base);R.f.need(R.digest(factpath)==binding['factSha256'],'CONSUMER_FACT_IDENTITY');fact=R.read(factpath);R.f.validate_fact(fact,R.read(HERE/'dotnet11-host-qualification.schema.json'))
  current={'rid':rid,'hostClass':host['hostClass'],'sourceCommit':source['commit'],'sourceTree':source['tree'],'contractSha256':lock['contractSha256'],'runId':host['runId'],'job':host['job'],'attempt':host['attempt'],'caps':cap};admission=dict(binding['admission'])

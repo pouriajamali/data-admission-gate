@@ -39,10 +39,17 @@ def catalog(c,rid):
  need(h(c.get('members'))==MANIFESTS[rid],'Q_CATALOG_MEMBERS')
 def source(actual,expected):
  need(re.fullmatch('[0-9a-f]{40}',str(expected)) is not None and actual==expected,'Q_SOURCE_IDENTITY')
+# Closed documented image variant; preserve the observed ImageOS value verbatim.
+# Release/source pin: actions/runner-images win25-vs2026/20261103.298;
+# Windows2025-VS2026-Readme.md; no wildcard/future-image admission.
+def windows_host_predicates(v):
+ image=v.get('imageOS');version=v.get('imageVersion');build=v.get('kernelBuild');name=v.get('osVersion')
+ return {'imageVariantDocumented':image=='win25' or (image=='win25-vs2026' and version=='20261103.298.1'),'registryKernel26100':type(build) is str and build.split('.')[0]=='26100','registryServer2025':type(name) is str and 'Windows Server 2025' in name}
+
 def host(v,rid):
  need(v.get('hostClass')==HOSTS[rid] and v.get('rid')==rid and v.get('architecture')=='x64','Q_HOST_CLASS')
  need(v.get('imageVersion') and v.get('imageOS') and v.get('runId') and v.get('instanceId') and v.get('job')=='verify' and v.get('repository')=='pouriajamali/data-admission-gate','Q_HOST_IMAGE')
- if rid=='win-x64':need(v.get('imageOS')=='win25' and v.get('kernelBuild','').split('.')[0]=='26100' and 'Windows Server 2025' in v.get('osVersion',''),'Q_HOST_OS')
+ if rid=='win-x64':need(all(windows_host_predicates(v).values()),'Q_HOST_OS')
  else:need(v.get('imageOS')=='ubuntu24' and v.get('osVersion')=='Ubuntu 24.04' and type(v.get('uid')) is int and v['uid']>0 and type(v.get('gid')) is int and v['gid']>0,'Q_HOST_OS')
 def caps(v,rid):
  need(type(v) is dict and v.get('kind')==('actual-Windows-Job' if rid=='win-x64' else 'actual-Linux-cgroup-v2'),'Q_ACTUAL_CAP_REQUIRED')

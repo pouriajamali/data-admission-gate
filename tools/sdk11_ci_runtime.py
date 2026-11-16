@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse,contextlib,ctypes,gzip,hashlib,importlib.util,json,os,platform,re,signal,ssl,stat,struct,subprocess,sys,tarfile,time,urllib.request,zipfile
 from pathlib import Path
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parent
-PINS={'catalogSha256': 'f87ecbf9ffebd4bcb6cd435739a070042e8c20299f63882e0277803478b54c7a', 'fixtureSha256': 'd8b2b3bc9a95ba1e7ab9332f3fcef9826e7cbd9fd83059c7f2e0d475627aa13f', 'jobHelperSha256': '0ad85ec7c62fa46aee8be79ece3465060268b2f077595a0bad068ae751668694', 'memberManifestSha256': '7eb452d5eaa748773eb0b12d1abc8da1a9f1c192b06444dc88c6511de56b63c3', 'catalogRows': 5480, 'schemaSha256': '63e04fa5d270c87b93e6e1f4c38bfbcf336b950b39fe1854dc4e514f0661f14c', 'factHelperSha256': '6531854ac6d66827998bee7cdac97b534500b62bb6e941abcf6b9745c6b8daec', 'linuxCatalogSha256': '307d56b0590f5adf8bfdc03ca22d151b987774c2e49934598cfd0ac0700c0571', 'inputGuardSha256': '7420b08d78d3b1476be41385d179a42212a2a7e1a965a8d8ea3b67bb14da7925', 'linuxMaterializerSha256': '5f0dbb951cbe615d8c6dd9edbb63b11143cc457319bdcc9000ea9a486f660fb8', 'profileSha256': '641a1f8f3678fbde5dd143753d360c1322d210d04833cbfd73252626e8f7ae39'}
+PINS={'catalogSha256': 'f87ecbf9ffebd4bcb6cd435739a070042e8c20299f63882e0277803478b54c7a', 'fixtureSha256': 'd8b2b3bc9a95ba1e7ab9332f3fcef9826e7cbd9fd83059c7f2e0d475627aa13f', 'jobHelperSha256': '0ad85ec7c62fa46aee8be79ece3465060268b2f077595a0bad068ae751668694', 'memberManifestSha256': '7eb452d5eaa748773eb0b12d1abc8da1a9f1c192b06444dc88c6511de56b63c3', 'catalogRows': 5480, 'schemaSha256': '63e04fa5d270c87b93e6e1f4c38bfbcf336b950b39fe1854dc4e514f0661f14c', 'factHelperSha256': '6bb0fe5199377dfdb0caed76cf274bcef631205648d9dbf0d67e1f43433e9a7e', 'linuxCatalogSha256': '307d56b0590f5adf8bfdc03ca22d151b987774c2e49934598cfd0ac0700c0571', 'inputGuardSha256': '7420b08d78d3b1476be41385d179a42212a2a7e1a965a8d8ea3b67bb14da7925', 'linuxMaterializerSha256': '5f0dbb951cbe615d8c6dd9edbb63b11143cc457319bdcc9000ea9a486f660fb8', 'profileSha256': '8b5805bea186078e76afd0917bc5a2a990af3f3b990ba231965d99290e417ad9'}
 def digest(p,algorithm='sha256'):
  with Path(p).open('rb') as f:return hashlib.file_digest(f,algorithm).hexdigest()
 def load_module(name,sha):
@@ -30,15 +30,24 @@ class Budget:
   f.need(clock()<self.current,'OUTER_STAGE_BUDGET_EXPIRED');write(self.root/('stage-'+str(index)+'.json'),{'index':index,'deadlineTick':self.current,'startedTick':clock()})
   if os.name!='nt':signal.setitimer(signal.ITIMER_REAL,max(.001,(self.current-clock())/1000))
  def deadline(self,seconds):f.need(clock()<self.current,'OUTER_STAGE_BUDGET_EXPIRED');return min(self.current,clock()+seconds*1000)
-def host(rid):
+def host(rid,diagnostic_root=None):
  base={'hostClass':f.HOSTS[rid],'rid':rid,'imageOS':os.environ.get('ImageOS',''),'imageVersion':os.environ.get('ImageVersion',''),'runId':os.environ.get('GITHUB_RUN_ID',''),'job':os.environ.get('GITHUB_JOB',''),'attempt':os.environ.get('GITHUB_RUN_ATTEMPT',''),'repository':os.environ.get('GITHUB_REPOSITORY',''),'architecture':'x64','instanceId':os.environ.get('RUNNER_NAME','')}
- f.need(platform.machine().lower() in ('amd64','x86_64'),'Q_HOST_CLASS')
+ machine=platform.machine();machine_ok=machine.lower() in ('amd64','x86_64')
  if rid=='win-x64':
   import winreg
-  with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,r'SOFTWARE\Microsoft\Windows NT\CurrentVersion') as key:
-   get=lambda n:winreg.QueryValueEx(key,n)[0];v=sys.getwindowsversion();f.need(v.product_type==3 and v.build==26100 and ctypes.sizeof(ctypes.c_void_p)==8,'Q_HOST_OS');base.update(osVersion=get('ProductName'),kernelBuild=get('CurrentBuildNumber')+'.'+str(get('UBR')),uid=None,gid=None)
+  observed={'imageOS':base['imageOS'],'imageVersion':base['imageVersion'],'machine':machine,'pointerBits':ctypes.sizeof(ctypes.c_void_p)*8,'runnerEnvironment':os.environ.get('RUNNER_ENVIRONMENT','UNKNOWN'),'runnerOS':os.environ.get('RUNNER_OS','UNKNOWN'),'productType':'UNKNOWN','windowsBuild':'UNKNOWN','registryProductName':'UNKNOWN','registryCurrentBuildNumber':'UNKNOWN','registryUBR':'UNKNOWN','readStatus':'UNKNOWN','readErrorType':'NONE','readErrorCode':None}
+  try:
+   version=sys.getwindowsversion();observed.update(productType=version.product_type,windowsBuild=version.build)
+   with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,r'SOFTWARE\Microsoft\Windows NT\CurrentVersion') as key:
+    for source,dest in [('ProductName','registryProductName'),('CurrentBuildNumber','registryCurrentBuildNumber'),('UBR','registryUBR')]:observed[dest]=winreg.QueryValueEx(key,source)[0]
+   observed['readStatus']='COMPLETE'
+  except OSError as exc:observed.update(readStatus='PARTIAL_OR_UNAVAILABLE',readErrorType=type(exc).__name__,readErrorCode=getattr(exc,'winerror',getattr(exc,'errno',None)))
+  base.update(osVersion=observed['registryProductName'],kernelBuild=str(observed['registryCurrentBuildNumber'])+'.'+str(observed['registryUBR']),uid=None,gid=None)
+  predicates={'machineX64':machine_ok,'pointer64':observed['pointerBits']==64,'serverProduct3':observed['productType']==3,'kernelBuild26100':observed['windowsBuild']==26100,'hostedRunner':observed['runnerEnvironment']=='github-hosted','windowsRunner':observed['runnerOS']=='Windows','registryReadComplete':observed['readStatus']=='COMPLETE',**f.windows_host_predicates(base)}
+  if diagnostic_root is not None:write(Path(diagnostic_root)/'windows-host-observation.json',{'schema':'sdk11-windows-host-observation/v1','state':'OBSERVED_BEFORE_WINDOWS_OS_DENIAL','observed':observed,'predicates':predicates})
+  f.need(machine_ok,'Q_HOST_CLASS');f.need(all(predicates.values()),'Q_HOST_OS')
  else:
-  f.need('microsoft' not in platform.release().lower() and not os.environ.get('WSL_DISTRO_NAME'),'LOCAL_WSL_SDK_TARGETS_EXCLUDED')
+  f.need(machine_ok,'Q_HOST_CLASS');f.need('microsoft' not in platform.release().lower() and not os.environ.get('WSL_DISTRO_NAME'),'LOCAL_WSL_SDK_TARGETS_EXCLUDED')
   release=dict(line.split('=',1) for line in Path('/etc/os-release').read_text().splitlines() if '=' in line);f.need(release.get('ID')=='ubuntu' and release.get('VERSION_ID','').strip('"')=='24.04','Q_HOST_OS');base.update(osVersion='Ubuntu 24.04',kernelBuild=platform.release(),uid=os.getuid(),gid=os.getgid())
  f.host(base,rid);return base
 def source_context(expected,run,env,budget,root,qualification=True):
@@ -141,8 +150,14 @@ def native_prerequisites(rid,sdk,root,run,env,budget):
    write(root/('elf-'+str(index)+'.json'),deps);records.append({'name':name,'kind':'ELFDependencyClosure','status':'ObservedExistingHostDependenciesNoInventedELFSignature:'+json.dumps(deps,sort_keys=True,separators=(',',':')),'evidenceSha256':digest(root/('elf-'+str(index)+'.json'))})
  return records
 
+def qualification_profile(profile,rid,event_name,mode):
+ f.need(profile.get('rows')==2 and profile.get('totalVerifySeconds')==1800,'CI_ORDINARY_PROFILE_IDENTITY')
+ f.need(event_name=='workflow_dispatch' and mode=='sdk11-ci-qualification' and profile.get('qualificationMode')==mode,'CI_QUALIFICATION_MODE')
+ f.need(profile.get('qualificationRows')==1 and profile.get('qualificationTotalSeconds')==900 and profile.get('rowSeconds')==900 and profile.get('maxParallel')==1 and profile.get('allowedQualificationRids')==['win-x64'] and rid=='win-x64','CI_WINDOWS_ONLY_PROFILE')
+ f.need(profile.get('stageSeconds')=={'existingBootstrapAndCheckout':60,'singleArchive':120,'strictExtract':180,'eightSDKCommandsAggregate':480,'terminalAndProofUpload':60},'CI_QUALIFICATION_STAGE_BUDGET')
+
 def worker(spec,backend):
- rid=spec['rid'];root=Path(spec['root']);profile=read(HERE/'sdk11-ci-execution.profile.json');f.need(digest(HERE/'sdk11-ci-execution.profile.json')==PINS['profileSha256'] and profile['rowSeconds']==900 and profile['rows']==2 and profile['maxParallel']==1,'CI_PROFILE_IDENTITY');budget=Budget(spec);f.need(clock()<budget.current,'STARTUP60_EXPIRED');env=job_environment(root);actual_host=host(rid);bootstrap_identity();cap=backend.caps();f.caps(cap,rid);write(root/'pre-acquisition-kernel.json',cap)
+ rid=spec['rid'];root=Path(spec['root']);profile=read(HERE/'sdk11-ci-execution.profile.json');f.need(digest(HERE/'sdk11-ci-execution.profile.json')==PINS['profileSha256'],'CI_PROFILE_IDENTITY');qualification_profile(profile,rid,os.environ.get('GITHUB_EVENT_NAME'),read(os.environ['GITHUB_EVENT_PATH'],4194304).get('inputs',{}).get('mode'));budget=Budget(spec);f.need(clock()<budget.current,'STARTUP60_EXPIRED');env=job_environment(root);actual_host=host(rid,root);bootstrap_identity();cap=backend.caps();f.caps(cap,rid);write(root/'pre-acquisition-kernel.json',cap)
  source=source_context(spec['expectedCommit'],backend.run,env,budget,root,qualification=True)
  if rid=='linux-x64':
   rec,raw=output(backend.run,['/usr/bin/dpkg-query','-W','-f=${binary:Package}|${Version}\n','python3.12-minimal','systemd','sudo','coreutils','binutils','libc-bin','git'],ROOT,env,budget.deadline(10),root/'bootstrap-packages');write(root/'bootstrap-packages.json',{'actualPackages':raw.decode().splitlines()})
@@ -210,6 +225,22 @@ def capture_entry_failure(exc):
  except (OSError,ValueError,KeyError,f.Denied):root=None
  failure_summary({'root':str(root) if root else None,'rid':rid,**spec},cause)
 
+def public_windows_host_observation(root):
+ try:
+  if root is None or not (root/'windows-host-observation.json.ready').is_file():return {'state':'UNKNOWN_NOT_CAPTURED'}
+  value=read(root/'windows-host-observation.json',8192);f.need(value.get('schema')=='sdk11-windows-host-observation/v1','WINDOWS_HOST_OBSERVATION_SCHEMA')
+  fields=['imageOS','imageVersion','machine','pointerBits','runnerEnvironment','runnerOS','productType','windowsBuild','registryProductName','registryCurrentBuildNumber','registryUBR','readStatus','readErrorType','readErrorCode'];names=['machineX64','pointer64','serverProduct3','kernelBuild26100','hostedRunner','windowsRunner','registryReadComplete','imageVariantDocumented','registryKernel26100','registryServer2025']
+  f.need(type(value) is dict and type(value.get('observed')) is dict and type(value.get('predicates')) is dict and set(value['observed'])==set(fields) and set(value['predicates'])==set(names) and all(type(v) is bool for v in value['predicates'].values()),'WINDOWS_HOST_OBSERVATION_SHAPE')
+  observed={}
+  for key in fields:
+   item=value.get('observed',{}).get(key,'UNKNOWN')
+   if type(item) is int or item is None:observed[key]=item
+   elif type(item) is str and re.fullmatch(r'[A-Za-z0-9 ._()-]{0,160}',item):observed[key]=item
+   else:observed[key]='REDACTED_INVALID_OR_OVERSIZE_METADATA'
+  predicates={key:value.get('predicates',{}).get(key,'UNKNOWN') if type(value.get('predicates',{}).get(key)) is bool else 'UNKNOWN' for key in names}
+  return {'schema':value['schema'],'state':'ACTUAL_PRE_DENIAL_VALUES_NO_HOST_QUALIFICATION','observed':observed,'predicates':predicates,'observationSha256':digest(root/'windows-host-observation.json')}
+ except Exception:return {'state':'INVALID_OR_OVERSIZE','boundary':'OPTIONAL_DIAGNOSTIC_UNAVAILABLE_PRIMARY_FAILURE_PRESERVED'}
+
 def failure_summary(spec,cause,terminal=None,stop=None):
  rid=spec['rid'];f.need(rid in f.HOSTS,'FIXED_FAILURE_RID');root=Path(spec['root']) if spec.get('root') else None;stage='UNKNOWN';worker=None
  if root:
@@ -223,7 +254,7 @@ def failure_summary(spec,cause,terminal=None,stop=None):
  clean=lambda value: value if type(value) is int or value in (None,True,False) else (value if type(value) is str and re.fullmatch(r'[A-Za-z0-9_.:-]{1,128}',value) else 'UNKNOWN')
  term={k:clean((terminal or {}).get(k,'UNKNOWN')) for k in ['launcherTerminal','workerPidfdTerminal','ownedPopulation','workerExitCode','cleanupResult','evidenceSha256']}
  stopValue={k:clean((stop or {}).get(k,'UNKNOWN')) for k in ['serviceResult','exitCode','exitStatus','remainingPopulationExcludingObserver']}
- receipt={'schema':'sdk11-ci-failure-summary/v1','state':'FAILURE_OBSERVED_NO_QUALIFICATION','rid':rid,'sourceCommit':clean(os.environ.get('GITHUB_SHA','UNKNOWN')),'runId':clean(os.environ.get('GITHUB_RUN_ID','UNKNOWN')),'job':clean(os.environ.get('GITHUB_JOB','UNKNOWN')),'attempt':clean(os.environ.get('GITHUB_RUN_ATTEMPT','UNKNOWN')),'controllerSha256':digest(Path(sys.argv[0])) if Path(sys.argv[0]).is_file() else 'UNKNOWN','workflowSha256':digest(ROOT/'.github/workflows/verify.yml') if (ROOT/'.github/workflows/verify.yml').is_file() else 'UNKNOWN','actualStage':stage,'cause':{k:clean(cause.get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'workerCause':{k:clean((worker or {}).get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'terminal':term,'stopOutcome':stopValue,'boundary':'SANITIZED_FAILURE_ONLY_NOT_HOST_FACT_NOT_PASS_NO_SDK_OR_RAW_OUTPUT'}
+ receipt={'schema':'sdk11-ci-failure-summary/v1','state':'FAILURE_OBSERVED_NO_QUALIFICATION','rid':rid,'sourceCommit':clean(os.environ.get('GITHUB_SHA','UNKNOWN')),'runId':clean(os.environ.get('GITHUB_RUN_ID','UNKNOWN')),'job':clean(os.environ.get('GITHUB_JOB','UNKNOWN')),'attempt':clean(os.environ.get('GITHUB_RUN_ATTEMPT','UNKNOWN')),'controllerSha256':digest(Path(sys.argv[0])) if Path(sys.argv[0]).is_file() else 'UNKNOWN','workflowSha256':digest(ROOT/'.github/workflows/verify.yml') if (ROOT/'.github/workflows/verify.yml').is_file() else 'UNKNOWN','actualStage':stage,'cause':{k:clean(cause.get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'workerCause':{k:clean((worker or {}).get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'terminal':term,'stopOutcome':stopValue,'windowsHostObservation':public_windows_host_observation(root) if rid=='win-x64' else {'state':'NOT_APPLICABLE_LINUX'},'boundary':'SANITIZED_FAILURE_ONLY_NOT_HOST_FACT_NOT_PASS_NO_SDK_OR_RAW_OUTPUT'}
  raw=json.dumps(receipt,sort_keys=True,indent=2).encode();f.need(len(raw)<=32768,'FAILURE_SUMMARY32K_LIMIT');proof=ROOT/'artifacts'/('sdk11-qualification-'+rid);proof.mkdir(parents=True,exist_ok=True);target=proof/'failure-summary.json'
  if not target.exists():
   staged=proof/'failure-summary.private.tmp'

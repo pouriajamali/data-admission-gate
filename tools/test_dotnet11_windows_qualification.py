@@ -4,7 +4,7 @@ import argparse,copy,hashlib,importlib.util,json,os,socket,subprocess,sys
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 p=HERE/'sdk11_ci_facts.py'
-if hashlib.sha256(p.read_bytes()).hexdigest()!='6531854ac6d66827998bee7cdac97b534500b62bb6e941abcf6b9745c6b8daec':raise RuntimeError('FACT_SOURCE_IDENTITY')
+if hashlib.sha256(p.read_bytes()).hexdigest()!='6bb0fe5199377dfdb0caed76cf274bcef631205648d9dbf0d67e1f43433e9a7e':raise RuntimeError('FACT_SOURCE_IDENTITY')
 spec=importlib.util.spec_from_file_location('sdk11_ci_facts',p);f=importlib.util.module_from_spec(spec);spec.loader.exec_module(f)
 p=HERE/'check_dotnet11.py'
 if hashlib.sha256(p.read_bytes()).hexdigest()!='4786dae59cb9b0cef0d71d75d895dbdce63568844a547da3f80555a82bf2b1b6':raise RuntimeError('NORMAL_GUARD_SOURCE_IDENTITY')

@@ -253,3 +253,33 @@ Final source correction covers bounded own-unit failure cleanup, sanitized
 failure receipts in existing proof artifacts and the fixed Windows Git path.
 Coordinator's108 source-value denials are scoped to Windows Python, not native
 host/SDK acceptance. All native behavior remains UNKNOWN.
+
+## Private Windows host-diagnostic source proposal after run43920284996
+
+The Linux host fact757abf2d remains immutable evidence from source803eb716,
+Ubuntu24.04 job133485418032: eight SDK commands exited0 with its own observed
+4GiB/64tasks/CPU2/swap0 and terminal0. It is reused without another Linux run.
+Global SDK_READY stays false and product/consumer compatibility is unproven.
+Windows job133485418698 failed stage0/Q_HOST_OS before SDK; owned population0
+was observed. Its exact failed subpredicate and actual ImageOS environment
+value are UNKNOWN; an alias mismatch is only an inference from the runner log.
+The private proposal records bounded actual metadata and predicate booleans
+before denial and preserves them in sanitized failure proof. It proposes only
+the documented win25-vs2026 variant at exact ImageVersion20261103.298.1 while
+retaining raw observed ImageOS, Server2025 registry/build26100, x64/pointer64,
+productType3, named hosted Windows context and all existing CPU/caps/trust
+requirements. Unknown/other/future variants fail closed; nothing is relabelled
+win25. The frozen63e typed success schema is unchanged. No new source is applied
+or tested by this note; retry requires a new exact Windows-only gate and must
+not replay Linux or turn the global ready predicate true.
+
+Windows diagnostic source functions passed the focused V01..V08 synthetic
+normal/-O/env2 checks, including invalid metadata preserving primary failure;
+these are SDK-free source checks, not actual Windows predicate observations.
+The next qualification-only source route selects exactly one existing Windows
+row, with a mode-aware900s profile (60/120/180/480/60), same4GiB/64/CPU2 and
+existing proof-win-x64 <=8MiB/3days. Linux/ci_policy/release are excluded only
+from that mode; ordinary two-row/policy routes remain. Linux fact757abf2d from
+803eb716 is immutable and reused without replay. Global SDK_READY remains false.
+No public push, dispatch, SDK/native/product qualification or release is
+authorized or claimed by this source candidate.

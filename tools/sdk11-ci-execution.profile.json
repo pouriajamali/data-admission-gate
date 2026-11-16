@@ -35,5 +35,18 @@
   "qualificationProofBytesEach": 8388608,
   "qualificationRetentionDays": 3,
   "SDKArtifactOrCache": false,
-  "events": "Existingordinaryevents/policy unchanged; exactspecialworkflow_dispatch only on reviewedbranch/commit; no extrajob or mainmerge."
+  "events": "Ordinary rows2/1800 retained; exact specialmode selects oneWindows900s row and no Linux/ci_policy/release. Previous4e75 consumed; no runtime/public admission in sourceprofile.",
+  "qualificationMode": "sdk11-ci-qualification",
+  "qualificationRows": 1,
+  "qualificationTotalSeconds": 900,
+  "allowedQualificationRids": [
+    "win-x64"
+  ],
+  "qualificationHostClasses": [
+    "GitHubHostedWindowsServer2025x64"
+  ],
+  "qualificationArtifactNames": [
+    "proof-win-x64"
+  ],
+  "reusedLinuxFactSha256": "757abf2d3dde65d10cd895cfc97eaeccb7fc11e8685b94ad046e6a8ec8829007"
 }
