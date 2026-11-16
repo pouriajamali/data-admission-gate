@@ -12,6 +12,26 @@ extraction; missing signature assets mean incomplete publication. Software licen
 does not prove ownership or legal use rights of input data. Customer-specific code,
 data, configuration, deployments and unpublished commercial additions stay private.
 
+## Unreleased technology maintenance source
+
+This branch prepares `0.1.0-preview.3` for SDK11.0.100, net11.0,
+runtime11.0.0 and stable C#15. It changes framework/version metadata and
+qualification tooling, while preserving the v1 input/report contracts,
+fixed integer CSV scales and ADMIT/HOLD/REJECT rules. It introduces no new
+application feature or performance claim.
+
+SDK11 archive admission and native/application compatibility are pending.
+The existing preview.2 downloads below remain the verified published baseline;
+results in its evidence section are historical preview.2 results. No preview.3
+binary, signature or download is published by this source preparation.
+.NET11 requires an x86-64-v2 CPU. Windows x64 and Ubuntu24.04/glibc x64 are the
+proposed matching-host targets; actual qualified OS/native prerequisites will
+be recorded before delivery. An extracted self-contained bundle does not
+require an installed SDK, but still requires its documented CPU/OS prerequisites.
+
+See the [technology scope and current limits](docs/TECH-REFRESH-20261114.md)
+and [unreleased preview.3 note](docs/RELEASE-v0.1.0-preview.3.md).
+
 ## Run the generated example
 
 The preview includes self-contained Windows x64 and Ubuntu24.04/glibc x64
@@ -219,3 +239,17 @@ The [five-asset tooling release](https://github.com/pouriajamali/data-admission-
 and [single producer CI](https://github.com/pouriajamali/data-admission-gate/actions/runs/43275123686)
 have actual download/signature and Windows import/default-lint Job evidence.
 This tooling result is separate from app native verification and consumer05/06.
+
+## Proposed SDK11 supported hosted route
+
+The [supported host source candidate](docs/SDK11_SUPPORTED_HOSTS.md) prepares
+Windows Server2025 and Ubuntu24.04 producer qualification and consumer04's own
+host admission. It is untested, unapplied source; SDK_READY remains false.
+Normal admission stays closed until exact accepted per-RID facts and independent
+consumer caps/source/contract checks exist. Existing preview.2 assets remain the
+verified release; no SDK11 app or new download is claimed.
+
+Final source correction covers bounded own-unit failure cleanup, sanitized
+failure receipts in existing proof artifacts and the fixed Windows Git path.
+Coordinator's108 source-value denials are scoped to Windows Python, not native
+host/SDK acceptance. All native behavior remains UNKNOWN.

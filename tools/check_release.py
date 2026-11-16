@@ -27,6 +27,7 @@ def main():
   files={n[len(prefix):]:v for n,v in payload.items()};m=json.loads(files.pop('BUILD-MANIFEST.json'))
   assert m['sourceCommit']==a.commit and m['version']==a.tag.removeprefix('v') and m['selfContained'] and not m['localCandidate'] and m['originalLicense']=='present'
   assert m['rid']==expected[name] and m['sourceTree']==source_tree and m['buildHost']['os']==('Windows' if m['rid']=='win-x64' else 'Linux')
+  config=json.loads(files['admission.runtimeconfig.json'])['runtimeOptions'];assert m['runtimeConfig']==config and {(f['name'],f['version']) for f in config['includedFrameworks']}=={('Microsoft.NETCore.App','11.0.0')} and 'frameworks' not in config
   assert set(files)=={v['path'] for v in m['files']} and 'LICENSE' in files
   for item in m['files']:assert len(files[item['path']])==item['bytes'] and hashlib.sha256(files[item['path']]).hexdigest()==item['sha256']
   assert a.commit.encode() in files['admission.dll'];trees.add(m['sourceTree'])

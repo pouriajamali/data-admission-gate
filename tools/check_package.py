@@ -17,6 +17,8 @@ def main():
   file=package/'vendor/integrity-csv'/f['file'];b=file.read_bytes();assert sha(file)==f['sha256'] and len(b)==f['bytes'] and hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()==f['gitBlob']
  for f in ['README.md','NOTICE.md','CONTRIBUTING.md','PROVENANCE.md','docs/CONTRACT.md','docs/BOUNDS.md','docs/COMPARISON.md','vendor/PUBLIC-PATH-GUARDS-LICENSE']:assert (package/f).is_file()
  config=json.loads((package/'admission.runtimeconfig.json').read_text(encoding='utf-8'))['runtimeOptions'];assert 'includedFrameworks' in config and 'frameworks' not in config
+ assert {(f['name'],f['version']) for f in config['includedFrameworks']}=={('Microsoft.NETCore.App','11.0.0')},'Exact selected runtime required'
+ assert m['runtimeConfig']==config,'Runtime manifest must match actual package'
  checks=['manifest-private-license-vendor-pins-document-links'];exe=package/('admission.exe' if os.name=='nt' else 'admission');env=dict(os.environ,DOTNET_ROOT=str(work/'no-installed-dotnet'),DOTNET_ROOT_X64=str(work/'no-installed-dotnet'),DOTNET_MULTILEVEL_LOOKUP='0',PATH='')
  def run(name,args,code):
   r=subprocess.run([str(exe),*map(str,args)],cwd=work,env=env,text=True,encoding='utf-8',capture_output=True,timeout=30)

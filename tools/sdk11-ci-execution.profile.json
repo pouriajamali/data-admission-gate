@@ -1,0 +1,39 @@
+{
+  "schema": "producer04-supported-ci-source-profile/v1",
+  "state": "SOURCE_REVIEW_INPUT_NOT_RUNTIME_ADMISSION",
+  "designGateSha256": "9b3e0f376c5381b623f6a0f007bf6a6bb44f3dcbd1c2e4654de949a1eb97eec8",
+  "canonicalLocalProtocolSha256": "9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b",
+  "localAdmission": "RETIRED_STOP_NONE",
+  "globalSDK_READY": false,
+  "producer": "04",
+  "hostClasses": [
+    "GitHubHostedWindowsServer2025x64",
+    "GitHubHostedUbuntu24.04x64"
+  ],
+  "rows": 2,
+  "maxParallel": 1,
+  "rowSeconds": 900,
+  "totalVerifySeconds": 1800,
+  "producerCaps": {
+    "memoryBytes": 4294967296,
+    "tasks": 64,
+    "cpuEquivalents": 2,
+    "linuxSwapBytes": 0
+  },
+  "stageSeconds": {
+    "existingBootstrapAndCheckout": 60,
+    "singleArchive": 120,
+    "strictExtract": 180,
+    "eightSDKCommandsAggregate": 480,
+    "terminalAndProofUpload": 60
+  },
+  "consumer04JobSeconds": 900,
+  "artifactNames": [
+    "proof-win-x64",
+    "proof-linux-x64"
+  ],
+  "qualificationProofBytesEach": 8388608,
+  "qualificationRetentionDays": 3,
+  "SDKArtifactOrCache": false,
+  "events": "Existingordinaryevents/policy unchanged; exactspecialworkflow_dispatch only on reviewedbranch/commit; no extrajob or mainmerge."
+}

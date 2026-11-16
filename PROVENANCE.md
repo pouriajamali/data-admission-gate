@@ -176,3 +176,18 @@ trust anchors. The archive carries all original tooling notices plus the
 Go Vulnerability Database CC-BY-4.0 license/attribution. Producer path strings
 are observations; fresh runtime reads only reviewed source and archive-relative
 inputs. See docs/ACTIONLINT-BUILD.md for controlled import/default/direct routes.
+
+## Unreleased preview.3 publication order
+
+The verification examples above identify the published preview.2. Preview.3
+is currently source preparation, with no downloadable assets or signature claim.
+Its new route must first aggregate the exact tested bytes in a private draft.
+The existing known-key operator signs the exact downloaded checksum bytes and
+verifies all six draft assets before a separately approved public publish.
+There is no unsigned public interval followed by signature patching.
+
+The independent fingerprint/principal/file namespace remain unchanged. Keep
+runtime tag/source and later documentation commits separate. Never overwrite
+an earlier tag, archive, checksum, signature or key. Actual public downloads
+and live repository/release links are required after publication; source or CI
+success alone does not prove delivery.

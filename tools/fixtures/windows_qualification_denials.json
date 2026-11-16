@@ -1,0 +1,8 @@
+{
+  "schema": "sdk11-source-inputs/v1",
+  "state": "REVIEWED_TYPED_ARCHIVE_INPUT_NOT_EXECUTED",
+  "sdk": "11.0.100",
+  "runtime": "11.0.0",
+  "qualifiedCatalog": null,
+  "fixture": "SDK_FREE_NORMAL_PATH_DENIAL_ONLY"
+}

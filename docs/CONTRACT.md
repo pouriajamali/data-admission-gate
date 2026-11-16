@@ -72,7 +72,7 @@ Public reusable sample, with customer
 code/data/config/deployments/secrets/commercial unpublished additions private. No
 shared/private/employer source, tests, schemas, contracts or ideas were transferred.
 
-## Unreleased preview.2 human explanation and literal oracle — partial local validation
+## Preview.2 human explanation and literal oracle — historical M1 evidence
 
 The unreleased source changes human text; the decision combiner and JSON v1 remain unchanged.
 After the existing overall status line, `summary.txt` adds exactly five lines in
@@ -139,3 +139,14 @@ compatibility or security certification. Build-time actionlint now has local
 source/binary admission,150 optimized-mode rejections and both native
 valid/invalid/default/direct controls; public distribution and CI remain separate.
 See [ACTIONLINT-BUILD.md](ACTIONLINT-BUILD.md) and README for the tooling boundary.
+
+## Technology maintenance boundary
+
+The unreleased preview.3 selects net11.0/runtime11.0.0 and stable C#15 while
+retaining every v1 schema, field, policy outcome, scale, bound and fixture above.
+Only application version/build metadata changes. The original independent
+oracle retains literal expected decisions/text; its expected version needs the
+single explicit preview.3 metadata update under the maintenance allowance.
+No product-derived expected decision or relaxed schema comparison is permitted.
+SDK and new-runtime qualification are pending; historical preview.2 evidence
+must not be relabelled as new-runtime acceptance.

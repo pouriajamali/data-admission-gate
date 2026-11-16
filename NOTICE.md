@@ -46,3 +46,12 @@ https://vuln.go.dev/ and https://github.com/golang/vulndb/tree/master/data.
 The public sealed tooling ZIPs retain the complete original Go vulnerability
 database LICENSE and an attribution/formatting/analysis note under
 producer-proofs/vulndb-*. No upstream endorsement is claimed.
+
+## Unreleased runtime11 selection
+
+The technology candidate selects Microsoft.NETCore.App11.0.0. Its actual
+runtime/host packages, signature/content identities, original full LICENSE and
+THIRD-PARTY-NOTICES and current advisory applicability are not yet admitted.
+No new package identity or notice contents are declared verified here. New
+self-contained distribution requires those exact original notices first.
+Existing app/vendor/tooling licenses and historical release bytes stay intact.

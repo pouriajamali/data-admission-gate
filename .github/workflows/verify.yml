@@ -5,6 +5,16 @@ on:
     tags: ['*', '!tooling-actionlint-v1.7.12-go1.26.11-r1']
   pull_request:
   workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [ordinary, sdk11-ci-qualification]
+        default: ordinary
+        required: true
+      expected_commit:
+        type: string
+        required: false
+        default: ''
 permissions:
   contents: read
 env:
@@ -18,6 +28,7 @@ concurrency:
 
 jobs:
   ci_policy:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
     name: Changed files and documentation policy
     runs-on: windows-2025
     timeout-minutes: 5
@@ -41,57 +52,110 @@ jobs:
         run: python .github/ci/policy.py lint
   verify:
     needs: ci_policy
-    if: needs.ci_policy.outputs.native == 'true' && github.ref != 'refs/tags/tooling-actionlint-v1.7.12-go1.26.11-r1'
+    if: ${{ !cancelled() && ((github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification' && needs.ci_policy.result == 'skipped') || (!(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && needs.ci_policy.result == 'success' && needs.ci_policy.outputs.native == 'true' && github.ref != 'refs/tags/tooling-actionlint-v1.7.12-go1.26.11-r1')) }}
     strategy:
+      fail-fast: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
       max-parallel: 1
       matrix:
         include:
-          - os: windows-latest
+          - os: windows-2025
             rid: win-x64
           - os: ubuntu-24.04
             rid: linux-x64
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+    env:
+      QUALIFICATION_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification' }}
+      EXPECTED_QUALIFICATION_COMMIT: ${{ inputs.expected_commit }}
     steps:
+      - name: Existing Windows Python and outer clock only
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $start=[Environment]::TickCount64
+          $python=Join-Path $env:RUNNER_TOOL_CACHE 'Python/3.12.10/x64/python.exe'
+          $dll=Join-Path ([IO.Path]::GetDirectoryName($python)) 'python312.dll'
+          foreach($file in @($python,$dll)) {
+            if(-not(Test-Path -LiteralPath $file -PathType Leaf)){throw 'PREINSTALLED_PYTHON_REQUIRED_NO_DOWNLOAD'}
+            $sig=Get-AuthenticodeSignature -LiteralPath $file
+            if($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'Python Software Foundation' -or $null -eq $sig.TimeStamperCertificate){throw 'TRUSTED_PYTHON_PUBLISHER_REQUIRED'}
+          }
+          $boot=Join-Path $env:RUNNER_TEMP 'admission04-python-bootstrap.json'
+          if(Test-Path -LiteralPath $boot){throw 'BOOTSTRAP_OUTPUT_EXISTS'}
+          @{pythonExe=$python;pythonExeSha256=(Get-FileHash -LiteralPath $python -Algorithm SHA256).Hash.ToLowerInvariant();pythonDllSha256=(Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash.ToLowerInvariant();pythonVersion='3.12.10';pythonSignature='ValidPythonSoftwareFoundationWithTimestamp';powershellVersion=$PSVersionTable.PSVersion.ToString();powershellExeSha256=(Get-FileHash -LiteralPath (Join-Path $PSHOME 'pwsh.exe') -Algorithm SHA256).Hash.ToLowerInvariant();boundary='Trustedimage bootstrap only, controlledworker starts inJob before acquisitions or targets'} | ConvertTo-Json | Set-Content -LiteralPath $boot -Encoding utf8NoBOM
+          "SDK11_QUALIFICATION_START_TICK=$start" >> $env:GITHUB_ENV
+          "SDK11_QUALIFICATION_PYTHON=$python" >> $env:GITHUB_ENV
+          "SDK11_QUALIFICATION_BOOTSTRAP=$boot" >> $env:GITHUB_ENV
+      - name: Existing Ubuntu Python and outer clock only
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -x /usr/bin/python3
+          started=$(/usr/bin/python3 -I -S -B -c 'import time; print(time.monotonic_ns()//1000000)')
+          printf 'SDK11_QUALIFICATION_START_TICK=%s\nSDK11_QUALIFICATION_PYTHON=/usr/bin/python3\n' "$started" >> "$GITHUB_ENV"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
-          dotnet-version: '10.0.404'
-      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
-        with:
-          python-version: '3.12'
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Fixed Windows qualifier or own consumer04 controller
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if($env:QUALIFICATION_ONLY -eq 'true') { $script='tools/qualify_dotnet11_windows.py'; $commit=$env:EXPECTED_QUALIFICATION_COMMIT }
+          else { $script='tools/consume_dotnet11_host_fact.py'; $commit=$env:GITHUB_SHA }
+          & $env:SDK11_QUALIFICATION_PYTHON -I -S -B $script --expected-commit $commit
+          exit $LASTEXITCODE
+      - name: Fixed Ubuntu qualifier or own consumer04 controller
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$QUALIFICATION_ONLY" = true ]; then
+            /usr/bin/python3 -I -S -B tools/qualify_dotnet11_linux.py --expected-commit "$EXPECTED_QUALIFICATION_COMMIT"
+          else
+            /usr/bin/python3 -I -S -B tools/consume_dotnet11_host_fact.py --expected-commit "$GITHUB_SHA"
+          fi
       - name: Locked offline admission regressions
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
         shell: pwsh
         run: |
-          dotnet restore tests/Admission.Tests --locked-mode
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          dotnet run --project tests/Admission.Tests -c Release --no-restore -- --work artifacts/tests
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage locked-tests --expected-commit $env:GITHUB_SHA
+          exit $LASTEXITCODE
       - name: Build clean exact-commit distributable
-        run: python tools/package.py --rid ${{ matrix.rid }} --commit ${{ github.sha }} --work artifacts/build --out artifacts/delivery
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+        shell: pwsh
+        run: |
+          & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage package --expected-commit $env:GITHUB_SHA
+          exit $LASTEXITCODE
       - name: Extract the actual archive
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path 'artifacts/extracted with spaces' -ErrorAction Stop | Out-Null
-          $archive = Get-ChildItem -LiteralPath artifacts/delivery -File
-          if (@($archive).Count -ne 1) { throw 'Exactly one archive expected' }
-          if ($IsWindows) { Expand-Archive -LiteralPath $archive.FullName -DestinationPath 'artifacts/extracted with spaces' }
-          else { tar -xzf $archive.FullName -C 'artifacts/extracted with spaces'; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }
+          & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage extract --expected-commit $env:GITHUB_SHA
+          exit $LASTEXITCODE
       - name: Execute own extracted apphost with synthetic bundles
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
         shell: pwsh
         run: |
-          $package = Get-ChildItem -LiteralPath 'artifacts/extracted with spaces' -Directory
-          if (@($package).Count -ne 1) { throw 'Exactly one package root expected' }
-          python tools/check_package.py --package $package.FullName --work 'artifacts/package checks with spaces' --commit '${{ github.sha }}'
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage package-checks --expected-commit $env:GITHUB_SHA
+          exit $LASTEXITCODE
+      - name: Compare four frozen semantic and wire oracles
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+        shell: pwsh
+        run: |
+          & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage technology-checks --expected-commit $env:GITHUB_SHA
+          exit $LASTEXITCODE
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') }}
         with:
           retention-days: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 7 || 3 }}
           name: tested-${{ matrix.rid }}
           path: artifacts/delivery/*
           if-no-files-found: error
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ always() && !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
         with:
           retention-days: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 7 || 3 }}
           name: proof-${{ matrix.rid }}
@@ -99,9 +163,51 @@ jobs:
             artifacts/tests/receipt.json
             artifacts/build/archive.json
             artifacts/package checks with spaces/receipt.json
+            artifacts/technology checks with spaces/receipt.json
+            artifacts/controlled-consumer04.json
+            artifacts/sdk11-qualification-${{ matrix.rid }}/failure-summary.json
+          if-no-files-found: error
+      - name: Preserve bounded qualification failure when controller proof is unavailable
+        if: ${{ failure() && github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification' }}
+        shell: pwsh
+        env:
+          FAILURE_RID: ${{ matrix.rid }}
+        run: |
+          $python=$env:SDK11_QUALIFICATION_PYTHON
+          if(-not $python) {
+            if($IsWindows){$python=Join-Path $env:RUNNER_TOOL_CACHE 'Python/3.12.10/x64/python.exe'}
+            else {$python='/usr/bin/python3'}
+          }
+          if(-not(Test-Path -LiteralPath $python -PathType Leaf)){throw 'EXISTING_PYTHON_UNAVAILABLE_FAILURE_PROOF_UNKNOWN'}
+          @'
+          import hashlib,json,os,re
+          from pathlib import Path
+          rid=os.environ['FAILURE_RID']
+          if rid not in ('win-x64','linux-x64'):raise SystemExit('FIXED_FAILURE_RID')
+          target=Path('artifacts')/('sdk11-qualification-'+rid)/'failure-summary.json'
+          if target.is_file():
+              if target.stat().st_size>32768:raise SystemExit('FAILURE_PROOF_SIZE')
+              value=json.loads(target.read_bytes())
+              if value.get('schema')!='sdk11-ci-failure-summary/v1':raise SystemExit('FAILURE_PROOF_SCHEMA')
+              raise SystemExit(0)
+          clean=lambda s:s if re.fullmatch(r'[A-Za-z0-9_.:-]{1,128}',s) else 'UNKNOWN'
+          workflow=Path('.github/workflows/verify.yml')
+          value={'schema':'sdk11-ci-failure-summary/v1','state':'FAILURE_OBSERVED_NO_QUALIFICATION','rid':rid,'sourceCommit':clean(os.environ.get('GITHUB_SHA','UNKNOWN')),'runId':clean(os.environ.get('GITHUB_RUN_ID','UNKNOWN')),'job':clean(os.environ.get('GITHUB_JOB','UNKNOWN')),'attempt':clean(os.environ.get('GITHUB_RUN_ATTEMPT','UNKNOWN')),'workflowSha256':hashlib.sha256(workflow.read_bytes()).hexdigest() if workflow.is_file() else 'UNKNOWN','actualStage':'UNKNOWN','cause':{'exceptionType':'UNKNOWN','code':'CONTROLLER_PROOF_UNAVAILABLE_WORKFLOW_FAILURE_OBSERVED'},'terminal':{'ownedPopulation':'UNKNOWN','launcherTerminal':'UNKNOWN','workerPidfdTerminal':'UNKNOWN'},'stopOutcome':'UNKNOWN','boundary':'FALLBACK_DIAGNOSTIC_ONLY_NO_HOST_FACT_NO_PASS_NO_RAW_LOG_SDK_OR_ENV'}
+          raw=json.dumps(value,sort_keys=True,indent=2).encode()
+          if len(raw)>32768:raise SystemExit('FAILURE_PROOF_SIZE')
+          target.parent.mkdir(parents=True,exist_ok=True)
+          with target.open('xb') as stream:stream.write(raw)
+          '@ | & $python -I -S -B -
+          exit $LASTEXITCODE
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification' && always() }}
+        with:
+          retention-days: 3
+          name: proof-${{ matrix.rid }}
+          path: ${{ job.status == 'success' && format('artifacts/sdk11-qualification-{0}/host-fact.json', matrix.rid) || format('artifacts/sdk11-qualification-{0}/failure-summary.json', matrix.rid) }}
           if-no-files-found: error
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && startsWith(github.ref, 'refs/tags/v') }}
     needs: verify
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -122,8 +228,8 @@ jobs:
           SOURCE_SHA: ${{ github.sha }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: python tools/check_release.py --directory artifacts/release --commit "$SOURCE_SHA" --tag "$RELEASE_TAG"
-      - name: Publish tested preview without rebuilding
+      - name: Create private draft from already-tested archives
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" artifacts/release/* --verify-tag --prerelease --title "$RELEASE_TAG — Data Admission Gate" --notes-file docs/RELEASE-v0.1.0-preview.2.md
+        run: gh release create "$RELEASE_TAG" artifacts/release/* --verify-tag --draft --prerelease --title "$RELEASE_TAG — Data Admission Gate" --notes-file docs/RELEASE-v0.1.0-preview.3.md

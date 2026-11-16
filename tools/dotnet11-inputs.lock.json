@@ -1,0 +1,105 @@
+{
+  "schema": "dotnet11-source-inputs/v1",
+  "state": "METADATA_ONLY_NOT_EXECUTABLE",
+  "sdk": "11.0.100",
+  "runtime": "11.0.0",
+  "targetFramework": "net11.0",
+  "langVersion": "15.0",
+  "metadata": {
+    "url": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/11.0/releases.json",
+    "bytes": 594221,
+    "sha256": "5c40c300da0264784179b299169e8c15cb02f8a1e0363dede2a4f5046de1fcc0"
+  },
+  "archives": [
+    {
+      "rid": "win-x64",
+      "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/11.0.100/dotnet-sdk-11.0.100-win-x64.zip",
+      "officialSha512": "5cdd9122c84873f090038548ebe8a4786e5c50a6b1b9792ca2c6dab82fd74a0d7f1d6cdf59e7dcd25e4903dd44f37af5d7ed73ecd3bca4d0cce948b5572452c3",
+      "name": "dotnet-sdk-win-x64.zip"
+    },
+    {
+      "rid": "linux-x64",
+      "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/11.0.100/dotnet-sdk-11.0.100-linux-x64.tar.gz",
+      "officialSha512": "1bec9cca2ec689b1e80245b84f2b53c9441d1aa6daccf2ceb27490768bffa95954fa585bd275def31069d874d543d9ba9e6591fe9ade2dbd9f34ec5c0fd0050c",
+      "name": "dotnet-sdk-linux-x64.tar.gz"
+    }
+  ],
+  "qualifiedCatalog": null,
+  "selectedNativePacks": [
+    {
+      "id": "Microsoft.NETCore.App.Runtime.win-x64",
+      "version": "11.0.0",
+      "state": "OFFICIAL_METADATA_PINNED_ACTUAL_PACKAGE_NOT_ADMITTED",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.win-x64/11.0.0/microsoft.netcore.app.runtime.win-x64.11.0.0.nupkg",
+      "officialContentHashBase64": "ZZQq6Upo0OyYCtNDsF/n4msWEOetdGlbPim6KMdKVQpJ+6pliMmVcw8sIIf7WJZhbc5FQAA9q9Xavs0I/RubSA==",
+      "officialSha512": "65942ae94a68d0ec980ad343b05fe7e26b1610e7ad74695b3e29ba28c74a550a49fbaa6588c995730f2c2087fb5896616dce4540003dabd5dabecd08fd1b9b48",
+      "declaredPackageBytes": 43769220,
+      "catalog": {
+        "url": "https://api.nuget.org/v3/catalog0/data/2026.11.10.14.57.27/microsoft.netcore.app.runtime.win-x64.11.0.0.json",
+        "sha256": "eeeb7c0b1b859f86de6a45744d236af65f2ab8ab7cea148c53627c605caec1ee",
+        "bytes": 88433
+      },
+      "declaredLicenseExpression": "MIT",
+      "actualPackageContentSignatureNoticesVerified": false,
+      "audit": "NOT_PERFORMED"
+    },
+    {
+      "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+      "version": "11.0.0",
+      "state": "OFFICIAL_METADATA_PINNED_ACTUAL_PACKAGE_NOT_ADMITTED",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.linux-x64/11.0.0/microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+      "officialContentHashBase64": "92vCWKQbiW9T2QgCRTwiHVHpxpv8fDAOiCRUnlO9QkLhd2oWGKJt9zhHN4mbd7Al/WmBwD+tF0Jt8Ux5Ofox7g==",
+      "officialSha512": "f76bc258a41b896f53d90802453c221d51e9c69bfc7c300e8824549e53bd4242e1776a1618a26df7384737899b77b025fd6981c03fad17426df14c7939fa31ee",
+      "declaredPackageBytes": 42270532,
+      "catalog": {
+        "url": "https://api.nuget.org/v3/catalog0/data/2026.11.10.14.56.26/microsoft.netcore.app.runtime.linux-x64.11.0.0.json",
+        "sha256": "430ade6c7bdbacc7ae5fc478717454a086ce8b565ef24fae15e2635fe013c192",
+        "bytes": 90178
+      },
+      "declaredLicenseExpression": "MIT",
+      "actualPackageContentSignatureNoticesVerified": false,
+      "audit": "NOT_PERFORMED"
+    },
+    {
+      "id": "Microsoft.NETCore.App.Host.win-x64",
+      "version": "11.0.0",
+      "state": "OFFICIAL_METADATA_PINNED_ACTUAL_PACKAGE_NOT_ADMITTED",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.host.win-x64/11.0.0/microsoft.netcore.app.host.win-x64.11.0.0.nupkg",
+      "officialContentHashBase64": "7Lo4roW0o2e3SlN2SkKRUvpYv2ibVid0vgNGFylLpGjNSwAwGR/Fe50uvqdtSF1TdKXMOut9P88Z3nTltRAL7g==",
+      "officialSha512": "ecba38ae85b4a367b74a53764a429152fa58bf689b562774be034617294ba468cd4b0030191fc57b9d2ebea76d485d5374a5cc3aeb7d3fcf19de74e5b5100bee",
+      "declaredPackageBytes": 5824607,
+      "catalog": {
+        "url": "https://api.nuget.org/v3/catalog0/data/2026.11.10.14.52.52/microsoft.netcore.app.host.win-x64.11.0.0.json",
+        "sha256": "43363722caec80020707ee6be853bc0b5d584b954f7519baa4032029e0a63c12",
+        "bytes": 10538
+      },
+      "declaredLicenseExpression": "MIT",
+      "actualPackageContentSignatureNoticesVerified": false,
+      "audit": "NOT_PERFORMED"
+    },
+    {
+      "id": "Microsoft.NETCore.App.Host.linux-x64",
+      "version": "11.0.0",
+      "state": "OFFICIAL_METADATA_PINNED_ACTUAL_PACKAGE_NOT_ADMITTED",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.host.linux-x64/11.0.0/microsoft.netcore.app.host.linux-x64.11.0.0.nupkg",
+      "officialContentHashBase64": "p9VMbSVN0vWAf1oj+NTm2Yuki5lU+7evJplPeiZ2C89B12L6Y2JrTAdzvETFKFzHPxn/4cRmy5tI4tJ/Ed5hbA==",
+      "officialSha512": "a7d54c6d254dd2f5807f5a23f8d4e6d98ba48b9954fbb7af26994f7a26760bcf41d762fa63626b4c0773bc44c5285cc73f19ffe1c466cb9b48e2d27f11de616c",
+      "declaredPackageBytes": 5085644,
+      "catalog": {
+        "url": "https://api.nuget.org/v3/catalog0/data/2026.11.10.14.57.27/microsoft.netcore.app.host.linux-x64.11.0.0.json",
+        "sha256": "af77c6a2dcec2cfbeb8f43dd8374d12dcaa9d60976a09c2bbd6079f23878ea69",
+        "bytes": 8483
+      },
+      "declaredLicenseExpression": "MIT",
+      "actualPackageContentSignatureNoticesVerified": false,
+      "audit": "NOT_PERFORMED"
+    }
+  ],
+  "limits": {
+    "compressedBytes": 536870912,
+    "expandedBytes": 4294967296,
+    "members": 64000,
+    "memberBytes": 268435456
+  },
+  "reason": "Measured identities, SDK/native qualification and pack/audit/notices still pending; no placeholder is verified."
+}
