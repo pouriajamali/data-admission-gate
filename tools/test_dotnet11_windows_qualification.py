@@ -7,7 +7,7 @@ p=HERE/'sdk11_ci_facts.py'
 if hashlib.sha256(p.read_bytes()).hexdigest()!='6bb0fe5199377dfdb0caed76cf274bcef631205648d9dbf0d67e1f43433e9a7e':raise RuntimeError('FACT_SOURCE_IDENTITY')
 spec=importlib.util.spec_from_file_location('sdk11_ci_facts',p);f=importlib.util.module_from_spec(spec);spec.loader.exec_module(f)
 p=HERE/'check_dotnet11.py'
-if hashlib.sha256(p.read_bytes()).hexdigest()!='4786dae59cb9b0cef0d71d75d895dbdce63568844a547da3f80555a82bf2b1b6':raise RuntimeError('NORMAL_GUARD_SOURCE_IDENTITY')
+if hashlib.sha256(p.read_bytes()).hexdigest()!='d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d':raise RuntimeError('NORMAL_GUARD_SOURCE_IDENTITY')
 spec=importlib.util.spec_from_file_location('normal_product_guard',p);normal=importlib.util.module_from_spec(spec);spec.loader.exec_module(normal)
 SPAWNS=0;NETWORK=0
 def denied_spawn(*args,**kwargs):

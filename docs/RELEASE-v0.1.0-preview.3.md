@@ -79,3 +79,10 @@ and a finite list of explicitly labelled HResult/Win32 codes, stripping bounded
 SGR colour only in the classifier copy. New68 normal and68 -O fixture checks
 passed; no raw log/path/URL/env/args are exported. Recipe, environment, caps,
 SDK pins and eight commands remain unchanged. No Windows/product PASS claim.
+
+The [shared normal SDK input source proposal](SDK11_SHARED_NORMAL_INPUT.md) supplies one callable
+Linux normal-input implementation and accepted producer fact/authority pair for
+all six own controllers. Windows normal input stays denied. New SDK-free
+synthetic normal/-O boundaries were checked; no shared source was applied or SDK
+fetch/materialization/product run performed. Each owner still needs exact own
+source/profile/held-current-cap admission and original product/delivery gates.

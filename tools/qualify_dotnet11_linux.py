@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse,hashlib,importlib.util,json,os,re,select,shlex,signal,subprocess,sys,time,uuid
 from pathlib import Path
 HERE=Path(__file__).resolve().parent;p=HERE/'sdk11_ci_runtime.py'
-if hashlib.sha256(p.read_bytes()).hexdigest()!='f4586fdcee2356d02cdd3a21a23c4c207c56f5f7888f6e6d2758a258640290e2':raise RuntimeError('RUNTIME_SOURCE_IDENTITY')
+if hashlib.sha256(p.read_bytes()).hexdigest()!='d64ba8ffdf1d7ee0743d29cfb4fbdb8e9fe8c3c58428a7557cdabc7aec8f244f':raise RuntimeError('RUNTIME_SOURCE_IDENTITY')
 spec=importlib.util.spec_from_file_location('sdk11_ci_runtime',p);R=importlib.util.module_from_spec(spec);sys.modules[spec.name]=R;spec.loader.exec_module(R)
 j=R.load_module('linux_qualification_job','0d63594368cb6839145d4b1798730fe8fab05f6a94d86834f3a82d52475e7227')
 OS_ENV={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','SYSTEMD_PAGER':'cat','SYSTEMD_COLORS':'0'}
@@ -101,7 +101,7 @@ def run_owned_linux(s,argv):
    held=R.read(root/'stopped-worker.json');pid=held['pid'];R.f.need(held['uid']==s['uid'] and held['gid']==s['gid'] and start_identity(pid)==held['start'],'STOPPED_WORKER_IDENTITY');pidfd=os.pidfd_open(pid);R.f.need(start_identity(pid)==held['start'],'PIDFD_START_IDENTITY');text=Path('/proc',str(pid),'stat').read_text()
    while text[text.rfind(')')+2:].split()[0] not in ('T','t'):
     R.f.need(R.clock()<deadline and proc.poll() is None,'WORKER_NOT_STOPPED');time.sleep(.01);text=Path('/proc',str(pid),'stat').read_text()
-   R.f.need(text[text.rfind(')')+2:].split()[19]==held['start'],'STOPPED_START_IDENTITY');rel=held['cap']['cgroup'];R.f.need(rel=='/system.slice/'+s['unit']+'.service' and ('0::'+rel) in Path('/proc',str(pid),'cgroup').read_text().splitlines(),'WORKER_CGROUP_BEFORE_EXEC');kernel=Path('/sys/fs/cgroup')/rel.lstrip('/');limits={n:(kernel/n).read_text().strip() for n in ['memory.max','memory.swap.max','pids.max','cpu.max']};R.f.need(limits==held['cap']['kernelLimits'],'WORKER_KERNEL_READBACK');R.write(root/'held-worker-before-continue.json',{'pid':pid,'start':held['start'],'kernelLimits':limits,'pidfdRetained':True});signal.pidfd_send_signal(pidfd,signal.SIGCONT)
+   R.f.need(text[text.rfind(')')+2:].split()[19]==held['start'],'STOPPED_START_IDENTITY');rel=held['cap']['cgroup'];R.f.need(rel=='/system.slice/'+s['unit']+'.service' and ('0::'+rel) in Path('/proc',str(pid),'cgroup').read_text().splitlines(),'WORKER_CGROUP_BEFORE_EXEC');kernel=Path('/sys/fs/cgroup')/rel.lstrip('/');limits={n:(kernel/n).read_text().strip() for n in ['memory.max','memory.swap.max','pids.max','cpu.max']};R.f.need(limits==held['cap']['kernelLimits'],'WORKER_KERNEL_READBACK');R.write(root/'held-worker-before-continue.json',{'pid':pid,'start':held['start'],'kernelLimits':limits,'pidfdRetained':True,'state':text[text.rfind(')')+2:].split()[0],'cgroup':rel});signal.pidfd_send_signal(pidfd,signal.SIGCONT)
    while proc.poll() is None:
     R.f.need(R.clock()<s['startTick']+840000,'OWNED_WORKER840_DEADLINE');R.f.need(out.tell()+err.tell()<=1048576,'OWNED_LAUNCHER_LOG_CAP');time.sleep(.05)
    R.f.need(proc.returncode==0,'OWNED_LAUNCHER_NONZERO')

@@ -1,0 +1,14 @@
+{
+  "schema": "sdk11-own-normal-input-profile/v1",
+  "state": "PROPOSED_PROFILE_NOT_RUNTIME_ADMITTED",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "rowSeconds": 900,
+  "memoryMaxBytes": 4294967296,
+  "swapMaxBytes": 0,
+  "tasksMax": 64,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "ownedUnitPrefix": "admission04-sdk11-ci-",
+  "sourceReview": "Inert own04 profile; next exact gate must accept source/profile and original product inputs before activating route. No producer caps borrowed."
+}
