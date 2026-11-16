@@ -259,6 +259,29 @@ def capture_fixed_command_entry(root,context):
   return hashlib.sha256(bounded_diagnostic_bytes(target,4096)).hexdigest()
  except Exception:return 'UNKNOWN'
 
+FIXED_LOG_EXCEPTION_TYPES=((b'System.IO.IOException', 'EXCEPTION_IO'), (b'System.IO.FileNotFoundException', 'EXCEPTION_FILE_NOT_FOUND'), (b'System.IO.DirectoryNotFoundException', 'EXCEPTION_DIRECTORY_NOT_FOUND'), (b'System.IO.PathTooLongException', 'EXCEPTION_PATH_TOO_LONG'), (b'System.UnauthorizedAccessException', 'EXCEPTION_UNAUTHORIZED_ACCESS'), (b'System.ComponentModel.Win32Exception', 'EXCEPTION_WIN32'), (b'System.ArgumentException', 'EXCEPTION_ARGUMENT'), (b'System.ArgumentNullException', 'EXCEPTION_ARGUMENT_NULL'), (b'System.InvalidOperationException', 'EXCEPTION_INVALID_OPERATION'), (b'System.TypeInitializationException', 'EXCEPTION_TYPE_INITIALIZATION'), (b'System.PlatformNotSupportedException', 'EXCEPTION_PLATFORM_NOT_SUPPORTED'), (b'System.NotSupportedException', 'EXCEPTION_NOT_SUPPORTED'), (b'System.OutOfMemoryException', 'EXCEPTION_OUT_OF_MEMORY'))
+FIXED_LOG_HRESULTS=(b'80004005', b'80070002', b'80070003', b'80070005', b'80070008', b'8007000E', b'80070020', b'80070057', b'8007007E', b'800700CE')
+FIXED_LOG_WIN32=(b'2', b'3', b'5', b'8', b'14', b'32', b'87', b'126', b'206')
+FIXED_LOG_REASON_CATEGORIES=frozenset(('UNKNOWN', 'DOTNET_HOST_FRAMEWORK_MISSING', 'DOTNET_HOST_SDK_NOT_FOUND', 'DOTNET_HOST_COMMAND_NOT_LOADED', 'EXCEPTION_IO', 'EXCEPTION_FILE_NOT_FOUND', 'EXCEPTION_DIRECTORY_NOT_FOUND', 'EXCEPTION_PATH_TOO_LONG', 'EXCEPTION_UNAUTHORIZED_ACCESS', 'EXCEPTION_WIN32', 'EXCEPTION_ARGUMENT', 'EXCEPTION_ARGUMENT_NULL', 'EXCEPTION_INVALID_OPERATION', 'EXCEPTION_TYPE_INITIALIZATION', 'EXCEPTION_PLATFORM_NOT_SUPPORTED', 'EXCEPTION_NOT_SUPPORTED', 'EXCEPTION_OUT_OF_MEMORY', 'HRESULT_80004005', 'HRESULT_80070002', 'HRESULT_80070003', 'HRESULT_80070005', 'HRESULT_80070008', 'HRESULT_8007000E', 'HRESULT_80070020', 'HRESULT_80070057', 'HRESULT_8007007E', 'HRESULT_800700CE', 'WIN32_2', 'WIN32_3', 'WIN32_5', 'WIN32_8', 'WIN32_14', 'WIN32_32', 'WIN32_87', 'WIN32_126', 'WIN32_206'))
+
+def classify_fixed_sdk_log(block):
+ # Observability only: literal syntax categories, never message/path/URL/args/env.
+ try:
+  if type(block) is not bytes or len(block)>1048576:return []
+  # Strip bounded SGR colour escapes in this classifier copy only; raw hashes stay raw.
+  clean=re.sub(rb'\x1b\[[0-9;:]{0,64}m',b'',block);codes=set()
+  for code in re.findall(rb'\b(?:error|warning)[ \t]+((?:NETSDK|MSB|CS|NU)[0-9]{4})[ \t]*:',clean,re.ASCII|re.IGNORECASE):codes.add(code.decode('ascii').upper())
+  for literal,category in [(b'You must install or update .NET to run this application.', 'DOTNET_HOST_FRAMEWORK_MISSING'),(b'No .NET SDKs were found.', 'DOTNET_HOST_SDK_NOT_FOUND'),(b'The command could not be loaded, possibly because:', 'DOTNET_HOST_COMMAND_NOT_LOADED')]:
+   if literal in clean:codes.add(category)
+  for literal,category in FIXED_LOG_EXCEPTION_TYPES:
+   if re.search(rb'(?<![A-Za-z0-9_.])'+re.escape(literal)+rb'(?=[:( \t\r\n])',clean,re.ASCII):codes.add(category)
+  for token in FIXED_LOG_HRESULTS:
+   if re.search(rb'(?<![A-Za-z0-9_.])HResult[ \t]*[:=][ \t]*0x'+token+rb'(?![A-Za-z0-9_])',clean,re.ASCII|re.IGNORECASE):codes.add('HRESULT_'+token.decode('ascii'))
+  for token in FIXED_LOG_WIN32:
+   if re.search(rb'(?<![A-Za-z0-9_.])(?:Win32|NativeErrorCode)[ \t]*[:=][ \t]*'+token+rb'(?![A-Za-z0-9_])',clean,re.ASCII|re.IGNORECASE):codes.add('WIN32_'+token.decode('ascii'))
+  return sorted(codes)[:8]
+ except Exception:return []
+
 def fixed_sdk_failure(context,evidence):
  # Called only after the existing process wrapper raises; no command or retry.
  value=dict(context)
@@ -283,10 +306,7 @@ def fixed_sdk_failure(context,evidence):
    raw=bounded_diagnostic_bytes(evidence/(stream+'.log'),remaining);remaining-=len(raw);blocks.append(raw);logs[stream]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
   value['logs']={'state':'BOUNDED_HASHED_NO_RAW_OUTPUT',**logs}
   codes=set()
-  for block in blocks:
-   for code in re.findall(rb'\b(?:error|warning)[ \t]+((?:NETSDK|MSB|CS|NU)[0-9]{4})[ \t]*:',block,re.ASCII|re.IGNORECASE):codes.add(code.decode('ascii').upper())
-   for literal,category in [(b'You must install or update .NET to run this application.', 'DOTNET_HOST_FRAMEWORK_MISSING'),(b'No .NET SDKs were found.', 'DOTNET_HOST_SDK_NOT_FOUND'),(b'The command could not be loaded, possibly because:', 'DOTNET_HOST_COMMAND_NOT_LOADED')]:
-    if literal in block:codes.add(category)
+  for block in blocks:codes.update(classify_fixed_sdk_log(block))
   value['reasonCodes']=sorted(codes)[:8] or ['UNKNOWN']
  except Exception:
   value['logs']={'state':'UNKNOWN'};value['reasonCodes']=['UNKNOWN']
@@ -318,7 +338,7 @@ def sanitize_fixed_sdk_diagnostic(value):
     if type(row) is not dict or set(row)!={'bytes','sha256'} or type(row['bytes']) is not int or not 0<=row['bytes']<=1048576 or not ishash(row['sha256']):raise ValueError('LOG_FIELDS')
     total+=row['bytes']
    if total>1048576:raise ValueError('LOG_TOTAL')
-  codes=value['reasonCodes'];categories={'UNKNOWN','DOTNET_HOST_FRAMEWORK_MISSING','DOTNET_HOST_SDK_NOT_FOUND','DOTNET_HOST_COMMAND_NOT_LOADED'}
+  codes=value['reasonCodes'];categories=FIXED_LOG_REASON_CATEGORIES
   if type(codes) is not list or not 1<=len(codes)<=8 or any(type(x) is not str or not (x in categories or re.fullmatch(r'(NETSDK|MSB|CS|NU)[0-9]{4}',x)) for x in codes):raise ValueError('REASONS')
   raw=json.dumps(value,separators=(',',':')).encode()
   if len(raw)>4096:raise ValueError('SIZE')

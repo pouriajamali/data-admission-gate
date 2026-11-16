@@ -299,3 +299,12 @@ bindings, bounded process/log hashes and allowlisted reason codes; 60 new
 synthetic checks passed in each of normal/-O modes. Raw output is excluded.
 No Windows qualification or product PASS; Linux803eb/fact757ab stays immutable,
 SDK_READY=false, and no further SDK/native/CI execution is claimed here.
+
+Actual Windows run43948776669 (db748) failed restore/index5: the prior five
+SDK commands exited0; restore exited1 without timeout, with owned population0.
+Build/hello were not run; the restore cause remains UNKNOWN. This
+OBSERVABILITY_ONLY source change classifies thirteen literal .NET exceptions
+and a finite list of explicitly labelled HResult/Win32 codes, stripping bounded
+SGR colour only in the classifier copy. New68 normal and68 -O fixture checks
+passed; no raw log/path/URL/env/args are exported. Recipe, environment, caps,
+SDK pins and eight commands remain unchanged. No Windows/product PASS claim.
