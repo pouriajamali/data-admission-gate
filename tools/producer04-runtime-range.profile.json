@@ -1,0 +1,61 @@
+{
+  "schema": "sdk11-runtime-range-candidate-profile/v1",
+  "mode": "RANGE_BYTE_CANDIDATE_ONLY_SDK0",
+  "contractSha256": "594ab353504cfd93a2927805d74004fad870f11243c65f4ae3e4bada0b42dac9",
+  "amendsContractSha256": "1b91117ed75e248965b0e5634d61c9f2169ac796d58753729adf94e48d74b1a3",
+  "wholeSecondsMax": 180,
+  "workerSecondsMax": 150,
+  "terminalReserveSeconds": 30,
+  "rangeFileSecondsMax": 40,
+  "profile": {
+    "memoryMaxBytes": 4294967296,
+    "tasksMax": 64,
+    "cpuEquivalentsMax": 2,
+    "linuxSwapMaxBytes": 0,
+    "dataDiskMaxBytes": 268435456,
+    "proofMaxBytes": 8388608,
+    "rawSingleMaxBytes": 67108864,
+    "rawAggregateMaxBytes": 201326592,
+    "expandedStreamSingleMaxBytes": 268435456,
+    "expandedStreamAggregateMaxBytes": 805306368,
+    "membersPerArchiveMax": 10000,
+    "membersAllArchivesMax": 30000,
+    "CMSBytesPerPackageMax": 2097152
+  },
+  "lease": {
+    "protocolPath": "E:/Codex WorkSpace/Git Projects/portfolio-management/development-management-20261110/wave2-state/LEASE-PROTOCOL.json",
+    "protocolSha256": "9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b",
+    "canonicalWindows": "E:/Codex WorkSpace/Git Projects/portfolio-management/development-management-20261110/wave2-state/LOCAL-FIXTURE-LEASE.json"
+  },
+  "exactByteCandidate": {
+    "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+    "version": "11.0.0",
+    "rid": "linux-x64",
+    "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.linux-x64/11.0.0/microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+    "immutablePrefixPath": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE\\raw\\microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+    "prefixBytes": 41943040,
+    "prefixSha256": "1a3ba4171f491079b8fcc46b45047cc9c448b5d3f34b4e0f308855b31e5955bb",
+    "rangeRequest": "bytes=41943040-42270531",
+    "expected206ContentRange": "bytes 41943040-42270531/42270532",
+    "suffixBytes": 327492,
+    "wholeBytes": 42270532,
+    "existingWholePolicySHA512": "f76bc258a41b896f53d90802453c221d51e9c69bfc7c300e8824549e53bd4242e1776a1618a26df7384737899b77b025fd6981c03fad17426df14c7939fa31ee",
+    "policySource": "Existing b4ef proposal/73bb feed-declared data only. Compute actual composite rawSHA512 independently and require literal equality as an extra reconstruction integrity gate; never assert a normalized contentHash or raw metadata semantic by assumption."
+  },
+  "existingDataRoot": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE",
+  "priorDiscoveryReceipt": {
+    "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE\\FINAL-RECEIPT.json",
+    "sha256": "986c0904d112d87bd586e0ffaec61919a7a63dad2e56d32a80ece8732be7099d"
+  },
+  "priorLeaseRelease": {
+    "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE\\LEASE-RELEASED.json",
+    "sha256": "6f3e87f5ad5e79fe7004b900121de9c492cf0511ea42ec9836db255b169d25a0"
+  },
+  "HTTPRepresentationContinuity": "UNKNOWN_WITHOUT_ORIGINAL_STRONG_VALIDATOR",
+  "IfRangeAllowed": false,
+  "SDK": 0,
+  "actualRangeGET": "NOT_AUTHORIZED_UNTIL_EXACT_FINAL_SOURCE_GATE",
+  "normalizedNuGetContentHash": "UNKNOWN",
+  "authenticity": "UNKNOWN",
+  "cryptographicAdmission": false
+}

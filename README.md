@@ -327,3 +327,17 @@ stay separate. CMS trust, normalized identity and advisories stay UNKNOWN;
 SDK/graph/product phases stay closed, product UNBOUND and Windows on HOLD.
 StageA new offline fixtures passed85 in each normal/-O mode; no actual GET or
 native Job/SDK was run by those fixtures. The manager alone dispatches StageB.
+
+The separate `range-candidate-sdk0` SOURCE mode designs one future suffix GET
+only (bytes41943040-42270531,327492B). It requires a new exact signed-source
+gate,206 and exact single Content-Range/Length, identity/no transfer/multipart;
+200/416/header mismatch stop before body reads. The old41943040B prefix is held
+read-only and guarded by identity/stat/hash, then copied to fresh O_EXCL output;
+no old data is appended, overwritten or deleted. Fullcandidate actual SHA512
+must equal the fixed opaque policy before third-package ZIP/CMS DATA inspection.
+Without an original strong validator, HTTPRepresentationContinuity stays UNKNOWN
+and the result stays BYTE_CANDIDATE_UNTRUSTED, not authenticity/normalized/trust
+admission. New18 fixtures passed per normal/-O mode; old85 and files0/1 were not
+replayed.40s/file,whole180s/30s terminal reserve,4GiB/64/CPU2,combined old+fresh
+disk256MiB,proof8MiB and canonical9120 lease remain. No actual Range GET/Job/SDK
+is authorized or executed by this source candidate; Windows remains HOLD.

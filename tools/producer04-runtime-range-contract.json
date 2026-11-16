@@ -1,0 +1,94 @@
+{
+  "schema": "producer04-runtime-exact-range-candidate-source-amendment/v1",
+  "date": "2026-11-16",
+  "state": "SOURCE_CORRECTION_AND_BOUNDED_RANGE_DESIGN_APPROVED_ACTUAL_GET_REQUIRES_EXACT_FINAL_SOURCE_GATE",
+  "amendsContractSha256": "1b91117ed75e248965b0e5634d61c9f2169ac796d58753729adf94e48d74b1a3",
+  "base": {
+    "head": "4db8ef7881b2a7bd70456b716799a370f838fcc1",
+    "tree": "540c159e4273755653f5c14273bad4e6e139235f"
+  },
+  "actualPriorDiscovery": {
+    "receiptPath": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE\\FINAL-RECEIPT.json",
+    "sha256": "986c0904d112d87bd586e0ffaec61919a7a63dad2e56d32a80ece8732be7099d",
+    "leaseReleaseSha256": "6f3e87f5ad5e79fe7004b900121de9c492cf0511ea42ec9836db255b169d25a0",
+    "rootReview": "Final/release hashes and actual fileworker process receipts read once: file0exit0/14.797s,file1exit0/7.172s,file2exit124/timedOuttrue/40.172s,whole63.172s; actual4GiB64CPU2/held membership/active0, own exact lease later released. Final released=false is pre-release snapshot, not overriding later release receipt.",
+    "cause": "FILE_DEADLINE, no actual SDK command and no evidence of RAM failure",
+    "originalGateConsumed": true,
+    "twoCompleteFiles": "Retain original raw/hash/member/CMS/notices DATA receipts unchanged; no GET/reinspection/replay of complete ASP.NET/Host inputs."
+  },
+  "exactByteCandidate": {
+    "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+    "version": "11.0.0",
+    "rid": "linux-x64",
+    "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.linux-x64/11.0.0/microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+    "immutablePrefixPath": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE\\raw\\microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+    "prefixBytes": 41943040,
+    "prefixSha256": "1a3ba4171f491079b8fcc46b45047cc9c448b5d3f34b4e0f308855b31e5955bb",
+    "rangeRequest": "bytes=41943040-42270531",
+    "expected206ContentRange": "bytes 41943040-42270531/42270532",
+    "suffixBytes": 327492,
+    "wholeBytes": 42270532,
+    "existingWholePolicySHA512": "f76bc258a41b896f53d90802453c221d51e9c69bfc7c300e8824549e53bd4242e1776a1618a26df7384737899b77b025fd6981c03fad17426df14c7939fa31ee",
+    "policySource": "Existing b4ef proposal/73bb feed-declared data only. Compute actual composite rawSHA512 independently and require literal equality as an extra reconstruction integrity gate; never assert a normalized contentHash or raw metadata semantic by assumption."
+  },
+  "representationContinuity": {
+    "sourceReference": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.3.7.3",
+    "currentGap": "Original response strong ETag/LastModified was not retained in inspected receipts; HTTP same-representation continuity is not established by matchingURL/length/206 alone. A fresh HEAD/ETag cannot retroactively bind the prefix.",
+    "rule": "If a genuine durable original strong validator exists, source may require matching If-Range/206. Otherwise allow only an explicitly labelled untrusted prefix-plus-suffix bytecandidate, with mandatory independently computed WHOLE SHA512 literal equality to the already source-bound policy value above before any structural inspection result can be considered complete. No forged If-Range or claim of HTTP validator continuity.",
+    "statusFields": [
+      "HTTPRepresentationContinuity=UNKNOWN_WITHOUT_ORIGINAL_STRONG_VALIDATOR",
+      "transport=PREFIX_PLUS_STRICT_RANGE_SUFFIX_CANDIDATE",
+      "observedRawSHA256/observedRawSHA512 distinct from feedDeclaredPolicyHash",
+      "fullPolicyHashEquality actual true/false",
+      "authenticity=UNKNOWN",
+      "NuGetNormalizedContentHash=UNKNOWN",
+      "cryptographicAdmission=false"
+    ],
+    "laterGate": "Even matching full policy hash/ZIP/CMS DATA is not trust/catalog acceptance; exact future trusted CMS/chain/RFC3161 timestamp/revocation/advisory/normalization gates still mandatory."
+  },
+  "stageA_source": [
+    "Add only this finite reconstruction mode to existing bounded discovery helper/contract/pins and concise source notes; no generic downloader/resume engine or another network policy framework.",
+    "Hold/open immutable no-link prefix identity and size, copy through a bounded reader to O_EXCL fresh output while hashing; copied prefix must match exact oldSHA256 and size, stat/file identity stable. Never append/rename/delete/write old prefix or the two completed packages.",
+    "Only one exact Range GET is designed. Require status206 and exact final URL plus one exact Content-Range and one exact Content-Length327492; identity encoding only, no Transfer-Encoding/multipart/redirect/proxy/auth/query/cookie/netrc/retry/fallback. Reject200/416/header mismatch before application body reads; never consume a full200 response as fallback.",
+    "Read exactly327492suffix bytes under original40s per-file deadline; reject short/extra bytes and write only to fresh candidate. Fullcandidate length42270532 plus independent rawSHA256/SHA512, mandatory policySHA512 equality, then existing strict completeZIPframing/CRC/path/type/collision/CMS/notices DATA inspection on this third package only. Wrong fullhash remains HOLD and raw candidate unadmitted.",
+    "New finite mocked206/header/duplicate/multipart/200zero-read/prefix tamper/short+extra body/fullhash mismatch/noinplace mutation/deadline/primary preservation fixtures only,<=18per requiredmode/30s/input512KiB/output32KiB. No real GET/SDK/healthy file inspection during source prep.",
+    "CAS only owned source/policy/pin delta, verify actual Git mode/blob identities, one known-key SSH local signed candidate and existing final packet; no intermediate ACK needed."
+  ],
+  "stageB_exact_future_design": {
+    "state": "NOT_AUTHORIZED_UNTIL_EXACT_FINAL_SOURCE_REVIEW",
+    "GETsMax": 1,
+    "method": "GET",
+    "Range": "bytes=41943040-42270531",
+    "perFileSecondsMax": 40,
+    "wholeSecondsMax": 180,
+    "terminalReserveSeconds": 30,
+    "clock": "Fresh one bounded changed-request contract from its first operational step; old failed attempt remains consumed, no resetting that receipt. Include prefix guard/copy/range/hash/inspection/proof/terminal, retain stricter inherited timers.",
+    "profile": {
+      "memoryBytes": 4294967296,
+      "tasks": 64,
+      "cpuEquivalentsMax": 2,
+      "combinedRetainedPlusFreshDiskMaxBytes": 268435456,
+      "proofBytesMax": 8388608,
+      "existingExpandedStreamBoundsUnchanged": true
+    },
+    "actualControl": "Same canonical9120 own token/PID/start/held Job/current membership/original terminal then exact lease release. No reset or borrowed resource profile.",
+    "counters": {
+      "SDK": 0,
+      "nativeProductOrPackageBinary": 0,
+      "otherGETs": 0,
+      "PKIOrAdvisoryGETs": 0,
+      "CI": 0,
+      "push": 0,
+      "public": 0
+    },
+    "outcomes": "No automatic retry or cap raise; unsupportedRange/header/fullhash/source/cap/time/inspection failure => preserve actual cause and HOLD."
+  },
+  "notPermitted": [
+    "Actual GET/HEAD before exact signed candidate gate",
+    "Redownload/reinspect complete files0/1, fullbody fallback or chunk-size/cap increase",
+    "Append/overwrite/delete old prefix or case/archive inventories",
+    "Claim original strong validator from a new response or infer cryptographic/normalized admission",
+    "SDK/NuGetverify/graph/locks/build/test/product execution/public mutation",
+    "Project10 fullSDK retry or project12 disk waiver"
+  ]
+}

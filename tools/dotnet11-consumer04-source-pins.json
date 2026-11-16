@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "30bcddd8ee0e7c156c54f0c8c755f45cc4cfc35b"
+      "gitBlob": "4b7e96be75873602e197068170f87bad4a449485"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -102,12 +102,12 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "131c0d47f9df8f7fc1b17af797320829ea6346e1"
+      "gitBlob": "0984abccb04ca210391336266bf5bf39442294f8"
     },
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "550fd33562e8f073c84885ace29037e5d1f2000c"
+      "gitBlob": "1331396dc9a760b688783260c62d1ef0bb66043b"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -232,12 +232,17 @@
     {
       "path": "tools/curate_dotnet11_inputs.py",
       "mode": "100644",
-      "gitBlob": "3939f7c477cfa49ca1a0b1cba8b2ff976e67c5b6"
+      "gitBlob": "ac45e4891f3d368511a3fd0bb310beb3776c7f04"
     },
     {
       "path": "tools/curation_data_inspector.py",
       "mode": "100644",
       "gitBlob": "9759bc7880d14d3a52543f30b21268e6834f947c"
+    },
+    {
+      "path": "tools/curation_range_candidate.py",
+      "mode": "100644",
+      "gitBlob": "ee84103cbb5fcf253f1797116813fbf7311b1c4b"
     },
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
@@ -298,6 +303,16 @@
       "path": "tools/producer04-curation.profile.json",
       "mode": "100644",
       "gitBlob": "811971005515255e51f16f4671de21a2e5bff0d5"
+    },
+    {
+      "path": "tools/producer04-runtime-range-contract.json",
+      "mode": "100644",
+      "gitBlob": "d9b9c227688708130586dbbb4681bb4c3b7aec3c"
+    },
+    {
+      "path": "tools/producer04-runtime-range.profile.json",
+      "mode": "100644",
+      "gitBlob": "f485e5c7e60e96ccd1b8b3f025671e14a5fc4afe"
     },
     {
       "path": "tools/qualification_input_guard.py",
@@ -363,6 +378,11 @@
       "path": "tools/test_curation_discovery.py",
       "mode": "100644",
       "gitBlob": "51ecfd5798fe9382a0cd7a2b2f372c274f43d960"
+    },
+    {
+      "path": "tools/test_curation_range.py",
+      "mode": "100644",
+      "gitBlob": "e9fb16aa77aca092c62c577a3849577765d06db8"
     },
     {
       "path": "tools/test_dotnet11_consumer04.py",
