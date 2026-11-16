@@ -177,13 +177,19 @@ def worker(spec,backend):
  budget.stage(3,480);publisher=native_prerequisites(rid,sdk,root,backend.run,env,budget);pre=backend.caps();f.caps(pre,rid);write(root/'before-first-sdk.json',{'actualHost':actual_host,'cpu':cpu,'actualCaps':pre,'denials':denials,'source':source});env.update({'DOTNET_ROOT':str(sdk),'DOTNET_ROOT_X64':str(sdk),'DOTNET_HOST_PATH':str(sdk/('dotnet.exe' if rid=='win-x64' else 'dotnet'))})
  work=root/'qualification';work.mkdir(mode=0o700);(work/'global.json').write_text('{"sdk":{"version":"11.0.100","rollForward":"disable","allowPrerelease":false}}\n');(work/'NuGet.Config').write_text('<configuration><packageSources><clear /></packageSources></configuration>\n');(work/'qualification.csproj').write_text('<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net11.0</TargetFramework><LangVersion>15.0</LangVersion><RuntimeFrameworkVersion>11.0.0</RuntimeFrameworkVersion><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile><TreatWarningsAsErrors>true</TreatWarningsAsErrors><UseSharedCompilation>false</UseSharedCompilation></PropertyGroup></Project>\n');(work/'packages.lock.json').write_text('{"version":1,"dependencies":{"net11.0":{}}}\n');(work/'Program.cs').write_text('using System; using System.Runtime.InteropServices; Console.WriteLine("SDK11_QUALIFIED_TOKEN"); Console.WriteLine(RuntimeInformation.FrameworkDescription);\n')
  commands=[('version',['--version'],30),('info',['--info'],30),('list-sdks',['--list-sdks'],30),('list-runtimes',['--list-runtimes'],30),('compiler',['exec',str(sdk/'sdk/11.0.100/Roslyn/bincore/csc.dll'),'-version'],30),('restore',['restore','qualification.csproj','--configfile',str(work/'NuGet.Config'),'--locked-mode','-p:NuGetAudit=true','-p:NuGetAuditMode=all','-p:NuGetAuditLevel=low'],180),('build',['build','qualification.csproj','-c','Release','--no-restore','--nologo','-p:UseSharedCompilation=false','-p:BuildInParallel=false','-m:1'],300),('hello',['exec',str(work/'bin/Release/net11.0/qualification.dll')],30)];command_facts=[]
- for name,args,seconds in commands:
+ for command_index,(name,args,seconds) in enumerate(commands):
   a.verify_tree(sdk,members,rid)
   with contextlib.ExitStack() as stack:
    if rid=='win-x64':
     for member in catalog['criticalMembers']:
      held=stack.enter_context(backend.hold(sdk/member['path']));f.need(held['sha256']==member['sha256'],'SDK_ENTRY_HELD_IDENTITY')
-   rec,raw=output(backend.run,[env['DOTNET_HOST_PATH'],*args],work,env,budget.deadline(seconds),root/('sdk-'+name))
+   diagnostic=fixed_command_context(name,command_index,command_facts);diagnostic['entryReceiptSha256']=capture_fixed_command_entry(root,diagnostic)
+   try:
+    rec,raw=output(backend.run,[env['DOTNET_HOST_PATH'],*args],work,env,budget.deadline(seconds),root/('sdk-'+name))
+   except Exception as exc:
+    try:exc._sdk11_fixed_command=fixed_sdk_failure(diagnostic,root/('sdk-'+name))
+    except Exception:pass
+    raise
   text=raw.decode('utf-8-sig').replace('\r\n','\n')
   if name=='version':f.need(text.strip()=='11.0.100','SDK_VERSION')
   if name=='info':f.need('11.0.100' in text and '11.0.0' in text,'SDK_INFO')
@@ -234,12 +240,101 @@ def public_failure_trace(cause,worker):
   return value if len(json.dumps(value,separators=(',',':')).encode())<=4096 else {'worker':[],'supervisor':[],'state':'TRACE_INVALID_OR_OVERSIZE'}
  except Exception:return {'worker':[],'supervisor':[],'state':'TRACE_UNAVAILABLE_PRIMARY_FAILURE_PRESERVED'}
 
+
+FIXED_SDK_COMMAND_NAMES=('version','info','list-sdks','list-runtimes','compiler','restore','build','hello')
+
+def bounded_diagnostic_bytes(path,limit):
+ p=Path(path)
+ if not p.is_file() or p.is_symlink() or p.stat().st_size>limit:raise ValueError('OPTIONAL_DIAGNOSTIC_FILE')
+ with p.open('rb') as stream:value=stream.read(limit+1)
+ if len(value)>limit:raise ValueError('OPTIONAL_DIAGNOSTIC_SIZE')
+ return value
+
+def fixed_command_context(name,index,completed):
+ return {'schema':'sdk11-fixed-command-diagnostic/v1','failedCommandName':name,'commandIndex':index,'completedCommandNames':[x['name'] for x in completed],'completedCommands':[{'name':x['name'],'exitCode':x['exitCode'],'outputSha256':x['outputSha256'],'processReceiptSha256':x['evidenceSha256']} for x in completed],'entryReceiptSha256':'UNKNOWN','failedProcess':{'state':'UNKNOWN'},'logs':{'state':'UNKNOWN'},'reasonCodes':['UNKNOWN']}
+
+def capture_fixed_command_entry(root,context):
+ try:
+  target=root/('fixed-sdk-entry-'+context['failedCommandName']+'.json');write(target,context)
+  return hashlib.sha256(bounded_diagnostic_bytes(target,4096)).hexdigest()
+ except Exception:return 'UNKNOWN'
+
+def fixed_sdk_failure(context,evidence):
+ # Called only after the existing process wrapper raises; no command or retry.
+ value=dict(context)
+ try:
+  raw=bounded_diagnostic_bytes(evidence/'process.json',32768);record=json.loads(raw)
+  if type(record) is not dict or record.get('schema')!='bounded-sdk11-process/v1':raise ValueError('PROCESS_SCHEMA')
+  cap=record.get('actualCap',{});numeric=['memoryMax','activeProcessMax','cpuRate','logicalHostCpu','effectiveCpuCores','peakJobMemory','activeProcessesAtTeardown','totalProcesses'];boolean=['childMembershipBeforeResume','inheritedAggregateBeforeResume','retainedCreationHandles']
+  if type(record.get('exitCode')) is not int or not 0<=record['exitCode']<=4294967295 or type(record.get('timedOut')) is not bool or type(cap) is not dict:raise ValueError('PROCESS_FIELDS')
+  selected={}
+  for key in numeric:
+   item=cap.get(key)
+   if type(item) not in (int,float) or not 0<=item<=9223372036854775807:raise ValueError('CAP_FIELDS')
+   selected[key]=item
+  for key in boolean:
+   if type(cap.get(key)) is not bool:raise ValueError('CAP_FIELDS')
+   selected[key]=cap[key]
+  value['failedProcess']={'state':'OBSERVED_PROCESS_RECEIPT','receiptSha256':hashlib.sha256(raw).hexdigest(),'exitCode':record['exitCode'],'timedOut':record['timedOut'],'actualCap':selected}
+ except Exception:value['failedProcess']={'state':'UNKNOWN'}
+ try:
+  logs={};blocks=[];remaining=1048576
+  for stream in ('stdout','stderr'):
+   raw=bounded_diagnostic_bytes(evidence/(stream+'.log'),remaining);remaining-=len(raw);blocks.append(raw);logs[stream]={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+  value['logs']={'state':'BOUNDED_HASHED_NO_RAW_OUTPUT',**logs}
+  codes=set()
+  for block in blocks:
+   for code in re.findall(rb'\b(?:error|warning)[ \t]+((?:NETSDK|MSB|CS|NU)[0-9]{4})[ \t]*:',block,re.ASCII|re.IGNORECASE):codes.add(code.decode('ascii').upper())
+   for literal,category in [(b'You must install or update .NET to run this application.', 'DOTNET_HOST_FRAMEWORK_MISSING'),(b'No .NET SDKs were found.', 'DOTNET_HOST_SDK_NOT_FOUND'),(b'The command could not be loaded, possibly because:', 'DOTNET_HOST_COMMAND_NOT_LOADED')]:
+    if literal in block:codes.add(category)
+  value['reasonCodes']=sorted(codes)[:8] or ['UNKNOWN']
+ except Exception:
+  value['logs']={'state':'UNKNOWN'};value['reasonCodes']=['UNKNOWN']
+ return sanitize_fixed_sdk_diagnostic(value)
+
+def sanitize_fixed_sdk_diagnostic(value):
+ # Exact typed whitelist; never copy arbitrary fields from a process or log.
+ try:
+  required={'schema','failedCommandName','commandIndex','completedCommandNames','completedCommands','entryReceiptSha256','failedProcess','logs','reasonCodes'}
+  if type(value) is not dict or set(value)!=required or value['schema']!='sdk11-fixed-command-diagnostic/v1':raise ValueError('SHAPE')
+  index=value['commandIndex'];names=FIXED_SDK_COMMAND_NAMES
+  if type(index) is not int or not 0<=index<8 or type(value['failedCommandName']) is not str or value['failedCommandName']!=names[index]:raise ValueError('COMMAND')
+  if type(value['completedCommandNames']) is not list or value['completedCommandNames']!=list(names[:index]) or type(value['completedCommands']) is not list or len(value['completedCommands'])!=index:raise ValueError('PREFIX')
+  ishash=lambda x:type(x) is str and re.fullmatch(r'[0-9a-f]{64}',x) is not None
+  for i,row in enumerate(value['completedCommands']):
+   if type(row) is not dict or set(row)!={'name','exitCode','outputSha256','processReceiptSha256'} or row['name']!=names[i] or type(row['exitCode']) is not int or row['exitCode']!=0 or not ishash(row['outputSha256']) or not ishash(row['processReceiptSha256']):raise ValueError('COMPLETED')
+  if value['entryReceiptSha256']!='UNKNOWN' and not ishash(value['entryReceiptSha256']):raise ValueError('ENTRY')
+  proc=value['failedProcess']
+  if proc!={'state':'UNKNOWN'}:
+   if type(proc) is not dict or set(proc)!={'state','receiptSha256','exitCode','timedOut','actualCap'} or proc['state']!='OBSERVED_PROCESS_RECEIPT' or not ishash(proc['receiptSha256']) or type(proc['exitCode']) is not int or not 0<=proc['exitCode']<=4294967295 or type(proc['timedOut']) is not bool:raise ValueError('PROCESS')
+   numeric={'memoryMax','activeProcessMax','cpuRate','logicalHostCpu','effectiveCpuCores','peakJobMemory','activeProcessesAtTeardown','totalProcesses'};boolean={'childMembershipBeforeResume','inheritedAggregateBeforeResume','retainedCreationHandles'};cap=proc['actualCap']
+   if type(cap) is not dict or set(cap)!=numeric|boolean or any(type(cap[k]) not in (int,float) or not 0<=cap[k]<=9223372036854775807 for k in numeric) or any(type(cap[k]) is not bool for k in boolean):raise ValueError('CAP')
+  logs=value['logs']
+  if logs!={'state':'UNKNOWN'}:
+   if type(logs) is not dict or set(logs)!={'state','stdout','stderr'} or logs['state']!='BOUNDED_HASHED_NO_RAW_OUTPUT':raise ValueError('LOGS')
+   total=0
+   for stream in ('stdout','stderr'):
+    row=logs[stream]
+    if type(row) is not dict or set(row)!={'bytes','sha256'} or type(row['bytes']) is not int or not 0<=row['bytes']<=1048576 or not ishash(row['sha256']):raise ValueError('LOG_FIELDS')
+    total+=row['bytes']
+   if total>1048576:raise ValueError('LOG_TOTAL')
+  codes=value['reasonCodes'];categories={'UNKNOWN','DOTNET_HOST_FRAMEWORK_MISSING','DOTNET_HOST_SDK_NOT_FOUND','DOTNET_HOST_COMMAND_NOT_LOADED'}
+  if type(codes) is not list or not 1<=len(codes)<=8 or any(type(x) is not str or not (x in categories or re.fullmatch(r'(NETSDK|MSB|CS|NU)[0-9]{4}',x)) for x in codes):raise ValueError('REASONS')
+  raw=json.dumps(value,separators=(',',':')).encode()
+  if len(raw)>4096:raise ValueError('SIZE')
+  return json.loads(raw)
+ except Exception:return {'state':'UNKNOWN'}
+
+def public_fixed_sdk_diagnostic(record):
+ try:return sanitize_fixed_sdk_diagnostic(record.get('fixedSDKCommand') if type(record) is dict else getattr(record,'_sdk11_fixed_command',None))
+ except Exception:return {'state':'UNKNOWN'}
+
 def failure_code(exc):
  kind=type(exc).__name__;kind=kind if re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,63}',kind) else 'UNKNOWN'
  try:value=str(exc) if kind in ('Denied','CapError','AdmissionError') else ''
  except Exception:value=''
  number=getattr(exc,'errno',None);number=number if type(number) is int and abs(number)<2147483648 else None
- return {'exceptionType':kind,'code':value if re.fullmatch(r'[A-Z][A-Z0-9_:.-]{0,127}',value) else 'DETAIL_REDACTED_USE_PRIVATE_CAUSE','errno':number,'frames':safe_failure_frames(exc)}
+ return {'exceptionType':kind,'code':value if re.fullmatch(r'[A-Z][A-Z0-9_:.-]{0,127}',value) else 'DETAIL_REDACTED_USE_PRIVATE_CAUSE','errno':number,'frames':safe_failure_frames(exc),'fixedSDKCommand':public_fixed_sdk_diagnostic(exc)}
 
 def capture_entry_failure(exc):
  # No raw exception/output/path/env data crosses into the public failure receipt.
@@ -275,7 +370,7 @@ def failure_summary(spec,cause,terminal=None,stop=None):
  if root:
   for index in range(4):
    if (root/('stage-'+str(index)+'.json.ready')).is_file():stage=index
-  if (root/'worker-failure.json.ready').is_file():worker=read(root/'worker-failure.json',4096)
+  if (root/'worker-failure.json.ready').is_file():worker=read(root/'worker-failure.json',8192)
   if terminal is None and (root/'cleanup-terminal.json.ready').is_file():terminal=read(root/'cleanup-terminal.json',16384)
   if terminal is None and (root/'outer-job/process.json').is_file():
    rec=read(root/'outer-job/process.json');cap=rec.get('actualCap',{});terminal={'launcherTerminal':'UNKNOWN','workerPidfdTerminal':'NOT_APPLICABLE_WINDOWS','ownedPopulation':cap.get('activeProcessesAtTeardown','UNKNOWN'),'workerExitCode':rec.get('exitCode','UNKNOWN'),'evidenceSha256':digest(root/'outer-job/process.json')}
@@ -283,7 +378,7 @@ def failure_summary(spec,cause,terminal=None,stop=None):
  clean=lambda value: value if type(value) is int or value in (None,True,False) else (value if type(value) is str and re.fullmatch(r'[A-Za-z0-9_.:-]{1,128}',value) else 'UNKNOWN')
  term={k:clean((terminal or {}).get(k,'UNKNOWN')) for k in ['launcherTerminal','workerPidfdTerminal','ownedPopulation','workerExitCode','cleanupResult','evidenceSha256']}
  stopValue={k:clean((stop or {}).get(k,'UNKNOWN')) for k in ['serviceResult','exitCode','exitStatus','remainingPopulationExcludingObserver']}
- receipt={'schema':'sdk11-ci-failure-summary/v1','state':'FAILURE_OBSERVED_NO_QUALIFICATION','rid':rid,'sourceCommit':clean(os.environ.get('GITHUB_SHA','UNKNOWN')),'runId':clean(os.environ.get('GITHUB_RUN_ID','UNKNOWN')),'job':clean(os.environ.get('GITHUB_JOB','UNKNOWN')),'attempt':clean(os.environ.get('GITHUB_RUN_ATTEMPT','UNKNOWN')),'controllerSha256':digest(Path(sys.argv[0])) if Path(sys.argv[0]).is_file() else 'UNKNOWN','workflowSha256':digest(ROOT/'.github/workflows/verify.yml') if (ROOT/'.github/workflows/verify.yml').is_file() else 'UNKNOWN','actualStage':stage,'cause':{k:clean(cause.get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'workerCause':{k:clean((worker or {}).get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'terminal':term,'stopOutcome':stopValue,'failureTrace':public_failure_trace(cause,worker),'windowsHostObservation':public_windows_host_observation(root) if rid=='win-x64' else {'state':'NOT_APPLICABLE_LINUX'},'boundary':'SANITIZED_FAILURE_ONLY_NOT_HOST_FACT_NOT_PASS_NO_SDK_OR_RAW_OUTPUT'}
+ receipt={'schema':'sdk11-ci-failure-summary/v1','state':'FAILURE_OBSERVED_NO_QUALIFICATION','rid':rid,'sourceCommit':clean(os.environ.get('GITHUB_SHA','UNKNOWN')),'runId':clean(os.environ.get('GITHUB_RUN_ID','UNKNOWN')),'job':clean(os.environ.get('GITHUB_JOB','UNKNOWN')),'attempt':clean(os.environ.get('GITHUB_RUN_ATTEMPT','UNKNOWN')),'controllerSha256':digest(Path(sys.argv[0])) if Path(sys.argv[0]).is_file() else 'UNKNOWN','workflowSha256':digest(ROOT/'.github/workflows/verify.yml') if (ROOT/'.github/workflows/verify.yml').is_file() else 'UNKNOWN','actualStage':stage,'cause':{k:clean(cause.get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'workerCause':{k:clean((worker or {}).get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'terminal':term,'stopOutcome':stopValue,'failureTrace':public_failure_trace(cause,worker),'fixedSDKCommand':public_fixed_sdk_diagnostic(worker) if public_fixed_sdk_diagnostic(worker).get('schema') else public_fixed_sdk_diagnostic(cause),'windowsHostObservation':public_windows_host_observation(root) if rid=='win-x64' else {'state':'NOT_APPLICABLE_LINUX'},'boundary':'SANITIZED_FAILURE_ONLY_NOT_HOST_FACT_NOT_PASS_NO_SDK_OR_RAW_OUTPUT'}
  raw=json.dumps(receipt,sort_keys=True,indent=2).encode();f.need(len(raw)<=32768,'FAILURE_SUMMARY32K_LIMIT');proof=ROOT/'artifacts'/('sdk11-qualification-'+rid);proof.mkdir(parents=True,exist_ok=True);target=proof/'failure-summary.json'
  if not target.exists():
   staged=proof/'failure-summary.private.tmp'

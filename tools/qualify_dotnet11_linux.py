@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse,hashlib,importlib.util,json,os,re,select,shlex,signal,subprocess,sys,time,uuid
 from pathlib import Path
 HERE=Path(__file__).resolve().parent;p=HERE/'sdk11_ci_runtime.py'
-if hashlib.sha256(p.read_bytes()).hexdigest()!='86c9962ae2bf19a8e9977ccb98fa729efb539e8aeb063af170b799a58802f5e0':raise RuntimeError('RUNTIME_SOURCE_IDENTITY')
+if hashlib.sha256(p.read_bytes()).hexdigest()!='4821d29e3d5a0b8015550499dd52e11b88d2baf15c2029c78407042bcda2a890':raise RuntimeError('RUNTIME_SOURCE_IDENTITY')
 spec=importlib.util.spec_from_file_location('sdk11_ci_runtime',p);R=importlib.util.module_from_spec(spec);sys.modules[spec.name]=R;spec.loader.exec_module(R)
 j=R.load_module('linux_qualification_job','0d63594368cb6839145d4b1798730fe8fab05f6a94d86834f3a82d52475e7227')
 OS_ENV={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','SYSTEMD_PAGER':'cat','SYSTEMD_COLORS':'0'}

@@ -291,3 +291,11 @@ failure receipts, without locals/arguments/source lines/absolute paths/env/raw
 TypeError text. Pure mocked source checks passed; the actual failed run43929153631
 TypeError origin remains UNKNOWN. This is no SDK/native/CI/product PASS claim.
 Linux803eb/fact757ab remains immutable; global SDK_READY stays false.
+
+Windows run43941068797 on source5feab6e failed at stage3, CHILD_NONZERO:1,
+with at least one SDK attempt; failed command, completed count and cause remain
+UNKNOWN. This source diagnostic adds fixed-command/completed-exit0 receipt
+bindings, bounded process/log hashes and allowlisted reason codes; 60 new
+synthetic checks passed in each of normal/-O modes. Raw output is excluded.
+No Windows qualification or product PASS; Linux803eb/fact757ab stays immutable,
+SDK_READY=false, and no further SDK/native/CI execution is claimed here.
