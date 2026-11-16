@@ -5,7 +5,7 @@ from pathlib import Path
 HERE=Path(__file__).resolve().parent
 # Controllers are source-bound siblings in the exact signed/approved CI projection.
 def module(name):
- p=HERE/(name+'.py');expected={'qualify_dotnet11_windows': 'f7d79ad4f3496dd9aec86e6b7c8d6d97488a1e61acf956ceba1d482486461723', 'qualify_dotnet11_linux': '459074adfe4bca8d94aaad1a41747a1d40e2684c51af179ae81106bf802b9c67'}[name]
+ p=HERE/(name+'.py');expected={'qualify_dotnet11_windows': 'e3fd61eed2ad20f49ed801fd9046efa9145bdb7ef5b96245f172fe710ecd9e28', 'qualify_dotnet11_linux': '99548f525953c9d14efca75f5dfd3df91ddeca15c976c9ed7961e6dd2d572b43'}[name]
  if hashlib.sha256(p.read_bytes()).hexdigest()!=expected:raise RuntimeError('CONSUMER_BACKEND_SOURCE_IDENTITY')
  spec=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(spec);sys.modules[name]=m;spec.loader.exec_module(m);return m
 Q=module('qualify_dotnet11_windows' if os.name=='nt' else 'qualify_dotnet11_linux');R=Q.R;j=Q.j

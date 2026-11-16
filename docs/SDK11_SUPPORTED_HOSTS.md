@@ -118,3 +118,11 @@ from that mode; ordinary two-row/policy routes remain. Linux fact757abf2d from
 803eb716 is immutable and reused without replay. Global SDK_READY remains false.
 No public push, dispatch, SDK/native/product qualification or release is
 authorized or claimed by this source candidate.
+
+The private Windows source correction normalizes recorded PathLike argv to the
+same strings already used to launch the command. It also preserves at most six
+owned relative module/function/line frames, <=4KiB total, through existing
+failure receipts, without locals/arguments/source lines/absolute paths/env/raw
+TypeError text. Pure mocked source checks passed; the actual failed run43929153631
+TypeError origin remains UNKNOWN. This is no SDK/native/CI/product PASS claim.
+Linux803eb/fact757ab remains immutable; global SDK_READY stays false.

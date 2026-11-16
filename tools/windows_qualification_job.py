@@ -146,7 +146,7 @@ def run_job(argv,cwd,env,deadline_tick,evidence,job_name=None,inherited_job_name
             time.sleep(.1)
         _checked(K.QueryInformationJobObject(job,9,ctypes.byref(actual),ctypes.sizeof(actual),None))
         proof={'kind':'actual-Windows-Job','memoryMax':int(actual.JobMemory),'activeProcessMax':int(actual.Basic.ActiveProcesses),'cpuRate':int(actualcpu.Rate),'logicalHostCpu':int(logical),'effectiveCpuCores':actualcpu.Rate*logical/10000,'childMembershipBeforeResume':True,'inheritedAggregateBeforeResume':bool(inherited_job_name),'retainedCreationHandles':True,'peakJobMemory':int(actual.PeakJobMemory),'activeProcessesAtTeardown':int(accounting.Active),'totalProcesses':int(accounting.Total)}
-        record={'childBeforeExec':{'pid':int(process.pid),'processStartIdentity':child_start,'membershipBeforeResume':True},'schema':'bounded-sdk11-process/v1','argv':argv,'cwd':str(cwd),'pid':int(process.pid),'exitCode':int(code.value),'timedOut':timed,'seconds':time.monotonic()-start,'actualCap':proof}
+        record={'childBeforeExec':{'pid':int(process.pid),'processStartIdentity':child_start,'membershipBeforeResume':True},'schema':'bounded-sdk11-process/v1','argv':list(map(str,argv)),'cwd':str(cwd),'pid':int(process.pid),'exitCode':int(code.value),'timedOut':timed,'seconds':time.monotonic()-start,'actualCap':proof}
         _write_json(evidence/'process.json',record); need(not timed,'CHILD_WALL_OR_LOG_CAP'); need(code.value==0,'CHILD_NONZERO:'+str(code.value)); return record
     finally:
         if process.process and K.WaitForSingleObject(process.process,0)==0x102:

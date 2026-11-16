@@ -22,7 +22,7 @@
   },
   "sourceAllowlistAndProductAcceptance": "Existing04 product109/17/4/contracts/versions/locks/notices/advisories/signatures preserved; missingactualinputs remainHOLD. Exactfuturegate must bindacceptedproducerfact and owncurrenthost/controller/profile before targets.",
   "sourceBindingStrategy": "EXACT_EVENT_COMMIT_AND_SOURCE_PINS",
-  "sourcePinTableSha256": "b9d649237fc10ec116deaf23e73c8f344fc27f3d07e43cd885742baf58152d7c",
+  "sourcePinTableSha256": "3308d32e451118f7ac3560c9b13dca00915e0db65382435db5a295b5d16150d4",
   "sourcePins": [
     {
       "path": ".gitattributes",
@@ -77,7 +77,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "ed8cfe58332cc10882a679278d5e03c1d870d925"
+      "gitBlob": "c6c7a1ac397f7a1e1e113dbf0cd53ddf62b25fe4"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -122,12 +122,12 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "6419349db9aee35fddda1dd4f184437482d3b837"
+      "gitBlob": "3e836bf63e645da693f2891ac2b7ea497afc293c"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
       "mode": "100644",
-      "gitBlob": "01da0b920fe1bb3325d22b33464d71635cf91d81"
+      "gitBlob": "ec78257b1b89f95062a9494cb5cb2856d2510fc7"
     },
     {
       "path": "docs/TECH-REFRESH-20261114.md",
@@ -242,7 +242,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "dc7319f69308e4142ac4c5ae953f58c4d34de5a2"
+      "gitBlob": "c2de4afd1a3059178e4630020f1b7f3db0d36403"
     },
     {
       "path": "tools/dotnet11-host-qualification.schema.json",
@@ -292,12 +292,12 @@
     {
       "path": "tools/qualify_dotnet11_linux.py",
       "mode": "100644",
-      "gitBlob": "d8d071e5fd28c64364c776456b7dcda7cfee6a77"
+      "gitBlob": "4a085180b1faac5ae904416cd89af68ac851d456"
     },
     {
       "path": "tools/qualify_dotnet11_windows.py",
       "mode": "100644",
-      "gitBlob": "8a7f96ec30386e4bc6db1ea984f752e567450592"
+      "gitBlob": "bd7ed2e5bcd65fce7c02af43a8df02887df0a075"
     },
     {
       "path": "tools/run_actionlint.py",
@@ -317,7 +317,7 @@
     {
       "path": "tools/sdk11_ci_runtime.py",
       "mode": "100644",
-      "gitBlob": "3c532af276f8188b90cb34ce596e8a476085fc3e"
+      "gitBlob": "d2d854e2d0e403592135de4b81cd48491c9275d0"
     },
     {
       "path": "tools/test_actionlint_admission.py",
@@ -337,7 +337,7 @@
     {
       "path": "tools/windows_qualification_job.py",
       "mode": "100644",
-      "gitBlob": "1f8f3af9c707d08cc03fabb77e0fbc72132e9466"
+      "gitBlob": "1960289b88d27994a12685d574958c8b7a787d54"
     },
     {
       "path": "vendor/PUBLIC-PATH-GUARDS-LICENSE",

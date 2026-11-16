@@ -1,9 +1,9 @@
 """Fixed SDK11 CI recipes; library only. No source import performs acquisition/targets."""
 from __future__ import annotations
 import argparse,contextlib,ctypes,gzip,hashlib,importlib.util,json,os,platform,re,signal,ssl,stat,struct,subprocess,sys,tarfile,time,urllib.request,zipfile
-from pathlib import Path
+from pathlib import Path,PureWindowsPath,PurePosixPath
 HERE=Path(__file__).resolve().parent;ROOT=HERE.parent
-PINS={'catalogSha256': 'f87ecbf9ffebd4bcb6cd435739a070042e8c20299f63882e0277803478b54c7a', 'fixtureSha256': 'd8b2b3bc9a95ba1e7ab9332f3fcef9826e7cbd9fd83059c7f2e0d475627aa13f', 'jobHelperSha256': '0ad85ec7c62fa46aee8be79ece3465060268b2f077595a0bad068ae751668694', 'memberManifestSha256': '7eb452d5eaa748773eb0b12d1abc8da1a9f1c192b06444dc88c6511de56b63c3', 'catalogRows': 5480, 'schemaSha256': '63e04fa5d270c87b93e6e1f4c38bfbcf336b950b39fe1854dc4e514f0661f14c', 'factHelperSha256': '6bb0fe5199377dfdb0caed76cf274bcef631205648d9dbf0d67e1f43433e9a7e', 'linuxCatalogSha256': '307d56b0590f5adf8bfdc03ca22d151b987774c2e49934598cfd0ac0700c0571', 'inputGuardSha256': '7420b08d78d3b1476be41385d179a42212a2a7e1a965a8d8ea3b67bb14da7925', 'linuxMaterializerSha256': '5f0dbb951cbe615d8c6dd9edbb63b11143cc457319bdcc9000ea9a486f660fb8', 'profileSha256': '8b5805bea186078e76afd0917bc5a2a990af3f3b990ba231965d99290e417ad9'}
+PINS={'catalogSha256': 'f87ecbf9ffebd4bcb6cd435739a070042e8c20299f63882e0277803478b54c7a', 'fixtureSha256': 'd8b2b3bc9a95ba1e7ab9332f3fcef9826e7cbd9fd83059c7f2e0d475627aa13f', 'jobHelperSha256': '0959e7cb097bb17d774ed0824bb7b9e95e1b94112d968d343fb9fca0fb5166ce', 'memberManifestSha256': '7eb452d5eaa748773eb0b12d1abc8da1a9f1c192b06444dc88c6511de56b63c3', 'catalogRows': 5480, 'schemaSha256': '63e04fa5d270c87b93e6e1f4c38bfbcf336b950b39fe1854dc4e514f0661f14c', 'factHelperSha256': '6bb0fe5199377dfdb0caed76cf274bcef631205648d9dbf0d67e1f43433e9a7e', 'linuxCatalogSha256': '307d56b0590f5adf8bfdc03ca22d151b987774c2e49934598cfd0ac0700c0571', 'inputGuardSha256': '7420b08d78d3b1476be41385d179a42212a2a7e1a965a8d8ea3b67bb14da7925', 'linuxMaterializerSha256': '5f0dbb951cbe615d8c6dd9edbb63b11143cc457319bdcc9000ea9a486f660fb8', 'profileSha256': '8b5805bea186078e76afd0917bc5a2a990af3f3b990ba231965d99290e417ad9'}
 def digest(p,algorithm='sha256'):
  with Path(p).open('rb') as f:return hashlib.file_digest(f,algorithm).hexdigest()
 def load_module(name,sha):
@@ -208,9 +208,38 @@ def publish_proof(spec,terminal,peak_memory):
  root=Path(spec['root']);f.need(clock()<int(spec['startTick'])+900000,'FINAL900_DEADLINE');value=read(root/'worker-fact.json');value['terminal']=terminal;value['caps']['peakMemoryBytes']=int(peak_memory);schema=read(HERE/'dotnet11-host-qualification.schema.json');f.validate_fact(value,schema)
  proof=ROOT/'artifacts'/('sdk11-qualification-'+spec['rid']);proof.mkdir(parents=True,exist_ok=False);write(proof/'host-fact.json',value);total=sum(p.stat().st_size for p in proof.iterdir());f.need(total<=8388608,'PROOF8MIB_LIMIT');return proof
 
+TRACE_MODULES=frozenset({'tools/sdk11_ci_runtime.py','tools/windows_qualification_job.py','tools/linux_qualification_job.py','tools/qualify_dotnet11_windows.py','tools/qualify_dotnet11_linux.py','tools/consume_dotnet11_host_fact.py','tools/sdk11_ci_facts.py','tools/qualification_input_guard.py','tools/materialize_qualification_linux.py'})
+
+def safe_failure_frames(exc):
+ # Pure code metadata only: never inspect locals/args, source lines or format a traceback.
+ try:
+  flavor=PureWindowsPath if ROOT.drive else PurePosixPath;base=flavor(str(ROOT));frames=[];tb=exc.__traceback__;visited=0
+  while tb is not None and visited<256:
+   visited+=1;code=tb.tb_frame.f_code;file=flavor(code.co_filename);relative=file.relative_to(base).as_posix() if file.is_absolute() and file.is_relative_to(base) else file.as_posix() if not file.is_absolute() else ''
+   if relative in TRACE_MODULES and re.fullmatch(r'[A-Za-z_<>][A-Za-z0-9_.<>-]{0,63}',code.co_name) and type(tb.tb_lineno) is int and 0<tb.tb_lineno<10000000:frames.append({'module':relative,'function':code.co_name,'line':tb.tb_lineno})
+   tb=tb.tb_next
+  frames=frames[-6:]
+  return frames if len(json.dumps(frames,separators=(',',':')).encode())<=4096 else []
+ except Exception:return []
+
+def public_failure_trace(cause,worker):
+ try:
+  def selected(record,maximum):
+   result=[];rows=record.get('frames',[]) if type(record) is dict else []
+   if type(rows) is not list:return result
+   for row in rows[-maximum:] if maximum else []:
+    if type(row) is dict and set(row)=={'module','function','line'} and row.get('module') in TRACE_MODULES and type(row.get('function')) is str and re.fullmatch(r'[A-Za-z_<>][A-Za-z0-9_.<>-]{0,63}',row['function']) and type(row.get('line')) is int and 0<row['line']<10000000:result.append({k:row[k] for k in ['module','function','line']})
+   return result
+  origin=selected(worker,6);supervisor=selected(cause,6-len(origin));value={'worker':origin,'supervisor':supervisor}
+  return value if len(json.dumps(value,separators=(',',':')).encode())<=4096 else {'worker':[],'supervisor':[],'state':'TRACE_INVALID_OR_OVERSIZE'}
+ except Exception:return {'worker':[],'supervisor':[],'state':'TRACE_UNAVAILABLE_PRIMARY_FAILURE_PRESERVED'}
+
 def failure_code(exc):
- value=str(exc)
- return {'exceptionType':type(exc).__name__[:64],'code':value if re.fullmatch(r'[A-Z][A-Z0-9_:.-]{0,127}',value) else 'DETAIL_REDACTED_USE_PRIVATE_CAUSE','errno':getattr(exc,'errno',None)}
+ kind=type(exc).__name__;kind=kind if re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,63}',kind) else 'UNKNOWN'
+ try:value=str(exc) if kind in ('Denied','CapError','AdmissionError') else ''
+ except Exception:value=''
+ number=getattr(exc,'errno',None);number=number if type(number) is int and abs(number)<2147483648 else None
+ return {'exceptionType':kind,'code':value if re.fullmatch(r'[A-Z][A-Z0-9_:.-]{0,127}',value) else 'DETAIL_REDACTED_USE_PRIVATE_CAUSE','errno':number,'frames':safe_failure_frames(exc)}
 
 def capture_entry_failure(exc):
  # No raw exception/output/path/env data crosses into the public failure receipt.
@@ -254,7 +283,7 @@ def failure_summary(spec,cause,terminal=None,stop=None):
  clean=lambda value: value if type(value) is int or value in (None,True,False) else (value if type(value) is str and re.fullmatch(r'[A-Za-z0-9_.:-]{1,128}',value) else 'UNKNOWN')
  term={k:clean((terminal or {}).get(k,'UNKNOWN')) for k in ['launcherTerminal','workerPidfdTerminal','ownedPopulation','workerExitCode','cleanupResult','evidenceSha256']}
  stopValue={k:clean((stop or {}).get(k,'UNKNOWN')) for k in ['serviceResult','exitCode','exitStatus','remainingPopulationExcludingObserver']}
- receipt={'schema':'sdk11-ci-failure-summary/v1','state':'FAILURE_OBSERVED_NO_QUALIFICATION','rid':rid,'sourceCommit':clean(os.environ.get('GITHUB_SHA','UNKNOWN')),'runId':clean(os.environ.get('GITHUB_RUN_ID','UNKNOWN')),'job':clean(os.environ.get('GITHUB_JOB','UNKNOWN')),'attempt':clean(os.environ.get('GITHUB_RUN_ATTEMPT','UNKNOWN')),'controllerSha256':digest(Path(sys.argv[0])) if Path(sys.argv[0]).is_file() else 'UNKNOWN','workflowSha256':digest(ROOT/'.github/workflows/verify.yml') if (ROOT/'.github/workflows/verify.yml').is_file() else 'UNKNOWN','actualStage':stage,'cause':{k:clean(cause.get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'workerCause':{k:clean((worker or {}).get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'terminal':term,'stopOutcome':stopValue,'windowsHostObservation':public_windows_host_observation(root) if rid=='win-x64' else {'state':'NOT_APPLICABLE_LINUX'},'boundary':'SANITIZED_FAILURE_ONLY_NOT_HOST_FACT_NOT_PASS_NO_SDK_OR_RAW_OUTPUT'}
+ receipt={'schema':'sdk11-ci-failure-summary/v1','state':'FAILURE_OBSERVED_NO_QUALIFICATION','rid':rid,'sourceCommit':clean(os.environ.get('GITHUB_SHA','UNKNOWN')),'runId':clean(os.environ.get('GITHUB_RUN_ID','UNKNOWN')),'job':clean(os.environ.get('GITHUB_JOB','UNKNOWN')),'attempt':clean(os.environ.get('GITHUB_RUN_ATTEMPT','UNKNOWN')),'controllerSha256':digest(Path(sys.argv[0])) if Path(sys.argv[0]).is_file() else 'UNKNOWN','workflowSha256':digest(ROOT/'.github/workflows/verify.yml') if (ROOT/'.github/workflows/verify.yml').is_file() else 'UNKNOWN','actualStage':stage,'cause':{k:clean(cause.get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'workerCause':{k:clean((worker or {}).get(k,'UNKNOWN')) for k in ['exceptionType','code','errno']},'terminal':term,'stopOutcome':stopValue,'failureTrace':public_failure_trace(cause,worker),'windowsHostObservation':public_windows_host_observation(root) if rid=='win-x64' else {'state':'NOT_APPLICABLE_LINUX'},'boundary':'SANITIZED_FAILURE_ONLY_NOT_HOST_FACT_NOT_PASS_NO_SDK_OR_RAW_OUTPUT'}
  raw=json.dumps(receipt,sort_keys=True,indent=2).encode();f.need(len(raw)<=32768,'FAILURE_SUMMARY32K_LIMIT');proof=ROOT/'artifacts'/('sdk11-qualification-'+rid);proof.mkdir(parents=True,exist_ok=True);target=proof/'failure-summary.json'
  if not target.exists():
   staged=proof/'failure-summary.private.tmp'
