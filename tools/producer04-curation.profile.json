@@ -1,0 +1,98 @@
+{
+  "schema": "sdk11-curation-discovery-profile/v1",
+  "mode": "DISCOVERY_ONLY_SDK0",
+  "contractSha256": "1b91117ed75e248965b0e5634d61c9f2169ac796d58753729adf94e48d74b1a3",
+  "wholeSecondsMax": 180,
+  "workerSecondsMax": 150,
+  "terminalReserveSeconds": 30,
+  "profile": {
+    "memoryMaxBytes": 4294967296,
+    "tasksMax": 64,
+    "cpuEquivalentsMax": 2,
+    "linuxSwapMaxBytes": 0,
+    "dataDiskMaxBytes": 268435456,
+    "proofMaxBytes": 8388608,
+    "rawSingleMaxBytes": 67108864,
+    "rawAggregateMaxBytes": 201326592,
+    "expandedStreamSingleMaxBytes": 268435456,
+    "expandedStreamAggregateMaxBytes": 805306368,
+    "membersPerArchiveMax": 10000,
+    "membersAllArchivesMax": 30000,
+    "CMSBytesPerPackageMax": 2097152
+  },
+  "exactGetInputs": [
+    {
+      "id": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+      "version": "11.0.0",
+      "rid": "linux-x64",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.app.runtime.linux-x64/11.0.0/microsoft.aspnetcore.app.runtime.linux-x64.11.0.0.nupkg",
+      "expectedDeclaredBytes": 13048557,
+      "maximumGets": 1,
+      "redirects": 0,
+      "proxy": 0,
+      "auth": 0,
+      "retry": 0,
+      "perFileSeconds": 40
+    },
+    {
+      "id": "Microsoft.NETCore.App.Host.linux-x64",
+      "version": "11.0.0",
+      "rid": "linux-x64",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.host.linux-x64/11.0.0/microsoft.netcore.app.host.linux-x64.11.0.0.nupkg",
+      "expectedDeclaredBytes": 5085644,
+      "maximumGets": 1,
+      "redirects": 0,
+      "proxy": 0,
+      "auth": 0,
+      "retry": 0,
+      "perFileSeconds": 40
+    },
+    {
+      "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+      "version": "11.0.0",
+      "rid": "linux-x64",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.linux-x64/11.0.0/microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+      "expectedDeclaredBytes": 42270532,
+      "maximumGets": 1,
+      "redirects": 0,
+      "proxy": 0,
+      "auth": 0,
+      "retry": 0,
+      "perFileSeconds": 40
+    }
+  ],
+  "declaredPolicyHashes": {
+    "Microsoft.AspNetCore.App.Runtime.linux-x64": {
+      "base64": "7G7Rtb4wsazwSr4Q8XOwwfjfSPRw2id2hcKCGu58tuatIXSMVqFbbJqFfmdY4KugZgSKZEzK6q0J/4Lj7kY4FA==",
+      "sha512Hex": "ec6ed1b5be30b1acf04abe10f173b0c1f8df48f470da277685c2821aee7cb6e6ad21748c56a15b6c9a857e6758e0aba066048a644ccaeaad09ff82e3ee463814",
+      "sourceField": "catalog.packageHash",
+      "status": "FEED_DECLARED_POLICY_BASIS_ONLY_NOT_OBSERVED_NORMALIZED_CONTENTHASH",
+      "boundary": "Do not label declared catalog packageHash as observed raw signed nupkg SHA512 or normalized NuGet contentHash. Both actual identities/signature/notices remain UNKNOWN."
+    },
+    "Microsoft.NETCore.App.Host.linux-x64": {
+      "base64": "p9VMbSVN0vWAf1oj+NTm2Yuki5lU+7evJplPeiZ2C89B12L6Y2JrTAdzvETFKFzHPxn/4cRmy5tI4tJ/Ed5hbA==",
+      "sha512Hex": "a7d54c6d254dd2f5807f5a23f8d4e6d98ba48b9954fbb7af26994f7a26760bcf41d762fa63626b4c0773bc44c5285cc73f19ffe1c466cb9b48e2d27f11de616c",
+      "sourceField": "73bb selectedNativePacks.officialContentHashBase64/officialSha512",
+      "status": "METADATA_DECLARED_POLICY_BASIS_NOT_OBSERVED_SIGNED_RAW_OR_NORMALIZED_HASH"
+    },
+    "Microsoft.NETCore.App.Runtime.linux-x64": {
+      "base64": "92vCWKQbiW9T2QgCRTwiHVHpxpv8fDAOiCRUnlO9QkLhd2oWGKJt9zhHN4mbd7Al/WmBwD+tF0Jt8Ux5Ofox7g==",
+      "sha512Hex": "f76bc258a41b896f53d90802453c221d51e9c69bfc7c300e8824549e53bd4242e1776a1618a26df7384737899b77b025fd6981c03fad17426df14c7939fa31ee",
+      "sourceField": "73bb selectedNativePacks.officialContentHashBase64/officialSha512",
+      "status": "METADATA_DECLARED_POLICY_BASIS_NOT_OBSERVED_SIGNED_RAW_OR_NORMALIZED_HASH"
+    }
+  },
+  "lease": {
+    "protocolPath": "E:/Codex WorkSpace/Git Projects/portfolio-management/development-management-20261110/wave2-state/LEASE-PROTOCOL.json",
+    "protocolSha256": "9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b",
+    "canonicalWindows": "E:/Codex WorkSpace/Git Projects/portfolio-management/development-management-20261110/wave2-state/LOCAL-FIXTURE-LEASE.json"
+  },
+  "host": "EXISTING_WINDOWS_METADATA_ONLY_0959_JOB_04_CAPS",
+  "SDK": 0,
+  "futureSDKAdmission": "CLOSED",
+  "productAdmission": "UNBOUND",
+  "normalizedNuGetContentHash": "UNKNOWN",
+  "CMSChainTrust": "UNKNOWN",
+  "currentAdvisory": "UNKNOWN",
+  "WindowsQualification": "HOLD"
+}

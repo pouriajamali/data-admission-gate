@@ -1,0 +1,182 @@
+{
+  "schema": "producer04-linux-curation-source-and-bounded-sdk0-discovery-contract/v1",
+  "date": "2026-11-16",
+  "state": "SOURCE_IMPLEMENTATION_AND_EXACT_THREE_PACKAGE_SDK0_DATA_DISCOVERY_APPROVED_NO_SDK_RUNTIME",
+  "proposal": {
+    "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\NEXT-CURATION-SOURCE-PROPOSAL.json",
+    "bytes": 48137,
+    "sha256": "b4ef11853dfe0d1fc3acbc8fb39080ba38b8f8bec07118dd6997c03d891f0106"
+  },
+  "base": {
+    "HEAD": "dd5a148fe4c9b83f218533271860f051348c39bf",
+    "tree": "c0d96ebebbe52920e812c7798eb838ef6a7085bd",
+    "parent": "d3b7a7926c7cb90286faaeb52b5e3daa4544956d",
+    "branch": "codex/own04-normal-binding-private-20261116",
+    "privateWorktree": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo",
+    "knownSSHVerified": true,
+    "sourcePinRows": 77,
+    "sourcePinTableSha256": "439b42ee15053248f61dce0b64ef092cdc1ccc60582373378d0d25f691b66dbe",
+    "actualControllerProfileAndSourcePins": {
+      "tools/consume_dotnet11_host_fact.py": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\consume_dotnet11_host_fact.py",
+        "bytes": 18975,
+        "sha256": "675c0723e3a7a402991d76432c6c4c1eb7567fbb49093ed6c20e8c59836e9f0b"
+      },
+      "tools/qualify_dotnet11_linux.py": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\qualify_dotnet11_linux.py",
+        "bytes": 14221,
+        "sha256": "cdf1773d1d672fe78d214dd9a35616aaea0b3beade1578aa9a216e88e87a43ca"
+      },
+      "tools/linux_qualification_job.py": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\linux_qualification_job.py",
+        "bytes": 4865,
+        "sha256": "0d63594368cb6839145d4b1798730fe8fab05f6a94d86834f3a82d52475e7227"
+      },
+      "tools/sdk11_ci_runtime.py": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\sdk11_ci_runtime.py",
+        "bytes": 47685,
+        "sha256": "d64ba8ffdf1d7ee0743d29cfb4fbdb8e9fe8c3c58428a7557cdabc7aec8f244f"
+      },
+      "tools/dotnet11-consumer04-normal-profile.json": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\dotnet11-consumer04-normal-profile.json",
+        "bytes": 537,
+        "sha256": "cfd22549f1c60671d7c4b2bb8a8be3d1609b551bcada21c20f1653adfd675f91"
+      },
+      "tools/dotnet11-consumer04-source-pins.json": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\dotnet11-consumer04-source-pins.json",
+        "bytes": 11272,
+        "sha256": "3699e98637ea3d8c4b3a7bf578d36ac14b188689c209e53e9fb3ccb07b6b8ae0"
+      },
+      "tools/dotnet11-consumer04-admission.lock.json": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\dotnet11-consumer04-admission.lock.json",
+        "bytes": 1694,
+        "sha256": "baad42663124443d96aacf6de8f82d5ac2013d3003364ffa284af8c804cf0060"
+      },
+      "tools/check_dotnet11.py": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\tools\\check_dotnet11.py",
+        "bytes": 36292,
+        "sha256": "d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d"
+      },
+      ".github/workflows/verify.yml": {
+        "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\own04-normal-binding-private-20261116\\repo\\.github\\workflows\\verify.yml",
+        "bytes": 13921,
+        "sha256": "f498cb8c4ef75ffe245ef0e9c697c6d6e124bc8ab34a49cd2def20e862f8adfe"
+      }
+    },
+    "ownProfileBytesState": "PROPOSED_PROFILE_NOT_RUNTIME_ADMITTED",
+    "binding": "All pins are actual committed dd5a file bytes; no fictionalcurationcontroller or acceptedruntimeprofile hash."
+  },
+  "accountableOwner": "producer04; manager01a1a0df sole actual dispatcher/watcher, root01a1a0c7 one consolidated final candidate reviewer",
+  "purpose": "Resolve actual Linux11 Core/Host/ASP.NET raw/framing/CMS/notices identity gaps and implement one finite curation-only source stage. Metadata and discovery do not admit cryptographic trust, normalized content identity, SDK, graph/locks or products.",
+  "stageA_source": {
+    "approved": [
+      "Implement one explicit curation-only mode in the existing reviewed nonroot04 launcher/worker, plus bounded source-pinned package inspection/normalization/advisory helpers only where necessary. Preserve original held-worker/current-context/bootstrap/lease/caps/deadline and product consumer guard; do not call UNBOUND consumer_work or forge admission to generate locks.",
+      "Before any target or SDK call, require explicit separate curation admission, exact code/source/profile/input identities and current own held evidence. Unresolved raw/normalized/CMS/trust/timestamp/revocation/notices/advisory data remains UNKNOWN/HOLD. Product acceptance and Windows remain closed.",
+      "Implement a discovery-only branch able to read/download the exact three data files below without invoking SDK, package binaries, native tools, controller product entry, callbacks or installers. Prefer reuse of accepted bounded readers/ZIP/CMS DATA parsing; do not create a general PKI/network framework or bootstrap new parser dependencies.",
+      "Future SDK signature verification/normalization must use an exact reviewed existing SDK/NuGet operation or independently reviewed precise normalization algorithm. RawsignedSHA512, feed-declared packageHash and NuGet normalized contentHash are distinct fields. If the method/source is unbound, leave that later SDK phase closed, not guessed.",
+      "Future audit adapter/config must bind actual complete advisory data and effective required/trusted signer configuration. Retain audit true/all/low and online chain/timestamp/revocation requirements; no empty-clean synthetic audit, NuGetAudit=false, AnySigned, untrusted-root allowance or ignored source errors. No metadata/advisory/PKI request added here.",
+      "Offline fixtures only for the changed curation entry/phase separation/current-context/finiteURL/body and archive bounds/ZIP path-type-collision/CMS parser bounds/redaction/primary preservation/normalization-label separation. No healthy common qualification/materializer/consumer suites or six bindings reread.",
+      "Explicit CAS task-owned code/docs/pin changes, actual staged/committed mode/blob coverage and one known-key SSH local signed candidate; no public push. Exact helper/source identities and new fixture receipts must be durable before discovery starts. Manager checks exact finite contract/caps locally; no intermediate root ACK required for this bounded phase."
+    ],
+    "sourceOnlyFutureEnvelope": "Original900s/worker840/4GiB64CPU2/swap0 profile and seven proposed signature/graph commands remain design ceilings, not execution permission. All stricter inherited timers remain.",
+    "noScopeExpansion": "Existing immutable shared d76a/7758/63e/757/0452/7420/5f source/data are reused unchanged. Do not rewrite frozen common qualification or globalSDK_READY."
+  },
+  "stageB_sdk0_discovery": {
+    "state": "ONE_BOUNDED_DATA_ONLY_DISCOVERY_AFTER_STAGEA_SELF_BOUND_HELPER_AND_FIXTURES_PASS",
+    "exactGetInputs": [
+      {
+        "id": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+        "version": "11.0.0",
+        "rid": "linux-x64",
+        "url": "https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.app.runtime.linux-x64/11.0.0/microsoft.aspnetcore.app.runtime.linux-x64.11.0.0.nupkg",
+        "expectedDeclaredBytes": 13048557,
+        "maximumGets": 1,
+        "redirects": 0,
+        "proxy": 0,
+        "auth": 0,
+        "retry": 0,
+        "perFileSeconds": 40
+      },
+      {
+        "id": "Microsoft.NETCore.App.Host.linux-x64",
+        "version": "11.0.0",
+        "rid": "linux-x64",
+        "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.host.linux-x64/11.0.0/microsoft.netcore.app.host.linux-x64.11.0.0.nupkg",
+        "expectedDeclaredBytes": 5085644,
+        "maximumGets": 1,
+        "redirects": 0,
+        "proxy": 0,
+        "auth": 0,
+        "retry": 0,
+        "perFileSeconds": 40
+      },
+      {
+        "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+        "version": "11.0.0",
+        "rid": "linux-x64",
+        "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.linux-x64/11.0.0/microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+        "expectedDeclaredBytes": 42270532,
+        "maximumGets": 1,
+        "redirects": 0,
+        "proxy": 0,
+        "auth": 0,
+        "retry": 0,
+        "perFileSeconds": 40
+      }
+    ],
+    "totalGETsMax": 3,
+    "expectedTotalBytes": 60404733,
+    "wholeSecondsMax": 180,
+    "clock": "Start once before first operational/lease step; includes all3 acquisitions, rawhashes, bounded ZIP/CMS/notices inspection, durable proof and original owned terminal/lease release; no reset. Preserve at least30s terminal reserve; downloads stop before reserve.",
+    "profile": {
+      "memoryMaxBytes": 4294967296,
+      "tasksMax": 64,
+      "cpuEquivalentsMax": 2,
+      "linuxSwapMaxBytes": 0,
+      "dataDiskMaxBytes": 268435456,
+      "proofMaxBytes": 8388608,
+      "rawSingleMaxBytes": 67108864,
+      "rawAggregateMaxBytes": 201326592,
+      "expandedStreamSingleMaxBytes": 268435456,
+      "expandedStreamAggregateMaxBytes": 805306368,
+      "membersPerArchiveMax": 10000,
+      "membersAllArchivesMax": 30000,
+      "CMSBytesPerPackageMax": 2097152
+    },
+    "host": "Exactly one existing current metadata-only controlled host, declared in intent: existing Windows Job helper0959 with explicit04profile or existing reviewed nonrootLinux launcher/cgroup. Actual current source/held identity/CPU/RAM/tasks membership and original process terminal must be recorded. Windows data inspection is not Windows SDK qualification. No external server/CI/new probe/job service or localSDK.",
+    "lease": "Canonical9120 protocol, project04 own random token/PID/start. Busy means wait/HOLD; no reset/steal. Release only exact own lease after original process/owned population terminal proof; UNKNOWN cleanup stays UNKNOWN.",
+    "transport": "Only three exact initial HTTPS NuGet flatcontainer URLs, identity response, status200 and sameURL; no redirects/fallback/query/cookies/netrc/credential broker/proxy. Require exact final observed bytecount against supplied declared size; inspect Content-Length consistently. Hash actual signed wire bytes SHA256/SHA512 independently and preserve original rawfiles. No metadata-refresh/HEAD/SDK/archive/CRL/AIA/OCSP/timestamp GET; stop on failure, no automatic second request.",
+    "dataInspection": "Do not execute/extract executable targets. Stream bounded entry hashes/CRC and structural manifest from ZIP, reject local/central framing mismatch, traversal, separators, duplicate/casecollision/type/link/reparse ambiguity. Retain bounded original nuspec/LICENSE/THIRD-PARTY/CMS bytes as data. CMS/embedded X509/signing/timestamp fingerprints and AIA/CDP/OCSP URLs may be decoded with a bounded pinned reader only, marked OBSERVED_UNVERIFIED; no trust-store modification or automatic resolver. Unknown parser/provenance remains UNKNOWN. No full805MiB expanded tree written in this256MiB discovery disk budget.",
+    "result": "One immutable private raw3-file receipt and structural member/CMS/notices manifests, actual parser/source/caps/timer/lease/terminal proof. Exact observed rawhashes are data identity, not authenticity or normalizedhash acceptance. Do not append admitted shared catalog entries or publish rawpackages.",
+    "executionCounts": {
+      "SDK": 0,
+      "dotnetNugetVerify": 0,
+      "graphRestore": 0,
+      "build": 0,
+      "productNative": 0,
+      "packageBinary": 0,
+      "CI": 0,
+      "push": 0,
+      "public": 0
+    }
+  },
+  "stageC_final_candidate": {
+    "deliverOnce": [
+      "Exact signed source HEAD/tree/source-pin rows/controller/profile/helper identities and changed offline fixture receipt",
+      "Observed rawsize/SHA256/SHA512/structural member manifest/nuspec/CMS/notices; separate feed-declared and normalized fields, with UNKNOWN preserved",
+      "Finite exact PKI/advisory/normalization source/input requirements and method for actual future signature validation; no unbounded future network",
+      "Updated precise future Linux-only curation request with original7command maximum, rawinput identities, effective XML/trust/fallback policy, own source/kernel/clock/caps, exact required/available disk; no inferred project12 budget",
+      "One consolidated source+data review request. No per-command ACK or healthy replay; wait for a separate exact SDK/runtime/CI/public gate."
+    ],
+    "notCompletion": "This stage is not input cryptographic admission, generated lock evidence, accepted Windows fact, product delivery, or globalSDK_READY."
+  },
+  "notPermitted": [
+    "Accepted SDK archive fetch/materialization or any SDK command during this contract",
+    "PKI/advisory/catalog/metadata refresh or requests beyond exactthree",
+    "Windows qualification retry or any use of localR3 STOP to run SDK",
+    "Graph/lock generation, trackednet10 lock overwrite, product build/run/test/package",
+    "New root/admin host repair, new server/infrastructure, budget/account/fee changes, project12 disk waiver",
+    "Public push/CI/tag/main/merge/release, or another Wave/Goal"
+  ],
+  "SDK_READY": false
+}

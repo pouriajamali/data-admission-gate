@@ -42,3 +42,15 @@ kernel behavior remains unexecuted by this source-preparation task. All six own
 bindings and the next consolidated exact source/runtime/public gate are still
 required. Existing preview.2 releases and original109/17/4 product checks remain
 separate. Adjacent scoped Git attributes preserve exact accepted-proof bytes.
+
+Producer04 has a separate root-dispatched SDK0 discovery entry in
+`tools/curate_dotnet11_inputs.py`, bound to the exact signed handoff/profile.
+It uses the unchanged0959 Windows Job helper for three fixed Linux nupkg DATA
+files only: whole180s, file40s, terminal reserve30s,4GiB/64/CPU2,disk256MiB,
+proof8MiB and canonical9120 lease. ZIP entries are streamed, never fully
+extracted or executed; bounded original CMS/nuspec/notices remain data.
+Raw signed hashes, declared feed policy hashes and normalized NuGet identity
+stay separate. CMS trust, normalized identity and advisories stay UNKNOWN;
+SDK/graph/product phases stay closed, product UNBOUND and Windows on HOLD.
+StageA new offline fixtures passed85 in each normal/-O mode; no actual GET or
+native Job/SDK was run by those fixtures. The manager alone dispatches StageB.

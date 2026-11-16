@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "b46089bb63dd841898b3e7cbd34febda27c03fa9"
+      "gitBlob": "30bcddd8ee0e7c156c54f0c8c755f45cc4cfc35b"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -102,12 +102,12 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "dfd03bccbb62a3cc653b2430e47aeae79c755285"
+      "gitBlob": "131c0d47f9df8f7fc1b17af797320829ea6346e1"
     },
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "da271ca245f9695616edbda9b499fa9c060c7ead"
+      "gitBlob": "550fd33562e8f073c84885ace29037e5d1f2000c"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -230,6 +230,16 @@
       "gitBlob": "3a16619add9b50a39c23320b4ba6d7ba0f7fa900"
     },
     {
+      "path": "tools/curate_dotnet11_inputs.py",
+      "mode": "100644",
+      "gitBlob": "3939f7c477cfa49ca1a0b1cba8b2ff976e67c5b6"
+    },
+    {
+      "path": "tools/curation_data_inspector.py",
+      "mode": "100644",
+      "gitBlob": "9759bc7880d14d3a52543f30b21268e6834f947c"
+    },
+    {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
       "gitBlob": "34d4018e9f8152e976d53b711479e878c0c89c15"
@@ -278,6 +288,16 @@
       "path": "tools/package.py",
       "mode": "100644",
       "gitBlob": "f7e53668364cd03acef84a38cb3bb10d5e29450c"
+    },
+    {
+      "path": "tools/producer04-curation-contract.json",
+      "mode": "100644",
+      "gitBlob": "459f125e5816e3a298ce5f138ba00351e345e3d4"
+    },
+    {
+      "path": "tools/producer04-curation.profile.json",
+      "mode": "100644",
+      "gitBlob": "811971005515255e51f16f4671de21a2e5bff0d5"
     },
     {
       "path": "tools/qualification_input_guard.py",
@@ -338,6 +358,11 @@
       "path": "tools/test_actionlint_admission.py",
       "mode": "100644",
       "gitBlob": "ed8d9360be2d9c88440dc9364d35653d82b1074f"
+    },
+    {
+      "path": "tools/test_curation_discovery.py",
+      "mode": "100644",
+      "gitBlob": "51ecfd5798fe9382a0cd7a2b2f372c274f43d960"
     },
     {
       "path": "tools/test_dotnet11_consumer04.py",
