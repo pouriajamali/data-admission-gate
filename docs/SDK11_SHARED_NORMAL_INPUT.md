@@ -1,10 +1,12 @@
 # Shared SDK11 normal input source interface
 
-This is one producer04-owned source proposal for all six own controllers.
-It has not been applied or used to fetch, materialize or execute an SDK.
-Only Linux fact757abf2d and acceptance0452e1f3 are admitted source inputs;
-Windows has no accepted normal input and is denied. Global SDK_READY is false.
-Producer803eb history and all frozen qualification catalogs remain unchanged.
+Current common source contains independently accepted Linux and Windows SDK producer histories. Windows qualification source86dcda2c/CI44083510897 and Linux native curation source793ec500/CI44082565011 are preserved as historical facts. Both RIDs require each consumer own exact source/profile/current host/held caps/original deadline before transport. Global SDK_READY remains false.
+
+The single callable API is unchanged; its field-level interface is in [SDK11_SHARED_INPUT_INTERFACE.json](SDK11_SHARED_INPUT_INTERFACE.json). Windows uses one source-pinned adapter behind this API; frozen63e schema and qualification catalogs are unchanged. The Linux execution path and Linux history row are preserved. Current normal catalog is tools/sdk11-normal-inputs.lock.json; separate tools/sdk11-native-inputs.lock.json contains exactly three accepted Linux nupkg facts and portable original notices/CMS/member inventories/evidence. A Windows SDK host fact does not grant native nupkg admission.
+
+Source-only adapter fixtures passed normal and -O, with wrong source/fact/caps/PID/clock denials and mocked native-deadline outcomes. The new Windows adapter itself has not been exercised inside a consumer runtime yet; each consumer own existing gate does that without replaying healthy SDK qualification. No SDK/restore/qualification/key operation was performed to build this common source. Product04 remains closed. Existing releases/signatures and other product/client versions are unchanged.
+
+The following earlier-stage notes are retained as history; their Windows-denied/unobserved statements are superseded only by the current accepted histories above.
 
 The callable API is `transport(rid, directory, context) -> (sdk_path, receipt)`
 in tools/check_dotnet11.py. `inspect_sdk(rid, root, context)` rechecks data only.
