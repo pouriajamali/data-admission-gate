@@ -37,10 +37,13 @@ def der_time(data,n):
  need(re.fullmatch(rb'[0-9]{12}Z' if n[0]==23 else rb'[0-9]{14}Z',b) is not None,'DER_TIME')
  try:return int(datetime.datetime.strptime(b.decode(),fmt).replace(tzinfo=datetime.timezone.utc).timestamp())
  except ValueError:raise Hold('DER_TIME') from None
-def extensions(data,node):
+def extensions(data,node,critical=None):
  out={}
  for e in children(data,node):
   f=children(data,e);need(len(f) in (2,3) and f[-1][0]==4,'DER_EXTENSION');o=oid(data,f[0]);need(o not in out,'DER_EXTENSION_DUPLICATE');out[o]=value(data,f[-1])
+  if len(f)==3:
+   need(f[1][0]==1 and value(data,f[1])==b'\xff','DER_EXTENSION_CRITICAL_BOOLEAN')
+   if critical is not None:critical.add(o)
  return out
 def name_parts(data,node):
  labels={'2.5.4.6':'C','2.5.4.8':'ST','2.5.4.7':'L','2.5.4.10':'O','2.5.4.11':'OU','2.5.4.3':'CN','1.2.840.113549.1.9.1':'emailAddress'};items=[]
@@ -134,11 +137,13 @@ def cms_roles(blobs,approved_pool):
   need(roles['author']=={AUTHOR} and roles['repository']=={REPOSITORY} and 1<=len(roles['timestamp'])<=2,'CMS_ROLE_IDENTITY');tsa.update(roles['timestamp']);result.append({k:sorted(v) for k,v in roles.items()})
  need(1<=len(tsa)<=2,'TSA_ROLE_BOUND');return certs,result
 def crl_data(data,fixed_time):
- need(len(data)<=16777216,'CRL_BOUND');root=tlv(data);need(root[0]==48 and root[3]==len(data),'CRL_FRAME');outer=children(data,root);need(len(outer)==3,'CRL_FRAME');f=children(data,outer[0]);off=1 if f[0][0]==2 else 0;need(len(f)>=off+4,'CRL_TBS');issuer=f[off+1];this=f[off+2];nxt=f[off+3];need(nxt[0] in (23,24),'CRL_NEXT_UPDATE_REQUIRED');ext={}
+ need(len(data)<=16777216,'CRL_BOUND');root=tlv(data);need(root[0]==48 and root[3]==len(data),'CRL_FRAME');outer=children(data,root);need(len(outer)==3,'CRL_FRAME');f=children(data,outer[0]);off=1 if f[0][0]==2 else 0;need(len(f)>=off+4,'CRL_TBS');issuer=f[off+1];this=f[off+2];nxt=f[off+3];need(nxt[0] in (23,24),'CRL_NEXT_UPDATE_REQUIRED');ext={};critical=set()
  for n in f[off+4:]:
   if n[0]==160:
-   seq=children(data,n);need(len(seq)==1,'CRL_EXTENSIONS');ext=extensions(data,seq[0])
+   seq=children(data,n);need(len(seq)==1,'CRL_EXTENSIONS');ext=extensions(data,seq[0],critical)
  need('2.5.29.27' not in ext,'CRL_INDIRECT_DELTA_OR_SCOPE_UNSUPPORTED');scope=[]
+ need(not critical-{'2.5.29.28'},'CRL_UNKNOWN_CRITICAL_EXTENSION')
+ need('2.5.29.28' not in ext or '2.5.29.28' in critical,'CRL_IDP_MUST_BE_CRITICAL')
  if '2.5.29.28' in ext:
   data_idp=ext['2.5.29.28'];node_idp=tlv(data_idp);need(node_idp[0]==48 and node_idp[3]==len(data_idp),'CRL_IDP_FRAME');scope=scope_fullnames(data_idp,node_idp)
  need('2.5.29.35' in ext,'CRL_AKI_REQUIRED');b=ext['2.5.29.35'];ids=[value(b,n).hex() for n in children(b,tlv(b)) if n[0]==128];need(len(ids)==1,'CRL_AKI_REQUIRED');start=der_time(data,this);end=der_time(data,nxt);need(start<=fixed_time+300 and end>fixed_time and start<end,'CRL_NOT_CURRENT')
@@ -153,7 +158,7 @@ def coverage(certs,anchors,crls,leaves,fixed_time):
   while True:
    need(current['sha256'] not in seen and len(chain)<8,'CHAIN_LOOP_OR_BOUND');seen.add(current['sha256']);chain.append(current['sha256']);need(current['notBefore']<=fixed_time<=current['notAfter'],'CURRENT_CERTIFICATE_VALIDITY')
    if current['sha256'] in anchors:break
-   parents=[c for c in pool.values() if c['subjectDER']==current['issuerDER'] and current['AKI'] is not None and c['SKI']==current['AKI']];need(len(parents)==1,'CHAIN_ISSUER_AMBIGUOUS_OR_MISSING');parent=parents[0]
+   parents=[c for c in pool.values() if c['subjectDER']==current['issuerDER'] and current['AKI'] is not None and c['SKI']==current['AKI']];trusted=[c for c in parents if c['sha256'] in anchors];parents=trusted if trusted else parents;need(len(parents)==1,'CHAIN_ISSUER_AMBIGUOUS_OR_MISSING');parent=parents[0]
    matches=[r for r in crls if r['issuerDER']==parent['subjectDER'] and r['AKI']==parent['SKI']];need(matches,'CRL_CHAIN_COVERAGE_MISSING');need(len({r['sha256'] for r in matches})==1,'CRL_DUPLICATE_ISSUER_DISAGREES');need(not matches[0].get('scopeURIs') or bool(set(matches[0]['scopeURIs'])&set(cert_dp_uris({'2.5.29.31':current['crlDistributionPointExtension']}) if current.get('crlDistributionPointExtension') else [])),'CRL_SCOPE_DOES_NOT_COVER_CERTIFICATE');used[current['sha256']]=matches[0]['sha256'];current=parent
   chains[leaf]=chain
  return {'chains':chains,'certificateToCRLSHA256':used,'state':'STRUCTURAL_CURRENT_COVERAGE_NATIVE_SIGNATURES_REQUIRED'}
