@@ -11,13 +11,13 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='95546b3c9c0692c5a4039308efb4b3cb1bcc235ee5d45b9a5a0087180c330b99'
+PROFILE_SHA='d05c6d89e45c1b5c63f74664e2e60b008f90210a0ef4e3a5a4cb079933d2a9a4'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
 PACKAGING_SHA='d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b'
 IDS=('Microsoft.AspNetCore.App.Runtime.linux-x64','Microsoft.NETCore.App.Host.linux-x64','Microsoft.NETCore.App.Runtime.linux-x64')
-METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'710c70e944d338349a5f5b250b5a6c5f5e20168a16b6b0a216d9f5b6e2b875fb'}
+METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'8c6313a4ae0dbb43db71b1de92624180c5fc79678a2ae50bea6cb3556c485e51'}
 AMENDMENT_SHA='0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770'
 class Hold(RuntimeError): pass
 def need(value,code):
@@ -114,6 +114,63 @@ def retention_ledger(original_sizes,proof_other_bytes):
  need(type(proof_other_bytes) is int and proof_other_bytes>=0 and all(type(n) is int and n>=0 for n in original_sizes),'RETENTION_INPUT')
  total=sum(original_sizes)+proof_other_bytes
  return {'originalBytes':sum(original_sizes),'otherProofBytes':proof_other_bytes,'requiredProofBytes':total,'maxProofBytes':8388608,'fits':total<=8388608,'beforeSDK':'HOLD' if total>8388608 else 'RETENTION_FITS_ONLY_NOT_METHOD_ACCEPTANCE'}
+LOCK_PROOF_MAX=131072
+METADATA_PROOF_MAX=16384
+CONFIG_PROOF_MAX=65536
+PROPS_PROOF_MAX=16384
+LOCK_PROOF_NAMES=('Admission.net11.lock.json','Admission.Tests.net11.lock.json','Admission.linux-x64.lock.json','Admission.Tests.linux-x64.lock.json')
+def durable_proof_limits():
+ out={'curation/locks/'+n:LOCK_PROOF_MAX for n in LOCK_PROOF_NAMES}
+ out['curation/nuget.audit.sources.config']=CONFIG_PROOF_MAX
+ out.update({'curation/config/curation.'+f+'.props':PROPS_PROOF_MAX for f in ('net11','linux-x64')})
+ out.update({'curation/packages/'+i.lower()+'/11.0.0/.nupkg.metadata':METADATA_PROOF_MAX for i in IDS})
+ return out
+def durable_proof_reserve():return sum(durable_proof_limits().values())
+def durable_snapshot(root,relative):
+ import os,stat
+ limits=durable_proof_limits();need(type(relative) is str and relative in limits,'DURABLE_FIXED_PATH_REQUIRED');root=Path(root).resolve();path=root/relative
+ try:
+  for p in [path,*path.parents]:
+   if p==root:break
+   need(not p.is_symlink() and not getattr(p.lstat(),'st_file_attributes',0)&0x400,'DURABLE_PATH_LINK')
+ except FileNotFoundError:raise Hold('DURABLE_REQUIRED_FILE_MISSING') from None
+ flags=os.O_RDONLY|getattr(os,'O_NOFOLLOW',0)|getattr(os,'O_CLOEXEC',0)|getattr(os,'O_BINARY',0)
+ try:fd=os.open(path,flags)
+ except FileNotFoundError:raise Hold('DURABLE_REQUIRED_FILE_MISSING') from None
+ with os.fdopen(fd,'rb') as stream:
+  before=os.fstat(stream.fileno());need(stat.S_ISREG(before.st_mode) and before.st_nlink==1 and before.st_size<=limits[relative],'DURABLE_FILE_BOUND_OR_TYPE');body=stream.read(limits[relative]+1);after=os.fstat(stream.fileno());current=path.lstat()
+  need((before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_ctime_ns)==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns) and (after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns)==(current.st_dev,current.st_ino,current.st_size,current.st_mtime_ns) and len(body)==before.st_size,'DURABLE_FILE_CHANGED_DURING_READ')
+ return {'path':relative,'bytes':len(body),'sha256':digest(body),'device':before.st_dev,'inode':before.st_ino,'mtimeNs':before.st_mtime_ns},body
+def capture_durable(root,relative,ledger,json_data=False):
+ record,body=durable_snapshot(root,relative)
+ if relative in ledger:need(ledger[relative]==record,'DURABLE_CONSUMED_FILE_CHANGED')
+ ledger[relative]=record
+ return json.loads(body.decode('utf-8')) if json_data else record
+def durable_proof_selection(root,value,success):
+ ledger=value.get('durableInputs',{});need(type(ledger) is dict,'DURABLE_LEDGER_REQUIRED');limits=durable_proof_limits();need(set(ledger)<=set(limits),'DURABLE_UNEXPECTED_PATH')
+ mandatory={p for p in limits if '/packages/' not in p}
+ if success:
+  need(mandatory<=set(ledger),'DURABLE_FOUR_LOCKS_AND_CONFIG_REQUIRED')
+  consumed=set()
+  for name in LOCK_PROOF_NAMES:
+   record,body=durable_snapshot(root,'curation/locks/'+name);lock=json.loads(body.decode('utf-8'));need(type(lock.get('dependencies')) is dict,'DURABLE_LOCK_SCHEMA')
+   for deps in lock['dependencies'].values():
+    for identity,item in deps.items():
+     if item.get('type')!='Project':consumed.add('curation/packages/'+identity.lower()+'/11.0.0/.nupkg.metadata')
+  need(consumed<=set(ledger),'DURABLE_CONSUMED_METADATA_REQUIRED')
+ for relative,expected in ledger.items():
+  actual,body=durable_snapshot(root,relative);need(actual==expected,'DURABLE_ORIGINAL_CHANGED')
+ return {relative:Path(root)/relative for relative in sorted(ledger)}
+def read_proof_payload(root,path,value,durable):
+ relative=Path(path).relative_to(root).as_posix()
+ if relative in durable:
+  actual,body=durable_snapshot(root,relative);need(actual==value['durableInputs'][relative],'DURABLE_ORIGINAL_CHANGED');return body
+ return Path(path).read_bytes()
+def curation_proof_candidates(root,value,success):
+ root=Path(root);durable=durable_proof_selection(root,value,success);paths=[*root.glob('*.json'),*(root/'curation/metadata').rglob('*'),*(root/'curation/original-data').glob('*'),*(root/'curation').glob('*/process.json'),*(root/'curation').glob('*/stdout.log'),*(root/'curation').glob('*/stderr.log'),*durable.values()]
+ unique={p.relative_to(root).as_posix():p for p in paths if p.is_file()};need(all(not p.is_symlink() for p in unique.values()),'CURATION_PROOF_LINK')
+ return [unique[k] for k in sorted(unique)],set(durable)
+
 def disk_ledger(allocations,free_bytes,owner_limit=2147483648):
  need(type(allocations) is dict and all(type(x) is int and x>=0 for x in allocations.values()) and type(free_bytes) is int and free_bytes>=0 and type(owner_limit) is int and owner_limit>0,'DISK_LEDGER_INPUT')
  required=sum(allocations.values());cap=min(owner_limit,2147483648)
@@ -250,9 +307,9 @@ def _capsule(spec,manifest,contract,total,phase):
    p.chmod(0o400);need(size==row['bytes'] and h256.hexdigest()==row['sha256'] and h512.hexdigest()==row['sha512'],'CAPSULE_ENTRY_HASH');observed.append(dict(row,path=str(p)))
  return observed
 
-def _metadata(spec,phase,contract,A,total):
+def _metadata(spec,phase,contract,A,total,job):
  import email.utils
- root=phase/'metadata';root.mkdir(mode=0o700);fixed=contract['finiteMetadataAcquisition']['sdkMetadataOnly'];pki=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];ctx={'deadlineMonotonicNs':spec['startTick']*1000000+420000000000,'utcNow':time.time(),'utcAnchorMonotonicNs':time.monotonic_ns(),'requested':set(),'records':[],'allowedURLs':{x['url'] for x in fixed}|set(pki)}
+ root=phase/'metadata';root.mkdir(mode=0o700);fixed=contract['finiteMetadataAcquisition']['sdkMetadataOnly'];pki=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];requestroot=root/'owned-http';requestroot.mkdir(mode=0o700);ctx={'ownedJob':job,'requestWorkRoot':str(requestroot),'requestCwd':str(phase),'requestEnvironment':{'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','HOME':str(Path(spec['root'])/'home'),'TMPDIR':str(Path(spec['root'])/'tmp'),'PYTHONDONTWRITEBYTECODE':'1'},'deadlineMonotonicNs':spec['startTick']*1000000+420000000000,'utcNow':time.time(),'utcAnchorMonotonicNs':time.monotonic_ns(),'requested':set(),'records':[],'allowedURLs':{x['url'] for x in fixed}|set(pki)}
  _,service=A.bounded_json_get(ctx,fixed[0]['url'],root/'service.json',2097152,total,'service-index');resources=service.get('resources');need(type(resources) is list,'SERVICE_RESOURCES')
  def resource(prefix):
   rows=[r for r in resources if type(r) is dict and type(r.get('@type')) is str and r['@type'].startswith(prefix)];need(rows,'OFFICIAL_RESOURCE_MISSING');versions={}
@@ -351,11 +408,11 @@ def run_curation_worker(spec,backend,R,Q):
     for original in roles['packageOriginalData'][row['index']]:
      item=z.getinfo(original['path']);need(item.file_size==original['bytes']<=2097152,'ORIGINAL_NOTICE_DATA_BOUND');data=z.read(item);need(digest(data)==original['sha256'],'ORIGINAL_NOTICE_DATA_HASH');_private_write(retained/(str(row['index'])+'-'+str(original['memberIndex'])+'.data'),data)
  codepath=sdk/'sdk/11.0.100/trustedroots/codesignctl.pem';tsapath=sdk/'sdk/11.0.100/trustedroots/timestampctl.pem';need(R.digest(codepath)==profile['bundles'][0]['sha256'] and R.digest(tsapath)==profile['bundles'][1]['sha256'],'EXACT_SDK_ROOT_BUNDLES');override=Path('/etc/pki/ca-trust/extracted/pem/objsign-ca-bundle.pem');need(not override.exists() or (override.is_file() and not override.is_symlink() and R.digest(override)==profile['bundles'][0]['sha256']),'UNEXPECTED_EFFECTIVE_SYSTEM_CODESIGN_STORE')
- native=M.NativeCalls(spec,Q.j,phase);server=thread=None;primary=None
+ native=M.NativeCalls(spec,Q.j,phase);server=thread=None;primary=None;durable={}
  try:
   with native:
-   version=native.version();ctx,aia,crls,responses=_metadata(spec,phase,contract,A,total);need(R.clock()<spec['startTick']+420000,'ORIGINAL_METADATA420');budget.stage(3,max(1,(spec['startTick']+630000-R.clock())//1000));fixed=int(time.time());need(abs((fixed-ctx['utcNow'])-(time.monotonic_ns()-ctx['utcAnchorMonotonicNs'])/1e9)<=300,'CURRENT_UTC_MONOTONIC_ANCHOR');dates=[__import__('email.utils',fromlist=['parsedate_to_datetime']).parsedate_to_datetime(r['date']).timestamp() for r in ctx['records'] if r['url'].startswith('https://api.nuget.org/')];need(any(abs(fixed-d)<=300 for d in dates),'FIXED_TIME_FRESH_HTTPS_BINDING');paths,chains,certs,chainproof=M.prepare_chain_files(phase/'chain',cms,roles['certificatePoolSHA256'],codepath.read_bytes(),tsapath.read_bytes(),aia,crls,fixed)
-   original=sum(p.stat().st_size for p in (phase/'metadata').rglob('*') if p.is_file());derived=sum(p.stat().st_size for p in (phase/'chain').rglob('*') if p.is_file());need(retention_ledger([original,derived],2097152)['fits'],'ORIGINAL_METADATA_AND_PROOF8M_OVERFLOW');server,thread,dispatcher,port=_start_adapter(responses,ctx['advisoryIndex'],ctx['advisoryPages']);_private_write(phase/'nuget.audit.sources.config',config_bytes(str(phase),port));M.close_external_sockets();snapshot=M.pid_snapshot(os.getpid(),spec['unit']);request={'purpose':PURPOSE,'unit':spec['unit'],'worker':snapshot,'uid':os.getuid(),'originalStartMonotonicNs':spec['startTick']*1000000,'sourceHEAD':gate['sourceHEAD'],'leaseAdmissionSHA256':gate['leaseAdmissionSHA256']};request['requestSHA256']=digest(json.dumps(request,sort_keys=True,separators=(',',':')).encode());R.write(root/'network-transition-request.json',request);os.kill(os.getpid(),signal.SIGSTOP);policy=R.read(root/'network-policy-applied.json');need(policy['requestSHA256']==request['requestSHA256'] and policy['sourceHEAD']==gate['sourceHEAD'] and policy['leaseAdmissionSHA256']==gate['leaseAdmissionSHA256'],'DENY_RESPONSE_IDENTITY');witness=M.network_witness(port,ctx['boundOfficialPeer'],snapshot,spec['unit'],policy);R.write(root/'curation-current-network-deny.json',witness);need(R.clock()<spec['startTick']+540000,'ORIGINAL_DENY540');supplement=native.verify(paths,fixed,chains,certs,witness)
+   version=native.version();ctx,aia,crls,responses=_metadata(spec,phase,contract,A,total,Q.j);need(R.clock()<spec['startTick']+420000,'ORIGINAL_METADATA420');budget.stage(3,max(1,(spec['startTick']+630000-R.clock())//1000));fixed=int(time.time());need(abs((fixed-ctx['utcNow'])-(time.monotonic_ns()-ctx['utcAnchorMonotonicNs'])/1e9)<=300,'CURRENT_UTC_MONOTONIC_ANCHOR');dates=[__import__('email.utils',fromlist=['parsedate_to_datetime']).parsedate_to_datetime(r['date']).timestamp() for r in ctx['records'] if r['url'].startswith('https://api.nuget.org/')];need(any(abs(fixed-d)<=300 for d in dates),'FIXED_TIME_FRESH_HTTPS_BINDING');paths,chains,certs,chainproof=M.prepare_chain_files(phase/'chain',cms,roles['certificatePoolSHA256'],codepath.read_bytes(),tsapath.read_bytes(),aia,crls,fixed)
+   original=sum(p.stat().st_size for p in (phase/'metadata').rglob('*') if p.is_file());derived=sum(p.stat().st_size for p in (phase/'chain').rglob('*') if p.is_file());need(profile['durableGraphProofReserveBytes']==durable_proof_reserve() and profile['retainedProofReserveBeforeSDKBytes']==2097152+durable_proof_reserve(),'DURABLE_PROOF_RESERVE_IDENTITY');need(retention_ledger([original,derived],profile['retainedProofReserveBeforeSDKBytes'])['fits'],'ORIGINAL_METADATA_AND_PROOF8M_OVERFLOW');server,thread,dispatcher,port=_start_adapter(responses,ctx['advisoryIndex'],ctx['advisoryPages']);_private_write(phase/'nuget.audit.sources.config',config_bytes(str(phase),port));capture_durable(root,'curation/nuget.audit.sources.config',durable);M.close_external_sockets();snapshot=M.pid_snapshot(os.getpid(),spec['unit']);request={'purpose':PURPOSE,'unit':spec['unit'],'worker':snapshot,'uid':os.getuid(),'originalStartMonotonicNs':spec['startTick']*1000000,'sourceHEAD':gate['sourceHEAD'],'leaseAdmissionSHA256':gate['leaseAdmissionSHA256']};request['requestSHA256']=digest(json.dumps(request,sort_keys=True,separators=(',',':')).encode());R.write(root/'network-transition-request.json',request);os.kill(os.getpid(),signal.SIGSTOP);policy=R.read(root/'network-policy-applied.json');need(policy['requestSHA256']==request['requestSHA256'] and policy['sourceHEAD']==gate['sourceHEAD'] and policy['leaseAdmissionSHA256']==gate['leaseAdmissionSHA256'],'DENY_RESPONSE_IDENTITY');witness=M.network_witness(port,ctx['boundOfficialPeer'],snapshot,spec['unit'],policy);R.write(root/'curation-current-network-deny.json',witness);need(R.clock()<spec['startTick']+540000,'ORIGINAL_DENY540');supplement=native.verify(paths,fixed,chains,certs,witness)
    env.update({'DOTNET_ROOT':str(sdk),'DOTNET_ROOT_X64':str(sdk),'DOTNET_HOST_PATH':str(sdk/'dotnet'),'PATH':str(sdk)+os.pathsep+env['PATH'],'DOTNET_CLI_UI_LANGUAGE':'en-US','LANG':'C','LC_ALL':'C','DOTNET_NUGET_SIGNATURE_VERIFICATION':'true','NUGET_CERT_REVOCATION_MODE':'online','HTTP_PROXY':f'http://127.0.0.1:{port}','HTTPS_PROXY':f'http://127.0.0.1:{port}','NO_PROXY':'127.0.0.1,localhost','NUGET_PACKAGES':str(phase/'packages'),'NUGET_HTTP_CACHE_PATH':str(phase/'http-cache'),'NUGET_FALLBACK_PACKAGES':'','HOME':str(root/'home')});records=[];admitted={};mapping={'${SDK}':str(sdk),'${PHASE_ROOT}':str(phase),'${CHECKOUT}':str(R.ROOT)};vectors=command_plan(contract)
    def command(vector,stage):
     normal.inspect_sdk('linux-x64',sdk,context);argv=vector['argv']
@@ -364,20 +421,20 @@ def run_curation_worker(spec,backend,R,Q):
    for i,vector in enumerate(vectors[:3]):
     out=command(vector,630);row=contract['baseline']['rawInputs'][i];result=content_hash(out,row['id'],'11.0.0',0,row);admitted[row['id'].lower()]=result['normalizedNuGetContentHash'];records[-1]['normalized']=result
    advisory=A.advisory_guard(ctx,contract['baseline']['rawInputs'],total);need(R.clock()<spec['startTick']+630000,'ORIGINAL_SIGNATURE630');budget.stage(4,max(1,(spec['startTick']+810000-R.clock())//1000));(phase/'locks').mkdir(mode=0o700);(phase/'config').mkdir(mode=0o700)
-   for flavor in ('net11','linux-x64'):_private_write(phase/'config'/('curation.'+flavor+'.props'),private_graph_props(str(R.ROOT),str(phase),flavor))
+   for flavor in ('net11','linux-x64'):_private_write(phase/'config'/('curation.'+flavor+'.props'),private_graph_props(str(R.ROOT),str(phase),flavor));capture_durable(root,'curation/config/curation.'+flavor+'.props',durable)
    lockproof=[];directPkgCount=0
    for vector in vectors[3:]:
-    command(vector,810);lp=Path(vector['produces'].replace('${PHASE_ROOT}',str(phase)));lock=R.read(lp);metadata={};directPkgCount+=sum(1 for d in lock['dependencies'].values() for v in d.values() if v.get('type')=='Direct')
+    command(vector,810);lp=Path(vector['produces'].replace('${PHASE_ROOT}',str(phase)));lock=capture_durable(root,lp.relative_to(root).as_posix(),durable,json_data=True);metadata={};directPkgCount+=sum(1 for d in lock['dependencies'].values() for v in d.values() if v.get('type')=='Direct')
     for package,content in admitted.items():
      mp=phase/'packages'/package/'11.0.0/.nupkg.metadata'
-     if mp.exists():metadata[package]=R.read(mp)
+     if mp.exists():metadata[package]=capture_durable(root,mp.relative_to(root).as_posix(),durable,json_data=True)
     need('Tests' not in vector['id'] or any(v.get('type')=='Project' and k.lower()=='admission' for d in lock['dependencies'].values() for k,v in d.items()),'GRAPH_REQUIRED_PROJECT_REFERENCE');lockproof.append({'lockSHA256':R.digest(lp),'identity':validate_lock(lock,admitted,str(phase/'raw'),metadata)});deps=[{'id':k,'version':v['resolved']} for d in lock['dependencies'].values() for k,v in d.items() if v.get('type')!='Project'];A.advisory_guard(ctx,deps,total)
-   need(R.clock()<spec['startTick']+810000 and len(records)==7,'ORIGINAL_GRAPH810');budget.stage(5,max(1,(spec['startTick']+840000-R.clock())//1000));auditRoutes={'/vuln/index.json',*['/vuln/page/'+str(i)+'.json' for i in range(len(ctx['advisoryIndex']))]};served={e['routeSHA256'] for e in dispatcher.events if e['status']==200};auditComplete=all(digest(p.encode()) in served for p in auditRoutes);packageRefs=sum(1 for f in [R.ROOT/'Directory.Build.props',R.ROOT/'src/Admission/Admission.csproj',R.ROOT/'tests/Admission.Tests/Admission.Tests.csproj'] for n in ET.fromstring(f.read_bytes()).iter() if n.tag.split('}')[-1]=='PackageReference');need(auditComplete or (packageRefs==0 and directPkgCount==0),'SDK_AUDIT_CONSUMPTION_NOT_PROVEN');auditConsumption='CONSUMED_COMPLETE_OWN_STATIC_SNAPSHOT' if auditComplete else 'NOT_APPLICABLE_NO_PACKAGE_REFERENCE';proof={'state':'LINUX_CURATED_INPUT_GRAPH_CANDIDATE_NOT_PRODUCT_ADMITTED','source':source,'SDKInputReceiptSHA256':R.digest(root/'curation-sdk-input-receipt.json'),'version':version,'currentCRLSupplement':supplement,'chainInputProof':chainproof,'network':witness,'commands':records,'locks':lockproof,'nativeAdvisory':advisory,'SDKAuditConsumption':auditConsumption,'metadata':ctx['records'],'adapter':dispatcher.events,'SDK_READY':False,'WindowsQualification':False,'productAdmission':False};
+   need(R.clock()<spec['startTick']+810000 and len(records)==7,'ORIGINAL_GRAPH810');budget.stage(5,max(1,(spec['startTick']+840000-R.clock())//1000));auditRoutes={'/vuln/index.json',*['/vuln/page/'+str(i)+'.json' for i in range(len(ctx['advisoryIndex']))]};served={e['routeSHA256'] for e in dispatcher.events if e['status']==200};auditComplete=all(digest(p.encode()) in served for p in auditRoutes);packageRefs=sum(1 for f in [R.ROOT/'Directory.Build.props',R.ROOT/'src/Admission/Admission.csproj',R.ROOT/'tests/Admission.Tests/Admission.Tests.csproj'] for n in ET.fromstring(f.read_bytes()).iter() if n.tag.split('}')[-1]=='PackageReference');need(auditComplete or (packageRefs==0 and directPkgCount==0),'SDK_AUDIT_CONSUMPTION_NOT_PROVEN');auditConsumption='CONSUMED_COMPLETE_OWN_STATIC_SNAPSHOT' if auditComplete else 'NOT_APPLICABLE_NO_PACKAGE_REFERENCE';proof={'state':'LINUX_CURATED_INPUT_GRAPH_CANDIDATE_NOT_PRODUCT_ADMITTED','source':source,'SDKInputReceiptSHA256':R.digest(root/'curation-sdk-input-receipt.json'),'version':version,'currentCRLSupplement':supplement,'chainInputProof':chainproof,'network':witness,'commands':records,'locks':lockproof,'durableInputs':durable,'nativeAdvisory':advisory,'SDKAuditConsumption':auditConsumption,'metadata':ctx['records'],'adapter':dispatcher.events,'SDK_READY':False,'WindowsQualification':False,'productAdmission':False};
   R.write(root/'curation-worker.json',proof)
  except BaseException as exc:
   primary=exc
   try:
-   R.write(root/'curation-method-failure.json',{'state':'HOLD_NOT_INPUT_ADMITTED','causeCode':str(exc) if re.fullmatch('[A-Z][A-Z0-9_]{0,95}',str(exc)) else 'CURATION_PRIMARY_REDACTED','metadataRecords':ctx['records'] if 'ctx' in locals() else 'UNKNOWN_NOT_COMPLETED','SDK_READY':False})
+   R.write(root/'curation-method-failure.json',{'state':'HOLD_NOT_INPUT_ADMITTED','durableInputs':durable,'causeCode':str(exc) if re.fullmatch('[A-Z][A-Z0-9_]{0,95}',str(exc)) else 'CURATION_PRIMARY_REDACTED','metadataRecords':ctx['records'] if 'ctx' in locals() else 'UNKNOWN_NOT_COMPLETED','SDK_READY':False})
   except BaseException:pass
  finally:
   def stop_adapter():

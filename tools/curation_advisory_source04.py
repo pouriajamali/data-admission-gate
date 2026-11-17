@@ -2,7 +2,8 @@
 No import/execution of hosted_caps, borrowed contexts/caps, or implicit acquisition.
 """
 from __future__ import annotations
-import datetime,email.utils,gzip,hashlib,ipaddress,json,re,time,urllib.request,zlib
+import contextlib,datetime,email.utils,gzip,hashlib,ipaddress,json,re,time,urllib.request,zlib
+import signal,threading,sys,os
 from pathlib import Path
 from urllib.parse import urlsplit
 HANDOFF_SHA='c49f46dde2e3e0b36e0cf8c50c882f60a8434d9f6ed8a0cb378dd7c6df2701ca'
@@ -40,7 +41,7 @@ def vulnerability_page_entries(data):
  if type(data) is list:need(not data,'VULNERABILITY_PAGE_SHAPE');return {}
  need(type(data) is dict and all(type(k) is str and k==k.lower() and type(v) is list for k,v in data.items()),'VULNERABILITY_PAGE_SHAPE')
  need(all(type(i) is dict and type(i.get('versions')) is str and type(i.get('url','')) is str and type(i.get('severity')) is int and 0<=i['severity']<=3 for issues in data.values() for i in issues),'VULNERABILITY_PAGE_SHAPE');return data
-def budget(ctx):need(time.monotonic_ns()<ctx['deadlineMonotonicNs'],'ORIGINAL_METADATA_DEADLINE')
+def budget(ctx):need(time.monotonic_ns()<ctx['deadlineMonotonicNs'],ctx.get('deadlineCode','ORIGINAL_METADATA_DEADLINE'))
 def strict_json(raw):
  def pairs(items):
   d={}
@@ -59,13 +60,14 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
  def redirect_request(self,*a,**k):raise Hold('METADATA_REDIRECT')
 def save(path,data):
  with Path(path).open('xb') as f:f.write(data)
-def bounded_get(ctx,url,destination,limit,total,allowed_urls,json_data=False):
+def _wire_request(ctx,url,destination,limit,total,allowed_urls,json_data=False):
  """Own04 finite one-shot transport. Invoked only after exact runtime activation."""
  budget(ctx);need(url in allowed_urls and url not in ctx['requested'] and len(ctx['requested'])<23,'METADATA_CLOSED_ONCE')
  ctx['requested'].add(url);opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect());headers={'Accept-Encoding':'gzip' if json_data else 'identity','User-Agent':'producer04-input-curation/1'}
  entry={'url':url,'rawBytes':0,'state':'STARTED'};ctx['records'].append(entry)
- request_end=min(ctx['deadlineMonotonicNs'],time.monotonic_ns()+10000000000)
+ request_end=ctx['deadlineMonotonicNs']
  with opener.open(urllib.request.Request(url,headers=headers),timeout=min(10,(request_end-time.monotonic_ns())/1e9)) as response:
+  budget(ctx)
   need(response.status==200 and response.geturl()==url,'METADATA_HTTP_STATUS_OR_URL')
   need(not response.headers.get_all('Transfer-Encoding',[]) and len(response.headers.get_all('Content-Encoding',[]))<=1 and len(response.headers.get_all('Content-Length',[]))<=1,'METADATA_HTTP_FRAMING')
   encoding=response.headers.get('Content-Encoding','identity').lower();need(encoding in (('identity','gzip') if json_data else ('identity',)),'METADATA_ENCODING')
@@ -85,7 +87,48 @@ def bounded_get(ctx,url,destination,limit,total,allowed_urls,json_data=False):
   need(length is None or size==int(length),'METADATA_LENGTH_MISMATCH');wire=b''.join(chunks)
   # Peer is recorded only when the underlying transport exposes it; never DNS re-resolve.
   entry.update(rawBytes=size,rawSHA256=sha(wire),encoding=encoding,date=date,lastModified=response.headers.get('Last-Modified'),cacheControl=response.headers.get('Cache-Control'),state='RAW_COMPLETE')
- save(destination,wire);return entry,wire
+ budget(ctx);save(destination,wire);budget(ctx);return entry,wire
+@contextlib.contextmanager
+def absolute_request(ctx):
+ """Parent alarm covers startup and terminal handling; HTTP runs in owned child."""
+ need(hasattr(signal,'SIGALRM') and threading.current_thread() is threading.main_thread(),'METADATA_OWN_MAIN_ALARM_REQUIRED')
+ started=time.monotonic_ns();previous_handler=signal.getsignal(signal.SIGALRM);previous=signal.getitimer(signal.ITIMER_REAL);need(previous[1]==0,'METADATA_PERIODIC_ALARM_UNSUPPORTED');old_end=started+int(previous[0]*1000000000) if previous[0]>0 else None;request_end=started+10000000000;end=min(request_end,ctx['deadlineMonotonicNs'],old_end if old_end is not None else request_end);code='ORIGINAL_METADATA_DEADLINE' if end<request_end else 'METADATA_REQUEST10_DEADLINE';need(time.monotonic_ns()<end,code)
+ def expired(*unused):raise Hold(code)
+ signal.signal(signal.SIGALRM,expired);signal.setitimer(signal.ITIMER_REAL,max(0,(end-time.monotonic_ns())/1000000000));primary=None
+ try:
+  yield end,code
+ except BaseException as exc:primary=exc;raise
+ finally:
+  signal.setitimer(signal.ITIMER_REAL,0);now=time.monotonic_ns();signal.signal(signal.SIGALRM,previous_handler);signal.setitimer(signal.ITIMER_REAL,max(0,(old_end-time.monotonic_ns())/1000000000) if old_end is not None else 0)
+  # Expiry wins even on open/header errors, zero-length bodies and return cleanup.
+  if now>=end:raise Hold(code) from None
+
+def _owned_request_child(spec):
+ """Only the fixed one-shot public metadata operation; no stdout or SDK action."""
+ ctx={'deadlineMonotonicNs':spec['deadlineMonotonicNs'],'deadlineCode':spec['deadlineCode'],'utcNow':spec['utcNow'],'requested':set(),'records':[]};total={'bodyBytes':spec['bodyBytesBefore']};result=None
+ try:
+  entry,wire=_wire_request(ctx,spec['url'],spec['wirePath'],spec['limit'],total,tuple(spec['allowedURLs']),spec['jsonData']);result={'state':'COMPLETE','entry':entry,'bodyBytesAfter':total['bodyBytes']}
+ except BaseException as exc:
+  code=str(exc) if isinstance(exc,Hold) and re.fullmatch('[A-Z][A-Z0-9_]{0,95}',str(exc)) else 'METADATA_TRANSPORT_FAILURE';result={'state':'HOLD','code':code,'entry':ctx['records'][-1] if ctx['records'] else {'url':spec['url'],'state':'FAILED_BEFORE_OPEN'}}
+ save(spec['resultPath'],(json.dumps(result,separators=(',',':'))+'\n').encode())
+
+def bounded_get(ctx,url,destination,limit,total,allowed_urls,json_data=False):
+ """One held same-cgroup HTTP child, with a single absolute parent10s budget."""
+ with absolute_request(ctx) as (end,deadline_code):
+  budget(ctx);need(url in allowed_urls and url not in ctx['requested'] and len(ctx['requested'])<23,'METADATA_CLOSED_ONCE');ctx['requested'].add(url);job=ctx['ownedJob'];cap=job.linux_caps();work=Path(ctx['requestWorkRoot'])/('request-'+str(len(ctx['requested'])-1));work.mkdir(mode=0o700);wirepath=work/'wire.data';resultpath=work/'result.json';specpath=work/'request.json';work_end=end-200000000;need(time.monotonic_ns()<work_end,deadline_code)
+  spec={'schema':'producer04-owned-http-request/v1','sourceSHA256':sha(Path(__file__).read_bytes()),'url':url,'allowedURLs':list(allowed_urls),'limit':limit,'jsonData':json_data,'utcNow':ctx['utcNow'],'deadlineMonotonicNs':end,'deadlineCode':deadline_code,'bodyBytesBefore':total['bodyBytes'],'wirePath':str(wirepath),'resultPath':str(resultpath),'uid':cap['uid'],'gid':cap['gid'],'cgroup':cap['cgroup']};body=(json.dumps(spec,separators=(',',':'))+'\n').encode();need(len(body)<=65536,'METADATA_REQUEST_SPEC_BOUND');save(specpath,body)
+  argv=[sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--owned-metadata-request',str(specpath),'--sha256',sha(body)]
+  try:process=job.run(argv,ctx['requestCwd'],ctx['requestEnvironment'],work_end//1000000,work/'process')
+  except BaseException:
+   if time.monotonic_ns()>=work_end:raise Hold(deadline_code) from None
+   raise Hold('METADATA_OWN_CHILD_FAILED') from None
+  need(time.monotonic_ns()<end,deadline_code);need(process.get('exitCode')==0 and process.get('ownedChildGroupTerminal') is True,'METADATA_OWN_CHILD_TERMINAL');need((work/'process/stdout.log').stat().st_size==(work/'process/stderr.log').stat().st_size==0,'METADATA_CHILD_OUTPUT_UNEXPECTED');need(resultpath.stat().st_size<=32768,'METADATA_CHILD_RESULT_BOUND');result=strict_json(resultpath.read_bytes());entry=result.get('entry',{});ctx['records'].append(entry)
+  entry['ownedHTTP']={'deadlineMonotonicNs':end,'workDeadlineMonotonicNs':work_end,'terminalReserveWithin10Ns':200000000,'originalStageDeadlineMonotonicNs':ctx['deadlineMonotonicNs'],'processReceiptSHA256':sha((work/'process/process.json').read_bytes()),'resultSHA256':sha(resultpath.read_bytes()),'sourceSHA256':spec['sourceSHA256'],'sameCgroup':cap['cgroup']}
+  if result.get('state')!='COMPLETE':raise Hold(result.get('code','METADATA_CHILD_HOLD'))
+  need(entry.get('url')==url and type(entry.get('rawBytes')) is int and 0<=entry['rawBytes']<=limit,'METADATA_CHILD_RECEIPT_IDENTITY');need(not wirepath.is_symlink() and wirepath.stat().st_size==entry['rawBytes'],'METADATA_CHILD_WIRE_BOUND');wire=wirepath.read_bytes();need(sha(wire)==entry['rawSHA256'] and result['bodyBytesAfter']==total['bodyBytes']+len(wire),'METADATA_CHILD_WIRE_HASH');total['bodyBytes']=result['bodyBytesAfter'];need(total['bodyBytes']<=536870912,'ORIGINAL_BODY_BUDGET')
+  if url.startswith('https://api.nuget.org/') and entry.get('peerPort')==443:ctx['boundOfficialPeer']=(entry['peerIP'],443)
+  need(time.monotonic_ns()<end,deadline_code);save(destination,wire);wirepath.unlink();need(time.monotonic_ns()<end,deadline_code);return entry,wire
+
 def bounded_json_get(ctx,url,destination,limit,total,phase,allowed_urls=None):
  need(phase in ('service-index','repository-index','vulnerability-index','servicing') or re.fullmatch(r'vulnerability-page-[0-7]',phase),'METADATA_PHASE_IDENTITY')
  allowed=allowed_urls or (url,);need(url in ctx['allowedURLs'] and url in allowed,'METADATA_CALLER_ORIGIN_BINDING')
@@ -101,3 +144,8 @@ def advisory_guard(ctx,specs,total):
   for identity,version in selected.items():
    for issue in data.get(identity,[]):need(not in_range(version,issue['versions']),'CURRENT_ADVISORY_MATCH')
  return {'state':'NO_SELECTED_NUGET_ADVISORY_MATCH','selected':selected,'pageURLs':list(urls),'completePageHashes':{u:sha(json.dumps(pages[u],sort_keys=True,separators=(',',':')).encode()) for u in urls},'scope':'All matching low+ native/actual graph dependencies; not OS/general security certification','sourceHandoffSHA256':HANDOFF_SHA}
+
+def _request_cli():
+ import argparse
+ parser=argparse.ArgumentParser();parser.add_argument('--owned-metadata-request',type=Path,required=True);parser.add_argument('--sha256',required=True);args=parser.parse_args();need(args.owned_metadata_request.is_absolute() and not args.owned_metadata_request.is_symlink() and args.owned_metadata_request.stat().st_size<=65536,'METADATA_REQUEST_FILE');body=args.owned_metadata_request.read_bytes();need(sha(body)==args.sha256,'METADATA_REQUEST_FILE_HASH');spec=strict_json(body);need(spec['schema']=='producer04-owned-http-request/v1' and spec['sourceSHA256']==sha(Path(__file__).read_bytes()),'METADATA_REQUEST_SOURCE');need(os.getuid()==spec['uid']>0 and os.getgid()==spec['gid'] and re.fullmatch('/system.slice/admission04-sdk11-ci-[0-9a-f]{32}\\.service',spec['cgroup']) is not None,'METADATA_OWN_CHILD_IDENTITY');need('0::'+spec['cgroup'] in Path('/proc/self/cgroup').read_text().splitlines(),'METADATA_OWN_CHILD_CGROUP');need(Path(spec['wirePath']).parent==Path(spec['resultPath']).parent==args.owned_metadata_request.parent,'METADATA_REQUEST_OUTPUT_SCOPE');_owned_request_child(spec)
+if __name__=='__main__':_request_cli()

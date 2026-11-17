@@ -122,3 +122,7 @@ is authorized or executed by this source candidate; Windows remains HOLD.
   same seven NuGet/graph vectors; exact owned network transition and new delta
   mocks replace the prototype unconditional METHOD_HOLD. Runtime is unexecuted
   and requires final exact-source activation; no public release or Windows retry.
+
+- Source-only R1/R2 correction: durable original graph/config evidence and
+  absolute supervised metadata deadlines. Existing proof/caps/clocks and seven
+  SDK operations remain unchanged; no runtime, CI or public release performed.

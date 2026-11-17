@@ -160,3 +160,32 @@ policy, deny witness, current metadata retention/free space and SDK output remai
 UNEXECUTED/UNKNOWN until the single final-source runtime activation. Negative
 permission errno is intentionally stricter than a timeout; inability to witness
 it closes the phase. Source mocks are not real crypto or kernel qualification.
+
+### Causal R1/R2 correction from 7d9a (2026-11-16)
+
+Consolidated review107c remains valid for unchanged f021 source and prior18 mock
+receipts. R1 adds fixed-path snapshots for the exact four private graph locks,
+each selected .nupkg.metadata actually read, generated NuGet config and both
+graph props. Actual original byte hashes/file identities are captured when
+consumed, checked again at publication and retained as original bytes. Missing,
+changed, unexpected-path or oversized evidence holds; package/SDK bodies are
+excluded. Success requires all four locks/configs; failure manifests identify
+partial or unavailable durable evidence without claiming complete graph proof.
+
+The original 2 MiB reserve for other reports is supplemented by a 671744-byte
+worst-case reserve for these durable files before SDK work. This is inside the
+existing combined8 MiB proof ceiling; no extra artifact or budget is created.
+Metadata process control evidence is counted in the actual metadata directory.
+
+R2 wraps each metadata request in one absolute window no longer than10 seconds,
+starting before helper/open/resolver/connect/TLS/headers. Only an existing
+held-child primitive inside the same own04 cgroup may run the one-shot HTTP
+helper. Its work stop reserves200ms for terminal handling within that window.
+The parent also arms an absolute main-process alarm, covering startup, zero-body
+responses, errors, copying and return. It restores only the original phase
+alarm remaining time; expiry is typed HOLD, with no retry or fresh420/900 clock.
+No new unit, privilege, probe, GET, cap or qualifier is introduced.
+
+Only three new synthetic causal groups per normal/O are used for this correction;
+old18/24/common suites are not replayed. Real HTTP/SDK/OpenSSL/kernel/capsule/draft/
+CI/push remain unexecuted until the revised exact signed-source activation.

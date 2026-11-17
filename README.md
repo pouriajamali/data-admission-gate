@@ -352,3 +352,9 @@ The local Linux curation method candidate now implements a finite OpenSSL3 CRL
 supplement, exact-own-unit network denial/witness and the adapted public10
 advisory patterns. Source preparation is not actual PKI/kernel/SDK acceptance.
 All runtime paths require one exact-source activation and current-input guards.
+
+The local curation source correction retains all four actual private locks,
+consumed NuGet metadata and generated config/props in the existing 8 MiB proof.
+Metadata HTTP now runs in an owned held child under one absolute 10-second
+supervised request window, including startup and terminal handling. Runtime
+remains inactive until exact-source activation.

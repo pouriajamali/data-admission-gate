@@ -77,5 +77,9 @@
     "resolvedRuntimeInputs": 32768,
     "additionalTypedMethodProof": 65536
   },
-  "retainedProofReserveBeforeSDKBytes": 2097152
+  "retainedProofReserveBeforeSDKBytes": 2768896,
+  "durableGraphProofReserveBytes": 671744,
+  "metadataRequestAbsoluteSecondsMax": 10,
+  "metadataRequestTerminalReserveWithin10Ms": 200,
+  "metadataRequestExecution": "Existing same-cgroup held child and absolute parent alarm; restore only original remaining stage clock"
 }

@@ -16,7 +16,7 @@ STAGES=['locked-tests','package','extract','package-checks','technology-checks']
 CURATION_PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 CURATION_ACTIVE=False
 def curation_module():
- return R.load_module('curate_dotnet11_linux_inputs','a988fa9bbdc5ef189d2e7072ad988a239e44b18c8fd3b942ef25161903f089f8')
+ return R.load_module('curate_dotnet11_linux_inputs','391910a4913a6ec1717eae87add1b5c8de47d6c8c256e2a2fe8caa224e040b96')
 def own04_common_context(spec,source,host,route,curation=False):
  root=Path(spec['root']);profilePath=HERE/('producer04-linux-curation.profile.json' if curation else 'dotnet11-consumer04-normal-profile.json');pinsPath=HERE/'dotnet11-consumer04-source-pins.json';profile=R.read(profilePath);pins=R.read(pinsPath)
  R.f.need(profile.get('state')=='ADMITTED_SOURCE_PROFILE' and pins.get('state')=='EXACT_SOURCE_REVIEWED','OWN04_SOURCE_PROFILE_NOT_ADMITTED')
@@ -176,19 +176,22 @@ def run_curation_linux(s,argv):
 def finish_curation(spec,terminal,peak):
  R.f.terminal(terminal);root=Path(spec['root']);value=R.read(root/'curation-worker.json');R.f.need(value['state']=='LINUX_CURATED_INPUT_GRAPH_CANDIDATE_NOT_PRODUCT_ADMITTED' and len(value['commands'])==7 and len(value['locks'])==4 and value['network']['state']=='OWN_CURRENT_KERNEL_DENY_AND_LOOPBACK_WITNESSED','CURATION_INPUT_GRAPH_RESULTS_REQUIRED');R.f.need(R.clock()<spec['startTick']+900000,'CURATION900_DEADLINE');value.update(terminal=terminal,peakMemoryBytes=peak)
  # Existing proof artifact only. Originals plus redacted reports stay within8MiB.
- dest=R.ROOT/'artifacts/sdk11-curation-linux-x64';R.f.need(not dest.exists(),'CURATION_PROOF_EXISTS');dest.mkdir(parents=True,mode=0o700);total=0;files=[]
- for path in [*root.glob('*.json'),*(root/'curation/metadata').glob('*'),*(root/'curation/original-data').glob('*'),*(root/'curation').glob('*/process.json'),*(root/'curation').glob('*/stdout.log'),*(root/'curation').glob('*/stderr.log')]:
+ dest=R.ROOT/'artifacts/sdk11-curation-linux-x64';R.f.need(not dest.exists(),'CURATION_PROOF_EXISTS');proofModule=curation_module();candidates,durable=proofModule.curation_proof_candidates(root,value,True);total=0;files=[];prepared=[]
+ for path in candidates:
   if not path.is_file():continue
-  body=path.read_bytes();relative=path.relative_to(root).as_posix()
+  body=proofModule.read_proof_payload(root,path,value,durable);relative=path.relative_to(root).as_posix()
   originalSHA256=hashlib.sha256(body).hexdigest()
   if path.suffix=='.log':
    R.f.need(len(body)<=32768,'CURATION_REPORT_BOUND');text=body.decode('utf-8',errors='strict').replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}');body=text.encode()
-  if path.suffix in ('.json','.log') and 'metadata' not in path.parts:
+  if relative not in durable and path.suffix in ('.json','.log') and 'metadata' not in path.parts:
    body=body.decode('utf-8',errors='strict').replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}').replace(os.environ['RUNNER_TEMP'],'${RUNNER_TEMP}').encode()
-  total+=len(body);R.f.need(total<=8388608,'CURATION_PROOF8M_OVERFLOW');target=dest/relative;target.parent.mkdir(parents=True,exist_ok=True)
-  with target.open('xb') as out:out.write(body)
-  files.append({'path':relative,'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest(),'originalSHA256':originalSHA256})
+  total+=len(body);R.f.need(total<=8388608,'CURATION_PROOF8M_OVERFLOW');prepared.append((relative,body))
+  files.append({'path':relative,'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest(),'originalSHA256':originalSHA256,'exactDurableOriginal':relative in durable})
  summary={'schema':'producer04-linux-curation-terminal-candidate/v1','state':value['state'],'source':value['source'],'terminal':terminal,'proofFiles':files,'proofBytes':total,'SDK_READY':False,'productAdmission':False,'WindowsQualification':False};body=(json.dumps(summary,indent=2)+'\n').encode();R.f.need(total+len(body)<=8388608,'CURATION_PROOF8M_OVERFLOW')
+ dest.mkdir(parents=True,mode=0o700)
+ for relative,payload in prepared:
+  target=dest/relative;target.parent.mkdir(parents=True,exist_ok=True)
+  with target.open('xb') as out:out.write(payload)
  with (dest/'FINAL-CANDIDATE.json').open('xb') as out:out.write(body)
 
 def publish_curation_failure_data(code):
@@ -196,21 +199,29 @@ def publish_curation_failure_data(code):
  if not terminalPath.is_file() or R.read(terminalPath).get('cleanupResult')!='OWNED_TERMINAL_OBSERVED':return
  dest=R.ROOT/'artifacts/sdk11-curation-linux-x64'
  if dest.exists():return
- candidates=[*root.glob('*.json'),*(root/'curation/metadata').glob('*'),*(root/'curation/original-data').glob('*'),*(root/'curation').glob('*/process.json'),*(root/'curation').glob('*/stdout.log'),*(root/'curation').glob('*/stderr.log')];bodies=[];total=0
+ value=R.read(root/'curation-worker.json') if (root/'curation-worker.json').is_file() else R.read(root/'curation-method-failure.json') if (root/'curation-method-failure.json').is_file() else {};evidenceHold=None;proofModule=curation_module()
+ try:candidates,durable=proofModule.curation_proof_candidates(root,value,False)
+ except proofModule.Hold as failure:
+  evidenceHold=str(failure);candidates=[];durable=set()
+ bodies=[];total=0
  for path in candidates:
   if not path.is_file():continue
   R.f.need(not path.is_symlink(),'CURATION_FAILURE_PROOF_LINK');size=path.stat().st_size;total+=size
   if total>8388608-65536:break
-  body=path.read_bytes();original=hashlib.sha256(body).hexdigest()
-  if path.suffix in ('.json','.log') and 'metadata' not in path.parts:body=body.decode('utf-8',errors='strict').replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}').replace(os.environ['RUNNER_TEMP'],'${RUNNER_TEMP}').encode()
+  try:body=proofModule.read_proof_payload(root,path,value,durable)
+  except proofModule.Hold as failure:evidenceHold=str(failure);break
+  original=hashlib.sha256(body).hexdigest()
+  if path.relative_to(root).as_posix() not in durable and path.suffix in ('.json','.log') and 'metadata' not in path.parts:body=body.decode('utf-8',errors='strict').replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}').replace(os.environ['RUNNER_TEMP'],'${RUNNER_TEMP}').encode()
   bodies.append((path.relative_to(root),body,original))
  dest.mkdir(parents=True,mode=0o700)
+ if evidenceHold is not None:
+  R.write(dest/'HOLD.json',{'state':'HOLD_DURABLE_EVIDENCE_MISSING_OR_CHANGED','primaryCode':code,'durableEvidenceCode':evidenceHold,'SDK_READY':False});return
  if total>8388608-65536:
   R.write(dest/'HOLD.json',{'state':'HOLD_ORIGINALS_AND_PROOF_OVERFLOW_NO_ORIGINALS_PUBLISHED','primaryCode':code,'observedBytesAtLeast':total,'budgetBytes':8388608,'extraArtifactPermissionInferred':False});return
  for relative,body,original in bodies:
   target=dest/relative;target.parent.mkdir(parents=True,exist_ok=True)
   with target.open('xb') as out:out.write(body)
- R.write(dest/'HOLD.json',{'state':'HOLD_DATA_ONLY_OWNED_TERMINAL_OBSERVED','primaryCode':code,'originalsRetained':True,'proofBytes':sum(len(b) for _,b,_ in bodies),'originalFileHashes':{p.as_posix():h for p,_,h in bodies},'SDK_READY':False,'productAdmission':False})
+ R.write(dest/'HOLD.json',{'state':'HOLD_DATA_ONLY_OWNED_TERMINAL_OBSERVED','primaryCode':code,'originalsRetained':True,'proofBytes':sum(len(b) for _,b,_ in bodies),'originalFileHashes':{p.as_posix():h for p,_,h in bodies},'exactDurableOriginals':sorted(durable),'SDK_READY':False,'productAdmission':False})
 
 if __name__=='__main__':
  try:main()
