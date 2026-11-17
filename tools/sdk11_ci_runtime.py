@@ -53,7 +53,7 @@ def host(rid,diagnostic_root=None):
 def source_context(expected,run,env,budget,root,qualification=True):
  f.need(os.environ.get('RUNNER_ENVIRONMENT')=='github-hosted' and os.environ.get('GITHUB_REPOSITORY')=='pouriajamali/data-admission-gate','Q_HOST_IMAGE')
  if qualification:
-  event=read(os.environ['GITHUB_EVENT_PATH'],4194304);f.need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and event.get('inputs',{}).get('mode')=='sdk11-ci-qualification' and os.environ.get('GITHUB_REF')=='refs/heads/codex/sdk11-supported-ci-qualification-20261116','Q_QUALIFICATION_EVENT')
+  event=read(os.environ['GITHUB_EVENT_PATH'],4194304);f.need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and event.get('inputs',{}).get('mode')=='sdk11-ci-qualification' and os.environ.get('GITHUB_REF') in ('refs/heads/codex/sdk11-supported-ci-qualification-20261116','refs/heads/codex/frl-required-windows-20261117'),'Q_QUALIFICATION_EVENT')
   f.source(event['inputs'].get('expected_commit'),expected)
  elif os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch':f.need(read(os.environ['GITHUB_EVENT_PATH'],4194304).get('inputs',{}).get('mode','ordinary')=='ordinary','CONSUMER_EVENT_SCOPE')
  git=Path('C:/Program Files/Git/cmd/git.exe' if os.name=='nt' else '/usr/bin/git');f.need(git.is_file(),'Q_BOOTSTRAP_GIT')

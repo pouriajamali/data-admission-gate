@@ -311,3 +311,5 @@ SDK pins and eight commands remain unchanged. No Windows/product PASS claim.
 
 
 Windows SDK qualification retains an optional, sanitized error excerpt only on a failed fixed SDK command. It is ASCII/control-filtered, own-temp and URL/credential-redacted, <=512characters per stream and inside the unchanged4096-byte diagnostic limit. Raw log hashes, fixed eight commands, native publisher/CPU/Job limits and all success predicates are unchanged. An excerpt is failure evidence, never qualification.
+
+Windows run44081089119 at c088fd72 stopped at source admission (Q_QUALIFICATION_EVENT), before any SDK command. The original exact qualification branch and the explicitly approved owner01 Windows branch are now the only accepted qualification refs. Workflow-dispatch mode, repository, exact expected commit, hosted image and kernel limits are unchanged. The older restore failure remains unresolved until actual corrected-source execution.
