@@ -398,3 +398,7 @@ Retained official channel11 metadata from run44071519118/1 still names SDK11.0.1
 Known HTTP, URL, TLS and protocol exceptions now retain only exact trusted type categories, bounded numeric status/errno/verification code and fixed operation. No exception reason, URL value, raw header/body or private error text is exposed. Malformed service/repository objects fail with existing fixed Hold codes. This closes a concrete avoidable-UNKNOWN branch before the one permitted full run.
 
 Shared SDK11 input evidence and the single Linux/Windows source API are described in [the shared-input notes](docs/SDK11_SHARED_NORMAL_INPUT.md). Historical host qualification and three Linux native package facts require each consumer own source/caps/graph/freshness gate; this does not change this product release or declare global readiness.
+
+Local non-Actions qualification source and exact limits are described in
+[the local qualification delta](docs/SDK11_LOCAL_QUALIFICATION.md). Its local
+receipt is separate from historical CI and does not admit product inputs.

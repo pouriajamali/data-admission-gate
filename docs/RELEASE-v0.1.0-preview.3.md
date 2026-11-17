@@ -164,3 +164,10 @@ Loaded helper classes are bound immediately by verified module identity, so late
 Retained official channel11 metadata from run44071519118/1 still names SDK11.0.100/runtime11.0.0, stable release2026-11-10 and active support. Three older security-tagged RC rows caused the old inequality test to misclassify them as later releases. The guard now reuses the reviewed stable-versus-bound version ordering: historical prereleases are lower than stable, while actual later security versions remain Hold. Canonical bounded versions, required release fields and exact consistent latest pointers/current release are checked; missing or malformed metadata remains Hold. SDK/runtime pins, freshness, complete advisories, CMS/PKI/normalization, locks/notices and every cap remain unchanged. No online diagnostic or healthy SDK replay is added.
 
 Known HTTP, URL, TLS and protocol exceptions now retain only exact trusted type categories, bounded numeric status/errno/verification code and fixed operation. No exception reason, URL value, raw header/body or private error text is exposed. Malformed service/repository objects fail with existing fixed Hold codes. This closes a concrete avoidable-UNKNOWN branch before the one permitted full run.
+
+## Local non-Actions source delta
+
+The owner authorizes existing bounded qualification on the actual local host.
+[Local qualification](SDK11_LOCAL_QUALIFICATION.md) preserves the existing Linux
+supervisor/caps and reuses verified SDK bytes. The new local envelope is distinct
+from the immutable CI schema; no local execution or product PASS is claimed here.
