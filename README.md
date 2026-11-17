@@ -375,3 +375,10 @@ An explicit METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY selector uses the existing 
 SERVICE_REQUEST_ACCEPTED_DIAGNOSTIC_ONLY and FRAMING_OBSERVED_GUARD_HOLD describe only this diagnostic; semantic Hold is distinct from OS success. Missing, unknown, forced, late or over-budget evidence remains Hold. FULL_PRODUCER_CURATION remains the default with the previous complete method/caps intact and a separate mandatory execution-mode/profile gate. All previous gates are consumed/closed. This source candidate does not authorize any request, Job, SDK command, CI, push, full producer or Windows/product acceptance.
 
 Before the diagnostic worker is continued, one bounded same-unit kernel-clock readback must prove activation plus RuntimeMax no later than the original 70-second end. Unknown or late readback remains Hold; no new clock is started. One detection byte stays inside the combined 2 MiB ceiling. Source allocation including Git data is checked within the existing 256 MiB source cap.
+
+
+### Strict metadata chunk framing correction (2026-11-17)
+
+The single SDK-free service diagnostic (run 44065565191/1, exact a5a329d) observed HTTP 200, expected URL, one chunked transfer coding, no Content-Length, and one gzip content coding. It stopped before application body reads at the original no-transfer-coding guard. CI/process success was diagnostic completion only; no input was admitted.
+
+The full producer now opts into a strict HTTP/1.1 chunk parser for that valid framing: exactly one chunked coding with no Content-Length or Trailer header, <=65536 chunks, <=16 hexadecimal size digits, original body bounds, exact CRLF, no chunk extensions or trailers, and mandatory final zero chunk. Ambiguous, malformed, incomplete or over-budget framing remains Hold. Original TLS/origin/status/freshness/single-gzip/strict-JSON, raw3 byte/hash/CMS/normalization, complete advisory/locks/notices, actual host/caps and deadlines remain mandatory. Public raw transport and the SDK-free diagnostic no-TE guard are unchanged. No additional diagnostic request is authorized by this fix.

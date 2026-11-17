@@ -77,7 +77,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
  def redirect_request(self,*a,**k):raise Hold('METADATA_REDIRECT')
 def save(path,data):
  with Path(path).open('xb') as f:f.write(data)
-METADATA_PRIMARY_CODES=('ADVISORY_COMPLETE_SNAPSHOT', 'ADVISORY_EXACT_RANGE', 'ADVISORY_RANGE', 'COMPLETE', 'CURRENT_ADVISORY_MATCH', 'DECODED_BEFORE_PARSE', 'DIAGNOSTIC_ORIGINAL_DEADLINE', 'FAILED_BEFORE_OPEN', 'HOLD', 'JSON_PARSED_NOT_ADMITTED', 'METADATA_BODY_BOUND', 'METADATA_CALLER_ORIGIN_BINDING', 'METADATA_CANONICAL_SEGMENT', 'METADATA_CHILD_HOLD', 'METADATA_CHILD_OUTPUT_UNEXPECTED', 'METADATA_CHILD_RECEIPT_IDENTITY', 'METADATA_CHILD_RESULT_BOUND', 'METADATA_CHILD_WIRE_BOUND', 'METADATA_CHILD_WIRE_HASH', 'METADATA_CLOSED_ONCE', 'METADATA_COMBINED_BYTES_CAP', 'METADATA_DUPLICATE_KEY', 'METADATA_ENCODING', 'METADATA_FRESHNESS', 'METADATA_GZIP_BOUND_OR_MEMBER', 'METADATA_GZIP_EOF', 'METADATA_GZIP_PROGRESS', 'METADATA_HTTP_DATE', 'METADATA_HTTP_FRAMING', 'METADATA_HTTP_STATUS_OR_URL', 'METADATA_JSON_INVALID', 'METADATA_LENGTH', 'METADATA_LENGTH_MISMATCH', 'METADATA_NAMESPACE', 'METADATA_NONFINITE', 'METADATA_ORIGIN', 'METADATA_OWN_CHILD_CGROUP', 'METADATA_OWN_CHILD_FAILED', 'METADATA_OWN_CHILD_IDENTITY', 'METADATA_OWN_CHILD_TERMINAL', 'METADATA_OWN_MAIN_ALARM_REQUIRED', 'METADATA_PERIODIC_ALARM_UNSUPPORTED', 'METADATA_PHASE_IDENTITY', 'METADATA_REDIRECT', 'METADATA_REQUEST10_DEADLINE', 'METADATA_REQUEST_FILE', 'METADATA_REQUEST_FILE_HASH', 'METADATA_REQUEST_OUTPUT_SCOPE', 'METADATA_REQUEST_SOURCE', 'METADATA_REQUEST_SPEC_BOUND', 'METADATA_TRANSPORT_FAILURE', 'METADATA_URL', 'METADATA_URL_ALLOWLIST', 'METADATA_URL_NOT_IN_INDEX', 'NONE', 'NO_SELECTED_NUGET_ADVISORY_MATCH', 'ORIGINAL_BODY_BUDGET', 'ORIGINAL_METADATA_DEADLINE', 'RAW_COMPLETE', 'RAW_PARTIAL', 'SELECTED_VERSION_NOT_STABLE', 'SIGALRM', 'STARTED', 'UNKNOWN', 'UNKNOWN_OR_REDACTED', 'UNSUPPORTED_ADVISORY_VERSION', 'VULNERABILITY_INDEX_AMBIGUOUS', 'VULNERABILITY_INDEX_NOT_ALLOWLISTED', 'VULNERABILITY_INDEX_NOT_DECLARED', 'VULNERABILITY_INDEX_SHAPE', 'VULNERABILITY_PAGE_PARTITION', 'VULNERABILITY_PAGE_SELF_REFERENCE', 'VULNERABILITY_PAGE_SHAPE', 'VULNERABILITY_PAGE_TUPLE_CHANGED', 'VULNERABILITY_SERVICE_INDEX_AMBIGUOUS', 'VULNERABILITY_SERVICE_RESOURCES', 'VULNERABILITY_SUPPORTED_RESOURCE_MISSING')
+METADATA_PRIMARY_CODES=('ABSENT', 'ADVISORY_COMPLETE_SNAPSHOT', 'ADVISORY_EXACT_RANGE', 'ADVISORY_RANGE', 'CHUNKED', 'COMPLETE', 'CURRENT_ADVISORY_MATCH', 'DECIMAL', 'DECODED_BEFORE_PARSE', 'DEFLATE', 'DIAGNOSTIC_ORIGINAL_DEADLINE', 'DUPLICATE', 'FAILED_BEFORE_OPEN', 'GZIP', 'HOLD', 'IDENTITY', 'INVALID', 'JSON_PARSED_NOT_ADMITTED', 'METADATA_BODY_BOUND', 'METADATA_CALLER_ORIGIN_BINDING', 'METADATA_CANONICAL_SEGMENT', 'METADATA_CHILD_HOLD', 'METADATA_CHILD_OUTPUT_UNEXPECTED', 'METADATA_CHILD_RECEIPT_IDENTITY', 'METADATA_CHILD_RESULT_BOUND', 'METADATA_CHILD_WIRE_BOUND', 'METADATA_CHILD_WIRE_HASH', 'METADATA_CHUNK_BODY_BOUND', 'METADATA_CHUNK_COUNT', 'METADATA_CHUNK_DELIMITER', 'METADATA_CHUNK_PARSER_IDENTITY', 'METADATA_CHUNK_SIZE_LINE', 'METADATA_CHUNK_TERMINAL', 'METADATA_CHUNK_TRAILER_OR_TERMINATOR', 'METADATA_CLOSED_ONCE', 'METADATA_COMBINED_BYTES_CAP', 'METADATA_DUPLICATE_KEY', 'METADATA_ENCODING', 'METADATA_FRAMING_MODE', 'METADATA_FRESHNESS', 'METADATA_GET', 'METADATA_GZIP_BOUND_OR_MEMBER', 'METADATA_GZIP_EOF', 'METADATA_GZIP_PROGRESS', 'METADATA_HTTP_DATE', 'METADATA_HTTP_FRAMING', 'METADATA_HTTP_STATUS_OR_URL', 'METADATA_JSON_INVALID', 'METADATA_LENGTH', 'METADATA_LENGTH_MISMATCH', 'METADATA_NAMESPACE', 'METADATA_NONFINITE', 'METADATA_ORIGIN', 'METADATA_OWN_CHILD_CGROUP', 'METADATA_OWN_CHILD_FAILED', 'METADATA_OWN_CHILD_IDENTITY', 'METADATA_OWN_CHILD_TERMINAL', 'METADATA_OWN_MAIN_ALARM_REQUIRED', 'METADATA_PERIODIC_ALARM_UNSUPPORTED', 'METADATA_PHASE_IDENTITY', 'METADATA_REDIRECT', 'METADATA_REQUEST10_DEADLINE', 'METADATA_REQUEST_FILE', 'METADATA_REQUEST_FILE_HASH', 'METADATA_REQUEST_OUTPUT_SCOPE', 'METADATA_REQUEST_SOURCE', 'METADATA_REQUEST_SPEC_BOUND', 'METADATA_TRANSPORT_FAILURE', 'METADATA_URL', 'METADATA_URL_ALLOWLIST', 'METADATA_URL_NOT_IN_INDEX', 'MULTIPLE', 'NONE', 'NO_SELECTED_NUGET_ADVISORY_MATCH', 'NO_TRANSFER_ENCODING_V1', 'OBSERVED', 'ORIGINAL_BODY_BUDGET', 'ORIGINAL_METADATA_DEADLINE', 'OTHER', 'OVER_LIMIT', 'RAW_COMPLETE', 'RAW_PARTIAL', 'SELECTED_VERSION_NOT_STABLE', 'SIGALRM', 'STARTED', 'STRICT_SINGLE_CHUNKED_V1', 'UNKNOWN', 'UNKNOWN_OR_REDACTED', 'UNSUPPORTED_ADVISORY_VERSION', 'VULNERABILITY_INDEX_AMBIGUOUS', 'VULNERABILITY_INDEX_NOT_ALLOWLISTED', 'VULNERABILITY_INDEX_NOT_DECLARED', 'VULNERABILITY_INDEX_SHAPE', 'VULNERABILITY_PAGE_PARTITION', 'VULNERABILITY_PAGE_SELF_REFERENCE', 'VULNERABILITY_PAGE_SHAPE', 'VULNERABILITY_PAGE_TUPLE_CHANGED', 'VULNERABILITY_SERVICE_INDEX_AMBIGUOUS', 'VULNERABILITY_SERVICE_RESOURCES', 'VULNERABILITY_SUPPORTED_RESOURCE_MISSING')
 
 FRAMING_LIMIT=2097152
 FRAMING_KEYS=('observationState','actualStatus','responseURLMatchesExpected','contentLengthHeaderCount','contentLengthShape','declaredContentLength','transferEncodingHeaderCount','transferEncodingCategory','contentEncodingHeaderCount','contentEncodingCategory','statusAllowed','urlAllowed','noTransferEncoding','headerCountsAllowed','applicationBodyBytesRead','primaryCode','sourceOperation','currentRequestIndex','elapsedNs')
@@ -148,6 +148,30 @@ def safe_metadata_code(exc):
  return args[0] if type(exc) is Hold and len(args)==1 and type(args[0]) is str and args[0] in METADATA_PRIMARY_CODES else 'UNKNOWN_OR_REDACTED'
 
 
+FULL_METADATA_FRAMING_MODE='STRICT_SINGLE_CHUNKED_V1'
+LEGACY_METADATA_FRAMING_MODE='NO_TRANSFER_ENCODING_V1'
+
+def strict_chunk_left(response):
+ """Strict bounded HTTP/1.1 chunk framing; no extensions, trailers or ambiguity."""
+ need(time.monotonic_ns()<response.own04ChunkDeadline,'METADATA_REQUEST10_DEADLINE');current=response.chunk_left;proof=response.own04ChunkFraming
+ if current:return current
+ if current is not None:need(response._safe_read(2)==b'\r\n','METADATA_CHUNK_DELIMITER');proof['framingBytesRead']+=2
+ line=response.fp.readline(19);proof['framingBytesRead']+=len(line);need(3<=len(line)<=18 and line.endswith(b'\r\n') and re.fullmatch(rb'[0-9a-fA-F]{1,16}\r\n',line) is not None,'METADATA_CHUNK_SIZE_LINE');size=int(line[:-2],16);proof['chunkCount']+=1;need(proof['chunkCount']<=65536,'METADATA_CHUNK_COUNT');need(size<=response.own04ChunkLimit-proof['declaredDataBytes'],'METADATA_CHUNK_BODY_BOUND')
+ if size==0:
+  ending=response.fp.readline(3);proof['framingBytesRead']+=len(ending);need(ending==b'\r\n','METADATA_CHUNK_TRAILER_OR_TERMINATOR');proof['terminated']=True;response._close_conn();response.chunk_left=None;return None
+ proof['declaredDataBytes']+=size;response.chunk_left=size;return size
+
+def admit_metadata_framing(response,mode,limit,deadline):
+ import http.client,types
+ need(mode in (LEGACY_METADATA_FRAMING_MODE,FULL_METADATA_FRAMING_MODE),'METADATA_FRAMING_MODE')
+ transfer=response.headers.get_all('Transfer-Encoding',[]);lengths=response.headers.get_all('Content-Length',[])
+ need(len(response.headers.get_all('Content-Encoding',[]))<=1 and len(lengths)<=1,'METADATA_HTTP_FRAMING')
+ if not transfer:return False
+ need(mode==FULL_METADATA_FRAMING_MODE and len(transfer)==1 and type(transfer[0]) is str and transfer[0].lower()=='chunked' and not lengths and not response.headers.get_all('Trailer',[]),'METADATA_HTTP_FRAMING')
+ need(type(response) is http.client.HTTPResponse and response.chunked is True and response.length is None and response.chunk_left is None,'METADATA_CHUNK_PARSER_IDENTITY')
+ response.own04ChunkFraming={'chunkCount':0,'framingBytesRead':0,'declaredDataBytes':0,'terminated':False};response.own04ChunkLimit=limit;response.own04ChunkDeadline=deadline;response._get_chunk_left=types.MethodType(strict_chunk_left,response);return True
+
+
 def _wire_request(ctx,url,destination,limit,total,allowed_urls,json_data=False):
  """Own04 finite one-shot transport. Invoked only after exact runtime activation."""
  budget(ctx);need(url in allowed_urls and url not in ctx['requested'] and len(ctx['requested'])<23,'METADATA_CLOSED_ONCE')
@@ -158,7 +182,7 @@ def _wire_request(ctx,url,destination,limit,total,allowed_urls,json_data=False):
   entry['framing']=framing_observation(response,url,ctx.get('currentRequestIndex',len(ctx['records'])-1))
   budget(ctx)
   need(response.status==200 and response.geturl()==url,'METADATA_HTTP_STATUS_OR_URL')
-  need(not response.headers.get_all('Transfer-Encoding',[]) and len(response.headers.get_all('Content-Encoding',[]))<=1 and len(response.headers.get_all('Content-Length',[]))<=1,'METADATA_HTTP_FRAMING')
+  chunked=admit_metadata_framing(response,ctx.get('metadataFramingMode',LEGACY_METADATA_FRAMING_MODE),limit,ctx['deadlineMonotonicNs'])
   encoding=response.headers.get('Content-Encoding','identity').lower();need(encoding in (('identity','gzip') if json_data else ('identity',)),'METADATA_ENCODING')
   date=response.headers.get('Date');need(date is not None and len(response.headers.get_all('Date',[]))==1,'METADATA_HTTP_DATE')
   try:
@@ -173,6 +197,8 @@ def _wire_request(ctx,url,destination,limit,total,allowed_urls,json_data=False):
    budget(ctx);remaining=(request_end-time.monotonic_ns())/1e9;need(remaining>0,'METADATA_REQUEST10_DEADLINE');sock.settimeout(remaining);piece=response.read(min(65536,limit-size+1));need(time.monotonic_ns()<request_end,'METADATA_REQUEST10_DEADLINE')
    if not piece:break
    size+=len(piece);entry['rawBytes']=size;entry['framing']['applicationBodyBytesRead']=size;entry['state']='RAW_PARTIAL';need(size<=limit,'METADATA_BODY_BOUND');total['bodyBytes']+=len(piece);need(total['bodyBytes']<=536870912,'ORIGINAL_BODY_BUDGET');chunks.append(piece)
+  if chunked:
+   need(response.own04ChunkFraming['terminated'] is True and response.isclosed() and response.own04ChunkFraming['declaredDataBytes']==size,'METADATA_CHUNK_TERMINAL');entry['chunkFraming']=dict(response.own04ChunkFraming)
   need(length is None or size==int(length),'METADATA_LENGTH_MISMATCH');wire=b''.join(chunks)
   # Peer is recorded only when the underlying transport exposes it; never DNS re-resolve.
   entry.update(rawBytes=size,rawSHA256=sha(wire),encoding=encoding,date=date,lastModified=response.headers.get('Last-Modified'),cacheControl=response.headers.get('Cache-Control'),state='RAW_COMPLETE')
@@ -194,7 +220,7 @@ def absolute_request(ctx):
 
 def _owned_request_child(spec):
  """Only the fixed one-shot public metadata operation; no stdout or SDK action."""
- ctx={'deadlineMonotonicNs':spec['deadlineMonotonicNs'],'deadlineCode':spec['deadlineCode'],'utcNow':spec['utcNow'],'currentRequestIndex':spec.get('currentRequestIndex',0),'requested':set(),'records':[]};total={'bodyBytes':spec['bodyBytesBefore']};result=None;started=time.monotonic_ns()
+ ctx={'deadlineMonotonicNs':spec['deadlineMonotonicNs'],'deadlineCode':spec['deadlineCode'],'utcNow':spec['utcNow'],'currentRequestIndex':spec.get('currentRequestIndex',0),'metadataFramingMode':spec.get('metadataFramingMode',LEGACY_METADATA_FRAMING_MODE),'requested':set(),'records':[]};total={'bodyBytes':spec['bodyBytesBefore']};result=None;started=time.monotonic_ns()
  try:
   entry,wire=_wire_request(ctx,spec['url'],spec['wirePath'],spec['limit'],total,tuple(spec['allowedURLs']),spec['jsonData']);retain_framing(entry,'NONE',started);result={'state':'COMPLETE','entry':entry,'bodyBytesAfter':total['bodyBytes']}
  except BaseException as exc:
@@ -207,7 +233,7 @@ def bounded_get(ctx,url,destination,limit,total,allowed_urls,json_data=False):
  """One held same-cgroup HTTP child, with a single absolute parent10s budget."""
  with absolute_request(ctx) as (end,deadline_code):
   budget(ctx);need(url in allowed_urls and url not in ctx['requested'] and len(ctx['requested'])<23,'METADATA_CLOSED_ONCE');ctx['requested'].add(url);job=ctx['ownedJob'];cap=job.linux_caps();work=Path(ctx['requestWorkRoot'])/('request-'+str(len(ctx['requested'])-1));work.mkdir(mode=0o700);wirepath=work/'wire.data';resultpath=work/'result.json';specpath=work/'request.json';work_end=end-200000000;need(time.monotonic_ns()<work_end,deadline_code)
-  spec={'schema':'producer04-owned-http-request/v1','sourceSHA256':sha(Path(__file__).read_bytes()),'url':url,'allowedURLs':list(allowed_urls),'limit':limit,'jsonData':json_data,'utcNow':ctx['utcNow'],'deadlineMonotonicNs':end,'deadlineCode':deadline_code,'bodyBytesBefore':total['bodyBytes'],'currentRequestIndex':len(ctx['requested'])-1,'wirePath':str(wirepath),'resultPath':str(resultpath),'uid':cap['uid'],'gid':cap['gid'],'cgroup':cap['cgroup']};body=(json.dumps(spec,separators=(',',':'))+'\n').encode();need(len(body)<=65536,'METADATA_REQUEST_SPEC_BOUND');save(specpath,body)
+  spec={'schema':'producer04-owned-http-request/v1','sourceSHA256':sha(Path(__file__).read_bytes()),'url':url,'allowedURLs':list(allowed_urls),'limit':limit,'jsonData':json_data,'utcNow':ctx['utcNow'],'deadlineMonotonicNs':end,'deadlineCode':deadline_code,'bodyBytesBefore':total['bodyBytes'],'currentRequestIndex':len(ctx['requested'])-1,'metadataFramingMode':ctx.get('metadataFramingMode',LEGACY_METADATA_FRAMING_MODE),'wirePath':str(wirepath),'resultPath':str(resultpath),'uid':cap['uid'],'gid':cap['gid'],'cgroup':cap['cgroup']};body=(json.dumps(spec,separators=(',',':'))+'\n').encode();need(len(body)<=65536,'METADATA_REQUEST_SPEC_BOUND');save(specpath,body)
   argv=[sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--owned-metadata-request',str(specpath),'--sha256',sha(body)]
   try:process=job.run(argv,ctx['requestCwd'],ctx['requestEnvironment'],work_end//1000000,work/'process')
   except BaseException:

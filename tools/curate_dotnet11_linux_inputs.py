@@ -11,13 +11,13 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='7a0f89e4bfa3ea1ab90aea99c227d9fe096d722c3ed19ee5818ee24f1aa50bea'
+PROFILE_SHA='40c1c829e9d14a255ee0fdee786d58d9606b9537be7dfc7cffb79abf4a05bf39'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
 PACKAGING_SHA='d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b'
 IDS=('Microsoft.AspNetCore.App.Runtime.linux-x64','Microsoft.NETCore.App.Host.linux-x64','Microsoft.NETCore.App.Runtime.linux-x64')
-METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'3de1882c41521c9967382bc0837ad6846177e8a86100e73acb2c789fdd609d8a'}
+METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'ed93f536995a01700fab6bf54025a94232ae4f71e056f7f9fbb31b553af6790a'}
 AMENDMENT_SHA='0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770'
 class Hold(RuntimeError): pass
 def need(value,code):
@@ -44,7 +44,7 @@ def public_input_module():
  p=HERE/'curation_public_input04.py';need(digest(p.read_bytes())==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_HELPER_SOURCE');spec=importlib.util.spec_from_file_location('curation_public_input04',p);m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m);diagnostics().bind(m,PUBLIC_HELPER_SHA,'public-input');return m
 
 def policies():
- contract=load_json(HERE/'producer04-linux-curation.contract.json',CONTRACT_SHA);profile=load_json(HERE/'producer04-linux-curation.profile.json',PROFILE_SHA);need(profile['inputTransport']=='PUBLIC_ORIGINALS_V1' and profile['publicInputTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA and profile['publicInputHelperSHA256']==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_PROFILE');load_json(HERE/'producer04-linux-curation-public-input-transport.json',PUBLIC_TRANSPORT_SHA);need(profile['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'ADVISORY_NAMESPACE_PROFILE');load_json(HERE/'producer04-linux-advisory-namespace-amendment.json',NAMESPACE_AMENDMENT_SHA);return contract,profile
+ contract=load_json(HERE/'producer04-linux-curation.contract.json',CONTRACT_SHA);profile=load_json(HERE/'producer04-linux-curation.profile.json',PROFILE_SHA);need(profile['inputTransport']=='PUBLIC_ORIGINALS_V1' and profile['publicInputTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA and profile['publicInputHelperSHA256']==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_PROFILE');load_json(HERE/'producer04-linux-curation-public-input-transport.json',PUBLIC_TRANSPORT_SHA);need(profile['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'ADVISORY_NAMESPACE_PROFILE');load_json(HERE/'producer04-linux-advisory-namespace-amendment.json',NAMESPACE_AMENDMENT_SHA);need(profile['metadataFramingMode']==METADATA_FRAMING_MODE,'METADATA_FRAMING_PROFILE');return contract,profile
 
 def content_hash(stdout,package_id,version,exit_code,raw_receipt):
  """Strict English CLI shape hypothesis; released SDK output remains unobserved."""
@@ -239,9 +239,10 @@ def validate_lock(lock,admitted,local_source,metadata):
    m=metadata.get(name.lower());need(type(m) is dict and m.get('contentHash')==value and m.get('source')==local_source,'GRAPH_ACTUAL_NUPKG_METADATA')
    seen.append(name.lower())
  return {'state':'APPLICABLE_CONTENT_IDENTITIES_MATCH','packages':sorted(set(seen)),'auditConsumption':'NOT_ESTABLISHED_BY_LOCK','productAdmission':False}
+METADATA_FRAMING_MODE='STRICT_SINGLE_CHUNKED_V1'
 FULL_EXECUTION_MODE='FULL_PRODUCER_CURATION'
 DIAGNOSTIC_MODE='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY'
-DIAGNOSTIC_PROFILE_SHA='20449ce3ccea11b5a10b8f9f4884fb81e2dc16eb1b8ca60bbaf736e13ecab150'
+DIAGNOSTIC_PROFILE_SHA='35fd573563e975927c31b4aa0d707705874458e2b5ebc1b7a9a501481477e8e9'
 DIAGNOSTIC_URL='https://api.nuget.org/v3/index.json'
 LEASE_PROTOCOL_SHA='9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b'
 
@@ -389,10 +390,11 @@ def method_feasibility():
 def require_method():
  method_modules();load_json(HERE/'producer04-linux-curation-method-amendment.json',AMENDMENT_SHA)
 def validate_admission(gate,expected_head,profile_sha):
- required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce','inputTransport','publicTransportAmendmentSHA256','advisoryNamespaceAmendmentSHA256','executionMode','diagnosticProfileSHA256'}
+ required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce','inputTransport','publicTransportAmendmentSHA256','advisoryNamespaceAmendmentSHA256','executionMode','diagnosticProfileSHA256','metadataFramingMode'}
  need(type(gate) is dict and set(gate)==required,'CURATION_GATE_SCHEMA')
  need(all(type(v) is str for v in gate.values()),'CURATION_GATE_VALUE_TYPES')
  need(gate['schema']=='producer04-linux-curation-execution-admission/v1' and gate['state']=='EXACT_SOURCE_RUNTIME_BOUND' and gate['purpose']==PURPOSE,'CURATION_GATE_STATE_PURPOSE')
+ need(gate['metadataFramingMode']==METADATA_FRAMING_MODE,'METADATA_FRAMING_GATE')
  need(gate['executionMode']==FULL_EXECUTION_MODE and gate['diagnosticProfileSHA256']==DIAGNOSTIC_PROFILE_SHA,'CURATION_FULL_MODE_PROFILE')
  need(gate['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'ADVISORY_NAMESPACE_GATE')
  need(gate['inputTransport']=='PUBLIC_ORIGINALS_V1' and gate['publicTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA,'PUBLIC_INPUT_GATE')
@@ -505,7 +507,7 @@ def _capsule(spec,manifest,contract,total,phase):
 
 def _metadata(spec,phase,contract,A,total,job):
  import email.utils
- root=phase/'metadata';root.mkdir(mode=0o700);fixed=contract['finiteMetadataAcquisition']['sdkMetadataOnly'];pki=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];requestroot=root/'owned-http';requestroot.mkdir(mode=0o700);ctx={'ownedJob':job,'requestWorkRoot':str(requestroot),'requestCwd':str(phase),'requestEnvironment':{'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','HOME':str(Path(spec['root'])/'home'),'TMPDIR':str(Path(spec['root'])/'tmp'),'PYTHONDONTWRITEBYTECODE':'1'},'deadlineMonotonicNs':spec['startTick']*1000000+420000000000,'utcNow':time.time(),'utcAnchorMonotonicNs':time.monotonic_ns(),'requested':set(),'records':[],'allowedURLs':{x['url'] for x in fixed}|set(pki)}
+ root=phase/'metadata';root.mkdir(mode=0o700);fixed=contract['finiteMetadataAcquisition']['sdkMetadataOnly'];pki=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];requestroot=root/'owned-http';requestroot.mkdir(mode=0o700);ctx={'ownedJob':job,'requestWorkRoot':str(requestroot),'requestCwd':str(phase),'requestEnvironment':{'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','HOME':str(Path(spec['root'])/'home'),'TMPDIR':str(Path(spec['root'])/'tmp'),'PYTHONDONTWRITEBYTECODE':'1'},'metadataFramingMode':METADATA_FRAMING_MODE,'deadlineMonotonicNs':spec['startTick']*1000000+420000000000,'utcNow':time.time(),'utcAnchorMonotonicNs':time.monotonic_ns(),'requested':set(),'records':[],'allowedURLs':{x['url'] for x in fixed}|set(pki)}
  _,service=A.bounded_json_get(ctx,fixed[0]['url'],root/'service.json',2097152,total,'service-index');resources=service.get('resources');need(type(resources) is list,'SERVICE_RESOURCES');ctx['advisoryServiceResources']=resources
  def resource(prefix):
   rows=[r for r in resources if type(r) is dict and type(r.get('@type')) is str and r['@type'].startswith(prefix)];need(rows,'OFFICIAL_RESOURCE_MISSING');versions={}

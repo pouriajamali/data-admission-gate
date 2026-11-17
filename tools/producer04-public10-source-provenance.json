@@ -80,5 +80,14 @@
     "sourceAllowanceSHA256": "9ea01032176240f55edc2f36b0ced58471bb564c79fb255e5832e08dd0f3b0e8",
     "actualCauseBundleSHA256": "8b1dd3923b67865ed7277c612b363e38f7f1217874ac2bb0e5db57c96bd49a0e",
     "scope": "Bounded finite header observation before unchanged framing predicates; one separate explicit metadata-only selector, no framing waiver or source10 import/change. Original public10 evidence and earlier namespace history immutable."
+  },
+  "private04StrictChunkedDelta": {
+    "state": "TARGETED_VALID_HTTP1_METADATA_FRAMING_CORRECTION",
+    "directOwnerTask": "Complete shared .NET11 input dependency with at most1 diagnostic then1 corrected full attempt per required RID; no new framework/keys/trust waiver.",
+    "actualDiagnosticRun": "44065565191/1",
+    "actualResultSHA256": "5cb01c7f6a2e7df54666d0a5cfa909c0e21ff80718e8c53ef3215d85f7d479db",
+    "previousPrivateHelperSHA256": "3de1882c41521c9967382bc0837ad6846177e8a86100e73acb2c789fdd609d8a",
+    "currentPrivateHelperSHA256": "ed93f536995a01700fab6bf54025a94232ae4f71e056f7f9fbb31b553af6790a",
+    "rule": "Full mode only: either original no-TE path or single exact chunked, no Content-Length/Trailer ambiguity, exact stdlib response identity, <=65536 <=16hex chunk sizes bounded by original body limit, CRLF exact, no extensions/trailers, mandatory zero termination. Original origin/status/freshness/gzip/JSON/deadline/signatures/advisory/SDK/retention remain mandatory. Diagnostic stays original no-TE guard; public raw3 transport unchanged."
   }
 }

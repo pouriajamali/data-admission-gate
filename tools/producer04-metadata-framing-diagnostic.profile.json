@@ -10,7 +10,7 @@
   "methodAmendmentSHA256": "0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770",
   "publicTransportAmendmentSHA256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484",
   "advisoryNamespaceAmendmentSHA256": "c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614",
-  "advisoryHelperSHA256": "3de1882c41521c9967382bc0837ad6846177e8a86100e73acb2c789fdd609d8a",
+  "advisoryHelperSHA256": "ed93f536995a01700fab6bf54025a94232ae4f71e056f7f9fbb31b553af6790a",
   "knownSigner": "SHA256:AgU5bZlJSjUu0KsWMmVEEr+BfXpcMVNroTA33bHcQdU",
   "allowedSigners": "pouriajamali ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE3HcCoaqX2eKglIpCpVS04stHolalzViq2mbU/Tp8Q/\n",
   "canonicalLeaseProtocolSHA256": "9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b",
