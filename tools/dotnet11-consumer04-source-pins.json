@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "2e6c4ead536133126f620c324019ad8c3a27e962"
+      "gitBlob": "e861f402f1010633982efcbfc15ab04ac9dedaca"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -272,7 +272,7 @@
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
-      "gitBlob": "ddd4ebd10b22ceb57e91341b9ea7318e29835d5a"
+      "gitBlob": "ddff2660d9a0af02d43271f89657d7e25edb15bb"
     },
     {
       "path": "tools/dotnet11-consumer04-normal-profile.json",

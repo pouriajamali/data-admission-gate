@@ -240,3 +240,5 @@ verification, original eight certificates/SDK trust anchors, network transition,
 This data-parser correction alone is not package or product admission.
 
 A unique existing SDK trust anchor is preferred to a cross-signed issuer only when every candidate has the same actual SPKI encoding hash. Distinct keys, multiple/no matching anchors and missing key identity remain HOLD. Native OpenSSL still verifies signatures and the full current CRL chain; no root bundle or trust policy changes.
+
+The owner01 Core/Host run44081220428 at d2bdc082 stopped before acquisition because the caller controller digest in the existing admission lock was stale. The lock now binds the actual unchanged caller bytes. Existing public-parent, source, cap, signature, freshness and terminal guards remain mandatory; this correction alone supplies no accepted input.
