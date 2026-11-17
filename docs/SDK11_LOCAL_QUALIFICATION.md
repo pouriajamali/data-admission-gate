@@ -101,3 +101,14 @@ retained, so combined executed row time is at most307.547s. The new row and
 composite source/command history are explicit, never presented as one successful
 original8-attempt run. No healthy five-command replay, download or new SDK is
 allowed. Ten host/numerical boundary tests pass. No continuation has run.
+
+## Final Windows04 qualification result
+
+The explicitly approved continuation completed restore/build/hello in25.906s,
+reusing the five old healthy results; total attempts9, successful logical
+commands8. New peak131371008B, actual4GiB/64/CPU2 and population0. It is separate
+from source/host/cap/clock evidence for any consumer/product. The immutable
+composite fact SHA841b508658a3a843f7d194b089b355b3e2e572873b4301349f3b545255086339
+and original failed restore are retained. No more qualification replay is needed.
+The [local input facade](SDK11_LOCAL_INPUT_INTERFACE.md) is additive and preserves
+old CI enums/schema. It accepts no source-only proof as runtime/product success.

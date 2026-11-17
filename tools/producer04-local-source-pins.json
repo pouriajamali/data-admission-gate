@@ -1,0 +1,883 @@
+{
+  "schema": "sdk11-own-source-pins/v1",
+  "state": "EXACT_SOURCE_PINNED",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "sourcePins": [
+    {
+      "path": ".gitattributes",
+      "mode": "100644",
+      "gitBlob": "43c654827b5a90d20914c7f0352b224731adc7bb"
+    },
+    {
+      "path": ".github/ci/policy.py",
+      "mode": "100644",
+      "gitBlob": "548a09fac1ffb1bdd2519ec0c211444f25b3e252"
+    },
+    {
+      "path": ".github/ci/test_policy.py",
+      "mode": "100644",
+      "gitBlob": "1b5be1af1cae4904a87b4926d2342de1aa31694d"
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "mode": "100644",
+      "gitBlob": "68efc2e9dcf0fa926df75dd356a3c8bbe98305a4"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "gitBlob": "802a41a3c9cef7da36ff6b99aac1146d040779ca"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "gitBlob": "3bf1160f1c3ef23f6345717ea7d5c062e26f11c1"
+    },
+    {
+      "path": "Directory.Build.props",
+      "mode": "100644",
+      "gitBlob": "19202883c93cd4d3fa41cee2f1dae1fefb9e5f80"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "gitBlob": "e67e64a5ab7fcec5def82845d73fc7f96f82c9ba"
+    },
+    {
+      "path": "NOTICE.md",
+      "mode": "100644",
+      "gitBlob": "f1cc4b3576d043f7f6f8db54a803257992c413e5"
+    },
+    {
+      "path": "PROVENANCE.md",
+      "mode": "100644",
+      "gitBlob": "8938792956730133798fc31d99f4e31956b6145b"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "gitBlob": "c3ca3f363a3901d834f5ab545dd5ae310fbd0dd1"
+    },
+    {
+      "path": "SIGNING-PUBLIC-KEY.pub",
+      "mode": "100644",
+      "gitBlob": "260690d2d8ede6631c0792fe61d2883c383f5466"
+    },
+    {
+      "path": "docs/ACTIONLINT-BUILD.md",
+      "mode": "100644",
+      "gitBlob": "72f6710abd7033c9e3413bb284f413832392af0f"
+    },
+    {
+      "path": "docs/BOUNDS.md",
+      "mode": "100644",
+      "gitBlob": "a6fba3a6599a615fbf15ea240e59e6750e3d7906"
+    },
+    {
+      "path": "docs/CI-POLICY.md",
+      "mode": "100644",
+      "gitBlob": "e161d32db3b13ccc419fda393f20c3a4f9b1ac75"
+    },
+    {
+      "path": "docs/COMPARISON.md",
+      "mode": "100644",
+      "gitBlob": "0e9c8209770baf43d6a42b54da3115c97837381a"
+    },
+    {
+      "path": "docs/CONTRACT.md",
+      "mode": "100644",
+      "gitBlob": "d313c92bc6a66d894220e3c844968b6b5fee7da4"
+    },
+    {
+      "path": "docs/RELEASE-v0.1.0-preview.1.md",
+      "mode": "100644",
+      "gitBlob": "39a233be1f03bfd8215cd0d2dcf49a7fdbc9d7d8"
+    },
+    {
+      "path": "docs/RELEASE-v0.1.0-preview.2.md",
+      "mode": "100644",
+      "gitBlob": "4b63358b9150b0f458a3f9af3d55d4f3e7256bb9"
+    },
+    {
+      "path": "docs/RELEASE-v0.1.0-preview.3.md",
+      "mode": "100644",
+      "gitBlob": "29e2f05fdcda45b3dba5bf1aa37e893edb300919"
+    },
+    {
+      "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
+      "mode": "100644",
+      "gitBlob": "d67e4c0b6000b1ed7868227ae90abea63b7b68d9"
+    },
+    {
+      "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
+      "mode": "100644",
+      "gitBlob": "b27f80ae6da61abcd4266a09b13a6cde8add7932"
+    },
+    {
+      "path": "docs/SDK11_SHARED_INPUT_INTERFACE.json",
+      "mode": "100644",
+      "gitBlob": "e91c2e10f17b4bd37ec2b53129ca56a34780aabd"
+    },
+    {
+      "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
+      "mode": "100644",
+      "gitBlob": "1df18fd6d884c83d4b0364a33709450cf987cefe"
+    },
+    {
+      "path": "docs/SDK11_SUPPORTED_HOSTS.md",
+      "mode": "100644",
+      "gitBlob": "5c232fdc4a63487d822ff5aa34d6c90d7979f5cb"
+    },
+    {
+      "path": "docs/TECH-REFRESH-20261114.md",
+      "mode": "100644",
+      "gitBlob": "6ad209d965e5f680f23493eea3c38e21ca31b9e6"
+    },
+    {
+      "path": "global.json",
+      "mode": "100644",
+      "gitBlob": "358949390c3e30f6a7f3ad491a914ecd69d437a2"
+    },
+    {
+      "path": "src/Admission/Admission.csproj",
+      "mode": "100644",
+      "gitBlob": "9fbc07616965a1d5a53a1bf710b5aed6b1e5daba"
+    },
+    {
+      "path": "src/Admission/Assessment.cs",
+      "mode": "100644",
+      "gitBlob": "70e61c0e4e32335fbde8678de48394f14d71e17d"
+    },
+    {
+      "path": "src/Admission/Contract.cs",
+      "mode": "100644",
+      "gitBlob": "4768604da09c4530f6ec09fb3735eff54f98f395"
+    },
+    {
+      "path": "src/Admission/Program.cs",
+      "mode": "100644",
+      "gitBlob": "c9a957ddb1c47b0d3b83c5a18746995815048f23"
+    },
+    {
+      "path": "src/Admission/Safe.cs",
+      "mode": "100644",
+      "gitBlob": "1213440206c54e4e66cb2d0618d6c402beca8075"
+    },
+    {
+      "path": "src/Admission/VendorPins.cs",
+      "mode": "100644",
+      "gitBlob": "5d94374334f2afdd63605c3b294f74eb282e474a"
+    },
+    {
+      "path": "src/Admission/packages.lock.json",
+      "mode": "100644",
+      "gitBlob": "0ecce8c5645ed2e07ea8e2427cf9a931992f1c4b"
+    },
+    {
+      "path": "tests/Admission.Tests/Admission.Tests.csproj",
+      "mode": "100644",
+      "gitBlob": "90fd36db0e3ae4e2e082ec1a2e6532c854276603"
+    },
+    {
+      "path": "tests/Admission.Tests/DecisionOracle.cs",
+      "mode": "100644",
+      "gitBlob": "3c97b49b1792d786b3d768b53cb10830531bb18b"
+    },
+    {
+      "path": "tests/Admission.Tests/Program.cs",
+      "mode": "100644",
+      "gitBlob": "0595114c2fa4421de752ea90f2d3e3347c9316ab"
+    },
+    {
+      "path": "tests/Admission.Tests/packages.lock.json",
+      "mode": "100644",
+      "gitBlob": "f3703b8731e41498a9709f93d46fc529f988d7ff"
+    },
+    {
+      "path": "tools/actionlint-build.lock.json",
+      "mode": "100644",
+      "gitBlob": "61a7de73831787fa662522e0950a0a6bb86756fa"
+    },
+    {
+      "path": "tools/actionlint-notices.json",
+      "mode": "100644",
+      "gitBlob": "bb5665179a8c6debf242cbe9fca2ebfbe5097286"
+    },
+    {
+      "path": "tools/bounded_actionlint.py",
+      "mode": "100644",
+      "gitBlob": "dcf024cf4e162e4aa0bc25922258c0d2f73b831a"
+    },
+    {
+      "path": "tools/build_actionlint.py",
+      "mode": "100644",
+      "gitBlob": "cebead054994a7b0321586ff741e09a9874096e1"
+    },
+    {
+      "path": "tools/check_actionlint.py",
+      "mode": "100644",
+      "gitBlob": "1c95a8bababa608048a78ed725262f8a59c0045d"
+    },
+    {
+      "path": "tools/check_dotnet11.py",
+      "mode": "100644",
+      "gitBlob": "7ba2720e65558250706197e8deae108bfda987c0"
+    },
+    {
+      "path": "tools/check_package.py",
+      "mode": "100644",
+      "gitBlob": "e9f61a3865cf19c0a504164f2ef5f1ee7d1d7dc2"
+    },
+    {
+      "path": "tools/check_release.py",
+      "mode": "100644",
+      "gitBlob": "979a7d7af9d45de4fefae2312850c6c6974d4294"
+    },
+    {
+      "path": "tools/check_tech_refresh.py",
+      "mode": "100644",
+      "gitBlob": "44d55e15ad17b7d65bcf76d8af57768e647a277f"
+    },
+    {
+      "path": "tools/consume_dotnet11_host_fact.py",
+      "mode": "100644",
+      "gitBlob": "0f76c6016dd967ddd190ea68c3672f2604145477"
+    },
+    {
+      "path": "tools/curate_dotnet11_inputs.py",
+      "mode": "100644",
+      "gitBlob": "ac45e4891f3d368511a3fd0bb310beb3776c7f04"
+    },
+    {
+      "path": "tools/curate_dotnet11_linux_inputs.py",
+      "mode": "100644",
+      "gitBlob": "45175b1395bb75981d21794ffa42083c459c2fb5"
+    },
+    {
+      "path": "tools/curate_windows_inputs_local_linux.py",
+      "mode": "100644",
+      "gitBlob": "815500da377f9dba6c955f8db4a06d241dca204a"
+    },
+    {
+      "path": "tools/curation_advisory_source04.py",
+      "mode": "100644",
+      "gitBlob": "92916d50bcf86924954a93639406cf8e0182492b"
+    },
+    {
+      "path": "tools/curation_data_inspector.py",
+      "mode": "100644",
+      "gitBlob": "9759bc7880d14d3a52543f30b21268e6834f947c"
+    },
+    {
+      "path": "tools/curation_linux_method.py",
+      "mode": "100644",
+      "gitBlob": "6448066dc98a1b46228c8e9d25d47b9c908a3e14"
+    },
+    {
+      "path": "tools/curation_public_input04.py",
+      "mode": "100644",
+      "gitBlob": "969d1bc7c13d5036dc34f24efd583f1524a2b8f0"
+    },
+    {
+      "path": "tools/curation_range_candidate.py",
+      "mode": "100644",
+      "gitBlob": "ee84103cbb5fcf253f1797116813fbf7311b1c4b"
+    },
+    {
+      "path": "tools/curation_safe_cause04.py",
+      "mode": "100644",
+      "gitBlob": "ddf2687db28e5144497dfde619d17a2756c6b888"
+    },
+    {
+      "path": "tools/dotnet11-consumer04-admission.lock.json",
+      "mode": "100644",
+      "gitBlob": "0b203777b52cf720157c8df3e90f3832ccab43fe"
+    },
+    {
+      "path": "tools/dotnet11-consumer04-normal-profile.json",
+      "mode": "100644",
+      "gitBlob": "2caaded049d8e22513503aa23bcbd0773ed5ab0b"
+    },
+    {
+      "path": "tools/dotnet11-consumer04-source-pins.json",
+      "mode": "100644",
+      "gitBlob": "b508a1b231d032a4d6490c8ac98b73ba796b030f"
+    },
+    {
+      "path": "tools/dotnet11-host-qualification.schema.json",
+      "mode": "100644",
+      "gitBlob": "4c505869b03dbf79c194bf8c7ca7b376ceee0223"
+    },
+    {
+      "path": "tools/dotnet11-inputs.lock.json",
+      "mode": "100644",
+      "gitBlob": "8cd2722cd22ae843278060f99d466418c924da66"
+    },
+    {
+      "path": "tools/dotnet11-linux-qualification-inputs.lock.json",
+      "mode": "100644",
+      "gitBlob": "af87c7b188e6268cbd00153acde4545654883a3c"
+    },
+    {
+      "path": "tools/dotnet11-qualification-inputs.lock.json",
+      "mode": "100644",
+      "gitBlob": "9c5f5955c2068141e5f69eb06a066953cd2fef9e"
+    },
+    {
+      "path": "tools/fixtures/windows_qualification_denials.json",
+      "mode": "100644",
+      "gitBlob": "285d31a0e4f5a699a0ce36067804b08f4d6fb37c"
+    },
+    {
+      "path": "tools/linux_qualification_job.py",
+      "mode": "100644",
+      "gitBlob": "71ce9df06fb058efe5c959c4aab017cd7a3ff7aa"
+    },
+    {
+      "path": "tools/local_sdk11_input.py",
+      "mode": "100644",
+      "gitBlob": "f77b5a611c7fb6840503d18fe4abe235cccf5086"
+    },
+    {
+      "path": "tools/materialize_qualification_linux.py",
+      "mode": "100644",
+      "gitBlob": "16e4e7ef7b2e7747a17714e4f6a551c40c9a4829"
+    },
+    {
+      "path": "tools/normal_windows_input.py",
+      "mode": "100644",
+      "gitBlob": "e299a97d1675b376422b4fde89bf8ca3889acb8d"
+    },
+    {
+      "path": "tools/package.py",
+      "mode": "100644",
+      "gitBlob": "f7e53668364cd03acef84a38cb3bb10d5e29450c"
+    },
+    {
+      "path": "tools/producer04-curation-contract.json",
+      "mode": "100644",
+      "gitBlob": "459f125e5816e3a298ce5f138ba00351e345e3d4"
+    },
+    {
+      "path": "tools/producer04-curation.profile.json",
+      "mode": "100644",
+      "gitBlob": "811971005515255e51f16f4671de21a2e5bff0d5"
+    },
+    {
+      "path": "tools/producer04-linux-advisory-namespace-amendment.json",
+      "mode": "100644",
+      "gitBlob": "27367aef0197f1a1da0c1d296af64e10c56efc42"
+    },
+    {
+      "path": "tools/producer04-linux-curation-admission.schema.json",
+      "mode": "100644",
+      "gitBlob": "15d4bd11d92a34e3bc341e38943bbf6e87de02bb"
+    },
+    {
+      "path": "tools/producer04-linux-curation-cert-roles.json",
+      "mode": "100644",
+      "gitBlob": "73838fcbe5d0837b3a2475606b89018c5f79b91a"
+    },
+    {
+      "path": "tools/producer04-linux-curation-method-amendment.json",
+      "mode": "100644",
+      "gitBlob": "34dce527e4d2eb6907014fb141d0a08318ea39b0"
+    },
+    {
+      "path": "tools/producer04-linux-curation-public-input-transport.json",
+      "mode": "100644",
+      "gitBlob": "dfc75918a4be63d16836660e31d3eda771822a94"
+    },
+    {
+      "path": "tools/producer04-linux-curation.contract.json",
+      "mode": "100644",
+      "gitBlob": "fd3ae4886e5f866e1870b1f3ed2dc3daa20fb78f"
+    },
+    {
+      "path": "tools/producer04-linux-curation.profile.json",
+      "mode": "100644",
+      "gitBlob": "fe7e8ca60df2ddcd5c05b3755eceba4c1ca0394e"
+    },
+    {
+      "path": "tools/producer04-local-native-windows.profile.json",
+      "mode": "100644",
+      "gitBlob": "bec19d20920e10fff17e701ede45398bc7d3cc74"
+    },
+    {
+      "path": "tools/producer04-metadata-framing-diagnostic.profile.json",
+      "mode": "100644",
+      "gitBlob": "b12fb07b79683092c76e575fbbd632f873637f6d"
+    },
+    {
+      "path": "tools/producer04-public10-source-provenance.json",
+      "mode": "100644",
+      "gitBlob": "8008bae390c6be56418c72606a82cfd85fada492"
+    },
+    {
+      "path": "tools/producer04-runtime-range-contract.json",
+      "mode": "100644",
+      "gitBlob": "d9b9c227688708130586dbbb4681bb4c3b7aec3c"
+    },
+    {
+      "path": "tools/producer04-runtime-range.profile.json",
+      "mode": "100644",
+      "gitBlob": "f485e5c7e60e96ccd1b8b3f025671e14a5fc4afe"
+    },
+    {
+      "path": "tools/qualification_input_guard.py",
+      "mode": "100644",
+      "gitBlob": "ebc36eade0d00b3d419aa995f4913117ba64abd6"
+    },
+    {
+      "path": "tools/qualify_dotnet11_linux.py",
+      "mode": "100644",
+      "gitBlob": "dcd580f36d96772a4ee68efc836ab852b03b1500"
+    },
+    {
+      "path": "tools/qualify_dotnet11_local_linux.py",
+      "mode": "100644",
+      "gitBlob": "191ee5316b48bc8cd68765176f8ef489096e6dad"
+    },
+    {
+      "path": "tools/qualify_dotnet11_local_windows04.py",
+      "mode": "100644",
+      "gitBlob": "1b48a1c9f5c51701379dbf38700bde7f789141b9"
+    },
+    {
+      "path": "tools/qualify_dotnet11_windows.py",
+      "mode": "100644",
+      "gitBlob": "ea5b27f8b1ae3dc139e48ce56faf0fdb9956541a"
+    },
+    {
+      "path": "tools/refresh_local_source_pins.py",
+      "mode": "100644",
+      "gitBlob": "a8ad35400d1bf1fd919b6fbda4484602b100af12"
+    },
+    {
+      "path": "tools/run_actionlint.py",
+      "mode": "100644",
+      "gitBlob": "069ad3a3e772027d476975cb0ff58680c6fe22f1"
+    },
+    {
+      "path": "tools/sdk11-ci-execution.profile.json",
+      "mode": "100644",
+      "gitBlob": "48aa6d75a59aa5a4d444b57a0d7dc4ae3481a414"
+    },
+    {
+      "path": "tools/sdk11-native-inputs.lock.json",
+      "mode": "100644",
+      "gitBlob": "e685329708f4c1395b1bbac026f1de08850a1296"
+    },
+    {
+      "path": "tools/sdk11-normal-inputs.lock.json",
+      "mode": "100644",
+      "gitBlob": "2c8ba9d70f9ba0cbd7d52dd1cd9463e384af8a35"
+    },
+    {
+      "path": "tools/sdk11-normal-windows-admission.json",
+      "mode": "100644",
+      "gitBlob": "9b1b715567ac517100acdaf302ce25f75ea12fe1"
+    },
+    {
+      "path": "tools/sdk11-normal/.gitattributes",
+      "mode": "100644",
+      "gitBlob": "d56fde8267e5be8ab28db96e59c548b16e5dc58f"
+    },
+    {
+      "path": "tools/sdk11-normal/accepted-linux-acceptance.json",
+      "mode": "100644",
+      "gitBlob": "9ed6ac75a97db595caa5c6d9b84e03b7f21e7f2e"
+    },
+    {
+      "path": "tools/sdk11-normal/accepted-linux-fact.json",
+      "mode": "100644",
+      "gitBlob": "391173426f2a48f2fb9797d70cc7cb618bd5ffaf"
+    },
+    {
+      "path": "tools/sdk11-normal/accepted-windows-acceptance.json",
+      "mode": "100644",
+      "gitBlob": "cc193e041bcd13a024374e23df11c1cb850203a9"
+    },
+    {
+      "path": "tools/sdk11-normal/accepted-windows-fact.json",
+      "mode": "100644",
+      "gitBlob": "ac16ecce10590289223afcdaa9da2b815bb76493"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/FINAL-CANDIDATE.json",
+      "mode": "100644",
+      "gitBlob": "d499de9bd11e22c4829ae2ea0e6bca2937536a4e"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/cleanup-terminal.json",
+      "mode": "100644",
+      "gitBlob": "721708c5f74330131aaaa6439aa70279e1e0a328"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/curation-current-network-deny.json",
+      "mode": "100644",
+      "gitBlob": "098a071d174c2710653e826b70532b559b5ea633"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/curation-worker.json",
+      "mode": "100644",
+      "gitBlob": "a68f3acaf9effe53133716d2fa083e24690b2660"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/members-0.ndjson",
+      "mode": "100644",
+      "gitBlob": "6ebceaeee4091014c340afb88ab793b82c747532"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/members-1.ndjson",
+      "mode": "100644",
+      "gitBlob": "99f2f8a9736814ce120be650fcfdfbd62549a145"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/members-2.ndjson",
+      "mode": "100644",
+      "gitBlob": "20925537fb397eac9c447f5b967de2ae0d600290"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-0.der",
+      "mode": "100644",
+      "gitBlob": "391ffc14d3d58e371d34cb61b6f6d7e875022792"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-1.der",
+      "mode": "100644",
+      "gitBlob": "da8e7a1f2081f703dea8be1cded9a53557db2af7"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-2.der",
+      "mode": "100644",
+      "gitBlob": "e50ccf14ab1db256d73d6651e82e0ea949e25b64"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-3.der",
+      "mode": "100644",
+      "gitBlob": "99bcc84b7e68b5b28e4444f6fa21bc7c2baf497d"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-4.der",
+      "mode": "100644",
+      "gitBlob": "073e296fb681b769ca85f4a27037a6b2523b01c0"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-5.der",
+      "mode": "100644",
+      "gitBlob": "7a55fa2951435b36e2c9beebb226d0c9d7b0e656"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-6.der",
+      "mode": "100644",
+      "gitBlob": "da77258e90f16a320cbb0d16f0983c29f2e82dde"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-7.der",
+      "mode": "100644",
+      "gitBlob": "db9a2660e3e1e35144337440411c7ea3fd647e7a"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/pki-8.der",
+      "mode": "100644",
+      "gitBlob": "7a55fa2951435b36e2c9beebb226d0c9d7b0e656"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/repository.json",
+      "mode": "100644",
+      "gitBlob": "6e702dc6ac043750782c6c9bf40e8b068309df03"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/repository.json.wire",
+      "mode": "100644",
+      "gitBlob": "e983a8bb7ac4b8bad3a711b7775bdd5d9a8f7331"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/service.json",
+      "mode": "100644",
+      "gitBlob": "68b99b784a8e42e1f273bf6ba62e34e7efe27f70"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/service.json.wire",
+      "mode": "100644",
+      "gitBlob": "859ed2a7643711b1a0074b3b1533394dd381816d"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/servicing.json",
+      "mode": "100644",
+      "gitBlob": "75e9fed9290f8ebfa7789a1b79e1beb8e5d693c7"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/servicing.json.wire",
+      "mode": "100644",
+      "gitBlob": "27f0e48f76dd746fca275e68ee4e34c1363f4838"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/vulnerability-index.json",
+      "mode": "100644",
+      "gitBlob": "e91f67563e0c8ff7e41e0c45615aa7af767e8b6e"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/vulnerability-index.json.wire",
+      "mode": "100644",
+      "gitBlob": "d6d9109b6de94794c2e6b37c0a08dce1b06304f1"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/vulnerability-page-0.json",
+      "mode": "100644",
+      "gitBlob": "a25426420f6fe6c7c6495a8784263ec32ff2b287"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/vulnerability-page-0.json.wire",
+      "mode": "100644",
+      "gitBlob": "66508b3833883b8dcfd08ea9d8f42304daed50b8"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/vulnerability-page-1.json",
+      "mode": "100644",
+      "gitBlob": "9e26dfeeb6e641a33dae4961196235bdb965b21b"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/metadata/vulnerability-page-1.json.wire",
+      "mode": "100644",
+      "gitBlob": "0a605d047cb89c0aff875aac08a49f82d8601e2c"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/nuget-0.log",
+      "mode": "100644",
+      "gitBlob": "6b3fd602bbc950fac4111e7a79d732119ccd21c1"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/nuget-1.log",
+      "mode": "100644",
+      "gitBlob": "15cff2ff8b24e2576d8d39a48794010549167e11"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/nuget-2.log",
+      "mode": "100644",
+      "gitBlob": "3af711bf3f06bb7792fdfafb871f2a5ebd3a9115"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-0-1.data",
+      "mode": "100644",
+      "gitBlob": "29e2479fd95da85624fdd8ce263ed2398f96715e"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-0-143.data",
+      "mode": "100644",
+      "gitBlob": "b6b9e77710e7fcc07969db9e4beea1fd53c8aed2"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-0-2.data",
+      "mode": "100644",
+      "gitBlob": "b2aedf608ecc0167572a00788e232b0bb344cb41"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-0-4.data",
+      "mode": "100644",
+      "gitBlob": "984713a49622a96da110443c15477613bc12656b"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-1-1.data",
+      "mode": "100644",
+      "gitBlob": "9bb765984b573ee066f4e634acce10daeacfb4c7"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-1-18.data",
+      "mode": "100644",
+      "gitBlob": "05c8bc27e5f265f154daa9533eea51aa6c37ae71"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-1-4.data",
+      "mode": "100644",
+      "gitBlob": "984713a49622a96da110443c15477613bc12656b"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-1-6.data",
+      "mode": "100644",
+      "gitBlob": "ca41ed84ced12bc3d9979c31df6ad456a4c8ac2f"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-2-1.data",
+      "mode": "100644",
+      "gitBlob": "b5dffdffb04e1aec41b299c6174aa65e5535132c"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-2-210.data",
+      "mode": "100644",
+      "gitBlob": "84830d0e28db82acf52273b041315fd851631af9"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-2-4.data",
+      "mode": "100644",
+      "gitBlob": "984713a49622a96da110443c15477613bc12656b"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/original-2-6.data",
+      "mode": "100644",
+      "gitBlob": "ca41ed84ced12bc3d9979c31df6ad456a4c8ac2f"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/public-original-input-receipt.json",
+      "mode": "100644",
+      "gitBlob": "4b479a672e72bf291f523b630fe46d9edbf64c71"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/recovered-metadata-0.json",
+      "mode": "100644",
+      "gitBlob": "d049e0018a4f5e3dae9c21324d902ee4cf8e9265"
+    },
+    {
+      "path": "tools/sdk11-normal/native-linux/recovered-metadata-1.json",
+      "mode": "100644",
+      "gitBlob": "58f63c9fb8faadd9931a812a3307b80622eb39ea"
+    },
+    {
+      "path": "tools/sdk11_ci_facts.py",
+      "mode": "100644",
+      "gitBlob": "dac0d7ae19e453d172790a9b16c54e4fa92c8d91"
+    },
+    {
+      "path": "tools/sdk11_ci_runtime.py",
+      "mode": "100644",
+      "gitBlob": "ca740a82733f48da0b21a1f4d43c1001865ebca0"
+    },
+    {
+      "path": "tools/test_actionlint_admission.py",
+      "mode": "100644",
+      "gitBlob": "ed8d9360be2d9c88440dc9364d35653d82b1074f"
+    },
+    {
+      "path": "tools/test_curation_advisory_namespace04.py",
+      "mode": "100644",
+      "gitBlob": "834fe9cbca7396eb023ee1c4d0d84f5e48e17354"
+    },
+    {
+      "path": "tools/test_curation_body_terminal04.py",
+      "mode": "100644",
+      "gitBlob": "a29eea7b22a281700cd7072bb66bfe0a4fb3547a"
+    },
+    {
+      "path": "tools/test_curation_causal_r1r2.py",
+      "mode": "100644",
+      "gitBlob": "c0bbe67064f73b70c8b9857cab12722f44a06c22"
+    },
+    {
+      "path": "tools/test_curation_chunked_framing04.py",
+      "mode": "100644",
+      "gitBlob": "656d02ebb7b6860850c8e226dea6e182d2e84005"
+    },
+    {
+      "path": "tools/test_curation_discovery.py",
+      "mode": "100644",
+      "gitBlob": "51ecfd5798fe9382a0cd7a2b2f372c274f43d960"
+    },
+    {
+      "path": "tools/test_curation_failure_context04.py",
+      "mode": "100644",
+      "gitBlob": "029db8c55c9b07cd670086ecfa1cc9c82b65bf6c"
+    },
+    {
+      "path": "tools/test_curation_metadata_framing_diagnostic04.py",
+      "mode": "100644",
+      "gitBlob": "65344db42205b8992a89d261cff354a033bd131f"
+    },
+    {
+      "path": "tools/test_curation_method_delta.py",
+      "mode": "100644",
+      "gitBlob": "ae758df561549c385abab7f3f54c6065a83c78cd"
+    },
+    {
+      "path": "tools/test_curation_public_input04.py",
+      "mode": "100644",
+      "gitBlob": "0b22a30562f4aa3269e8b9d2f63a58606a4d944c"
+    },
+    {
+      "path": "tools/test_curation_range.py",
+      "mode": "100644",
+      "gitBlob": "e9fb16aa77aca092c62c577a3849577765d06db8"
+    },
+    {
+      "path": "tools/test_curation_servicing04.py",
+      "mode": "100644",
+      "gitBlob": "c1f7b86730c0dc54fe8257f80b8e427c7cec8ef4"
+    },
+    {
+      "path": "tools/test_dotnet11_consumer04.py",
+      "mode": "100644",
+      "gitBlob": "1cf110573af27bf750c07ead0b84eee98a0ac001"
+    },
+    {
+      "path": "tools/test_dotnet11_linux_curation.py",
+      "mode": "100644",
+      "gitBlob": "559e4f9da6ededda9339e68ca92c4a313d4d65a1"
+    },
+    {
+      "path": "tools/test_dotnet11_local_qualification.py",
+      "mode": "100644",
+      "gitBlob": "50b2e89ebfa26633f4deef99f6e69c8b2289303f"
+    },
+    {
+      "path": "tools/test_dotnet11_local_windows04.py",
+      "mode": "100644",
+      "gitBlob": "81c758cada32be2487507f93af7d586fc2feebcf"
+    },
+    {
+      "path": "tools/test_dotnet11_windows_qualification.py",
+      "mode": "100644",
+      "gitBlob": "7f3bbea46f2112e752e6df2ddffcc786db6ae288"
+    },
+    {
+      "path": "tools/test_local_sdk11_input.py",
+      "mode": "100644",
+      "gitBlob": "981ab9262aac005764cfc9bacdb1461d2bd2bb31"
+    },
+    {
+      "path": "tools/test_shared_normal_windows_delta.py",
+      "mode": "100644",
+      "gitBlob": "b6ce435e968eb0f3588f6dd34ddd77a52dbf6d68"
+    },
+    {
+      "path": "tools/windows_qualification_job.py",
+      "mode": "100644",
+      "gitBlob": "1960289b88d27994a12685d574958c8b7a787d54"
+    },
+    {
+      "path": "vendor/PUBLIC-PATH-GUARDS-LICENSE",
+      "mode": "100644",
+      "gitBlob": "e67e64a5ab7fcec5def82845d73fc7f96f82c9ba"
+    },
+    {
+      "path": "vendor/integrity-csv/BoundedReader.cs",
+      "mode": "100644",
+      "gitBlob": "db3616d4b81f6d958da65c3b70b219974bb9719e"
+    },
+    {
+      "path": "vendor/integrity-csv/Contracts.cs",
+      "mode": "100644",
+      "gitBlob": "8330babc7673ff51d070549bea8fdba482b875c6"
+    },
+    {
+      "path": "vendor/integrity-csv/CsvContract.cs",
+      "mode": "100644",
+      "gitBlob": "6ad8ed023f6c8a30f7c8e6a70c5d7c249c0c91aa"
+    },
+    {
+      "path": "vendor/integrity-csv/CsvValidator.cs",
+      "mode": "100644",
+      "gitBlob": "2b0cc21ef232e74afb2d9e89828d0718714621cb"
+    },
+    {
+      "path": "vendor/integrity-csv/LICENSE",
+      "mode": "100644",
+      "gitBlob": "e67e64a5ab7fcec5def82845d73fc7f96f82c9ba"
+    },
+    {
+      "path": "vendor/integrity-csv/PINS.json",
+      "mode": "100644",
+      "gitBlob": "2b8de1b4caa87797e78c56e45a764d14f632961d"
+    }
+  ]
+}

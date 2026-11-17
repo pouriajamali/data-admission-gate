@@ -20,7 +20,7 @@ qualification tooling, while preserving the v1 input/report contracts,
 fixed integer CSV scales and ADMIT/HOLD/REJECT rules. It introduces no new
 application feature or performance claim.
 
-SDK11 archive admission and native/application compatibility are pending.
+SDK11 byte histories are qualified on local Ubuntu24.04/WSL2 and scoped experimental Windows04; application/native product delivery is still pending.
 The existing preview.2 downloads below remain the verified published baseline;
 results in its evidence section are historical preview.2 results. No preview.3
 binary, signature or download is published by this source preparation.
@@ -412,3 +412,18 @@ Windows04 local qualification passed five SDK commands and stopped at restore
 (null NuGet path1). Six attempts were consumed; build/hello did not run. The
 [prepared three-command continuation](docs/SDK11_LOCAL_QUALIFICATION.md) needs a
 new explicit9-attempt numerical grant. No Windows/product success is claimed.
+
+Windows04 completed all eight logical qualification commands using nine total
+attempts (five original healthy results plus the approved three-command
+continuation). Both Jobs ended with population0; no healthy command was replayed.
+The [local input facade](docs/SDK11_LOCAL_INPUT_INTERFACE.md) preserves the old
+62 shared files and CI schema while checking each caller's actual current
+source, caps, original clock and kernel supervisor. Consumer06 Windows scope
+comes from its fresh direct task instruction, with its own R06 limits.
+
+Own04 portable net11 locks are reused from actual SDK curation on793ec500; all
+four project/build input blobs are unchanged. Windows package curation is a
+fixed six-command Linux SDK data run using the existing own-unit BPF denial
+method and four already available originals, including the single explicitly
+approved Desktop input. No product test, preview.3 binary or release is claimed
+by this prepared source.

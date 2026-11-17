@@ -1,0 +1,28 @@
+{
+  "schema": "sdk11-own-normal-input-profile/v1",
+  "state": "ADMITTED_SOURCE_PROFILE",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "rowSeconds": 900,
+  "memoryMaxBytes": 4294967296,
+  "swapMaxBytes": 0,
+  "tasksMax": 64,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "ownedUnitPrefix": "admission04-sdk11-ci-",
+  "SDKCommandsMax": 6,
+  "existingCurationCeiling": 7,
+  "SDKStageSecondsMax": 300,
+  "workerEndSeconds": 840,
+  "terminalReserveSeconds": 60,
+  "sourceScratchMaxBytes": 268435456,
+  "scratchMaxBytes": 2147483648,
+  "proofBytesMax": 8388608,
+  "localInputRoute": {
+    "rid": "linux-x64",
+    "role": "generic",
+    "readOnlyExistingPool": true,
+    "qualifiedFactSha256": "ad63c4ad44af1844e1c937152294b07cdce9faccf2e2e7899cc221f2e485fb3c"
+  },
+  "scope": "Four win-x64 signed packages verified on actual qualified local Linux with the existing exact systemd/BPF method; no metadata/raw GET, no Windows execution or product acceptance."
+}

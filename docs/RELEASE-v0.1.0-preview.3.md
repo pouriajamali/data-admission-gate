@@ -193,3 +193,24 @@ was observed. Six attempts are counted. The local correction reuses the existing
 five-private-root NuGet environment. A prepared3-command continuation requires
 new explicit total9-attempt/300s authority and reuses the five healthy results;
 it has not run. This is not preview.3 delivery.
+
+## Current local source and input wiring
+
+The approved Windows continuation passed in25.906s; the original row took7.547s.
+Eight logical commands succeeded across nine counted attempts. Actual executed
+CRLF source bytes and committed LF blobs are separately preserved with an exact
+line-ending/AST mapping; future source bindings use committed LF byte images.
+No byte-identical claim or healthy qualification replay is made.
+
+The additive local facade keeps frozen63e/common62 unchanged, requires current
+caller source/PID/start/own caps/original clock and the original kernel service
+or dedicated Windows Job. Source profile caps cannot be borrowed from04.
+Consumer06 has its own direct local/Windows task authority and original R06
+1GiB/CPU1/16; Windows remains experimental with formal .NET11 support unconfirmed.
+
+The portable own04 locks are actual retained SDK outputs, matching unchanged
+project/build input blobs. Native Windows input curation (four signature/hash
+checks and two actual own04 WinRID restores) is prepared on qualified Linux,
+using the existing exact-unit network-denial method and finite raw originals.
+Desktop was explicitly added as one input; no SDK/native acceptance is claimed
+for it before execution. No release or product compatibility claim yet.
