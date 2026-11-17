@@ -308,3 +308,6 @@ and a finite list of explicitly labelled HResult/Win32 codes, stripping bounded
 SGR colour only in the classifier copy. New68 normal and68 -O fixture checks
 passed; no raw log/path/URL/env/args are exported. Recipe, environment, caps,
 SDK pins and eight commands remain unchanged. No Windows/product PASS claim.
+
+
+Windows SDK qualification retains an optional, sanitized error excerpt only on a failed fixed SDK command. It is ASCII/control-filtered, own-temp and URL/credential-redacted, <=512characters per stream and inside the unchanged4096-byte diagnostic limit. Raw log hashes, fixed eight commands, native publisher/CPU/Job limits and all success predicates are unchanged. An excerpt is failure evidence, never qualification.

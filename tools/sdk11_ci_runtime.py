@@ -282,6 +282,20 @@ def classify_fixed_sdk_log(block):
   return sorted(codes)[:8]
  except Exception:return []
 
+def safe_sdk_messages(blocks,root):
+ # Only controlled synthetic SDK-command output, bounded and redacted; no env.
+ messages=[]
+ for stream,block in zip(('stdout','stderr'),blocks):
+  text=block[:2048].decode('utf-8-sig',errors='replace')
+  text=re.sub(r'\x1b\[[0-9;]*m','',text)
+  for path in (str(root),str(root).replace('\\','/')):
+   if path:text=text.replace(path,'<OWN_TEMP>')
+  text=re.sub(r'https?://[^\s<>]+','<URL>',text,flags=re.IGNORECASE)
+  text=re.sub(r'(?i)(token|password|secret|authorization|credential)\s*[:=]\s*[^\s]+',r'\1=<REDACTED>',text)
+  text=''.join(c if c in '\n\t' or 32<=ord(c)<127 else '?' for c in text)[:512]
+  messages.append({'stream':stream,'text':text})
+ return messages
+
 def fixed_sdk_failure(context,evidence):
  # Called only after the existing process wrapper raises; no command or retry.
  value=dict(context)
@@ -308,6 +322,9 @@ def fixed_sdk_failure(context,evidence):
   codes=set()
   for block in blocks:codes.update(classify_fixed_sdk_log(block))
   value['reasonCodes']=sorted(codes)[:8] or ['UNKNOWN']
+  value['safeMessages']=safe_sdk_messages(blocks,evidence.parent)
+  while len(json.dumps(value,separators=(',',':')).encode())>4096 and any(x['text'] for x in value['safeMessages']):
+   row=max(value['safeMessages'],key=lambda x:len(x['text']));row['text']=row['text'][:-64]
  except Exception:
   value['logs']={'state':'UNKNOWN'};value['reasonCodes']=['UNKNOWN']
  return sanitize_fixed_sdk_diagnostic(value)
@@ -316,7 +333,7 @@ def sanitize_fixed_sdk_diagnostic(value):
  # Exact typed whitelist; never copy arbitrary fields from a process or log.
  try:
   required={'schema','failedCommandName','commandIndex','completedCommandNames','completedCommands','entryReceiptSha256','failedProcess','logs','reasonCodes'}
-  if type(value) is not dict or set(value)!=required or value['schema']!='sdk11-fixed-command-diagnostic/v1':raise ValueError('SHAPE')
+  if type(value) is not dict or not(required<=set(value)<=required|{'safeMessages'}) or value['schema']!='sdk11-fixed-command-diagnostic/v1':raise ValueError('SHAPE')
   index=value['commandIndex'];names=FIXED_SDK_COMMAND_NAMES
   if type(index) is not int or not 0<=index<8 or type(value['failedCommandName']) is not str or value['failedCommandName']!=names[index]:raise ValueError('COMMAND')
   if type(value['completedCommandNames']) is not list or value['completedCommandNames']!=list(names[:index]) or type(value['completedCommands']) is not list or len(value['completedCommands'])!=index:raise ValueError('PREFIX')
@@ -340,6 +357,9 @@ def sanitize_fixed_sdk_diagnostic(value):
    if total>1048576:raise ValueError('LOG_TOTAL')
   codes=value['reasonCodes'];categories=FIXED_LOG_REASON_CATEGORIES
   if type(codes) is not list or not 1<=len(codes)<=8 or any(type(x) is not str or not (x in categories or re.fullmatch(r'(NETSDK|MSB|CS|NU)[0-9]{4}',x)) for x in codes):raise ValueError('REASONS')
+  if 'safeMessages' in value:
+   rows=value['safeMessages']
+   if type(rows) is not list or len(rows)>2 or any(type(x) is not dict or set(x)!={'stream','text'} or x['stream'] not in ('stdout','stderr') or type(x['text']) is not str or len(x['text'])>512 or any(c not in '\n\t' and not 32<=ord(c)<127 for c in x['text']) for x in rows):raise ValueError('SAFE_MESSAGES')
   raw=json.dumps(value,separators=(',',':')).encode()
   if len(raw)>4096:raise ValueError('SIZE')
   return json.loads(raw)
