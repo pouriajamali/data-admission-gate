@@ -86,7 +86,7 @@ def certificate(data):
   b=ext['2.5.29.35'];ids=[value(b,x).hex() for x in children(b,tlv(b)) if x[0]==128];need(len(ids)<=1,'CERTIFICATE_AKI');aki=ids[0] if ids else None
  try:parts=name_parts(data,subject)
  except Hold:parts=None
- return {'sha256':sha(data),'der':data,'serialDER':raw(data,serial),'issuerDER':raw(data,issuer),'subjectDER':raw(data,subject),'subjectParts':parts,'crlDistributionURIs':cert_dp_uris(ext),'notBefore':der_time(data,valid[0]),'notAfter':der_time(data,valid[1]),'SKI':ski,'AKI':aki}
+ return {'sha256':sha(data),'der':data,'serialDER':raw(data,serial),'issuerDER':raw(data,issuer),'subjectDER':raw(data,subject),'subjectParts':parts,'crlDistributionPointExtension':ext.get('2.5.29.31'),'notBefore':der_time(data,valid[0]),'notAfter':der_time(data,valid[1]),'SKI':ski,'AKI':aki}
 def pem(label,data):return ('-----BEGIN '+label+'-----\n').encode()+b'\n'.join(base64.b64encode(data)[i:i+64] for i in range(0,len(base64.b64encode(data)),64))+('\n-----END '+label+'-----\n').encode()
 def bundle_certificates(blob):
  need(len(blob)<=2097152,'ROOT_BUNDLE_BOUND');blocks=re.findall(rb'-----BEGIN CERTIFICATE-----\s*([A-Za-z0-9+/=\s]+?)\s*-----END CERTIFICATE-----',blob);need(1<=len(blocks)<=1024,'ROOT_BUNDLE_FRAME');out={}
@@ -154,7 +154,7 @@ def coverage(certs,anchors,crls,leaves,fixed_time):
    need(current['sha256'] not in seen and len(chain)<8,'CHAIN_LOOP_OR_BOUND');seen.add(current['sha256']);chain.append(current['sha256']);need(current['notBefore']<=fixed_time<=current['notAfter'],'CURRENT_CERTIFICATE_VALIDITY')
    if current['sha256'] in anchors:break
    parents=[c for c in pool.values() if c['subjectDER']==current['issuerDER'] and current['AKI'] is not None and c['SKI']==current['AKI']];need(len(parents)==1,'CHAIN_ISSUER_AMBIGUOUS_OR_MISSING');parent=parents[0]
-   matches=[r for r in crls if r['issuerDER']==parent['subjectDER'] and r['AKI']==parent['SKI']];need(matches,'CRL_CHAIN_COVERAGE_MISSING');need(len({r['sha256'] for r in matches})==1,'CRL_DUPLICATE_ISSUER_DISAGREES');need(not matches[0].get('scopeURIs') or bool(set(matches[0]['scopeURIs'])&set(current.get('crlDistributionURIs',[]))),'CRL_SCOPE_DOES_NOT_COVER_CERTIFICATE');used[current['sha256']]=matches[0]['sha256'];current=parent
+   matches=[r for r in crls if r['issuerDER']==parent['subjectDER'] and r['AKI']==parent['SKI']];need(matches,'CRL_CHAIN_COVERAGE_MISSING');need(len({r['sha256'] for r in matches})==1,'CRL_DUPLICATE_ISSUER_DISAGREES');need(not matches[0].get('scopeURIs') or bool(set(matches[0]['scopeURIs'])&set(cert_dp_uris({'2.5.29.31':current['crlDistributionPointExtension']}) if current.get('crlDistributionPointExtension') else [])),'CRL_SCOPE_DOES_NOT_COVER_CERTIFICATE');used[current['sha256']]=matches[0]['sha256'];current=parent
   chains[leaf]=chain
  return {'chains':chains,'certificateToCRLSHA256':used,'state':'STRUCTURAL_CURRENT_COVERAGE_NATIVE_SIGNATURES_REQUIRED'}
 def openssl_vectors(paths,fixed_time):
