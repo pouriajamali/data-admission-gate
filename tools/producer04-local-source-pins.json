@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
       "mode": "100644",
-      "gitBlob": "e57ca6fd832bdf72cb0dde2b57bb5bfd92f3bdef"
+      "gitBlob": "34ee20b103fdcdb406a5699243a83244b6805cb6"
     },
     {
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
@@ -257,7 +257,7 @@
     {
       "path": "tools/curate_windows_inputs_local_linux.py",
       "mode": "100644",
-      "gitBlob": "2ed8beedc416fcd3fee176b38d739f5f1f78f6fd"
+      "gitBlob": "1d5068bc4e2f45cef885242ee5aefc2fcb84e236"
     },
     {
       "path": "tools/curation_advisory_source04.py",
@@ -337,7 +337,7 @@
     {
       "path": "tools/local_sdk11_input.py",
       "mode": "100644",
-      "gitBlob": "f77b5a611c7fb6840503d18fe4abe235cccf5086"
+      "gitBlob": "c0103aa0fe1c2735f4e5a4831f01d3bb0fb6aa84"
     },
     {
       "path": "tools/materialize_qualification_linux.py",

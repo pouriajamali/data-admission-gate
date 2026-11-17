@@ -68,3 +68,10 @@ already-pinned method modules directly, preserving every actual control. The
 original WSL launcher exited1 and its operator was terminal; exact own lease
 release is recorded with source/traceback evidence. No foreign lease reset or
 healthy SDK replay occurred. A real import regression check passes without SDK.
+
+The305102b worker stopped at read-only Git status after the original10-second
+per-tool timeout on the shared Windows filesystem, before any SDK invocation.
+Its real unit/cgroup terminal and zero population were observed and its exact
+lease released. Local Git reads now use no optional locks and a maximum30-second
+per-call timeout bounded by the unchanged original row deadline/startup budget.
+Frozen common helpers, caps, package gates and SDK count limits are unchanged.

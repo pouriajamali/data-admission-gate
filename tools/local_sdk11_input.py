@@ -2,7 +2,7 @@
 No download, extraction, target execution, Job/limit/security setter or READY flag.
 """
 from __future__ import annotations
-import contextlib,hashlib,importlib.util,json,os,pathlib,platform,re,select,sys,time,uuid
+import contextlib,hashlib,importlib.util,json,os,pathlib,platform,re,select,subprocess,sys,time,uuid
 HERE=pathlib.Path(__file__).resolve().parent
 p=HERE/'check_dotnet11.py'
 if hashlib.sha256(p.read_bytes()).hexdigest()!='c37e2f48ee21ef1f02e4afb2bb1cd0af397781e487265c31e43fe06ea182befd':raise RuntimeError('FROZEN_INPUT_LIBRARY_IDENTITY')
@@ -46,7 +46,9 @@ def source(ctx,paths,pins,end):
  def run(*args):
   if os.name=='nt':
    W=C._load('normal_windows_input',C.PINS['windowsNormalHelperSha256']);return W.git(C,args,checkout,end)
-  return C._run([*argv,*args],checkout,end)
+  env={**C.SAFE_ENV,'GIT_OPTIONAL_LOCKS':'0'}
+  r=subprocess.run([*argv,'--no-optional-locks',*args],cwd=checkout,env=env,capture_output=True,timeout=min(30,C._remaining(end)))
+  C.need(len(r.stdout)+len(r.stderr)<=1048576,'LOCAL_SOURCE_OUTPUT_CAP');C.need(r.returncode==0,'LOCAL_SOURCE_TOOL_FAILED');return r.stdout
  head=run('rev-parse','HEAD','HEAD^{tree}').decode().splitlines();C.need(head==[ctx['expectedSourceCommit'],ctx['expectedSourceTree']],'LOCAL_EXACT_CURRENT_SOURCE')
  C.need(not run('status','--porcelain=v1','--untracked-files=all'),'LOCAL_CURRENT_SOURCE_NOT_CLEAN');actual={}
  for row in run('ls-tree','-r','-z','HEAD').split(b'\0'):
