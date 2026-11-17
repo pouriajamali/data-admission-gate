@@ -13,6 +13,9 @@ COMMON_NORMAL_SHA='d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a
 COMMON_CATALOG_SHA='686c6c778f7841e6015fa401f3892b853df80e3341fbb5d02b27c682887c1c78'
 COMMON_FACT_SHA='757abf2d3dde65d10cd895cfc97eaeccb7fc11e8685b94ad046e6a8ec8829007'
 STAGES=['locked-tests','package','extract','package-checks','technology-checks']
+CURATION_PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
+def curation_module():
+ return R.load_module('curate_dotnet11_linux_inputs','ddd6091f341b27d3dd4a978aaf263c37b61a29c6e50469522cee7ab56134db7a')
 def own04_common_context(spec,source,host,route):
  root=Path(spec['root']);profilePath=HERE/'dotnet11-consumer04-normal-profile.json';pinsPath=HERE/'dotnet11-consumer04-source-pins.json';profile=R.read(profilePath);pins=R.read(pinsPath)
  R.f.need(profile.get('state')=='ADMITTED_SOURCE_PROFILE' and pins.get('state')=='EXACT_SOURCE_REVIEWED','OWN04_SOURCE_PROFILE_NOT_ADMITTED')
@@ -63,16 +66,25 @@ def consumer_work(spec,backend):
  normal.inspect_sdk(rid,sdk,normalContext);R.write(root/'consumer-worker.json',{'state':'CONTROLLED_CONSUMER04_PRODUCT_COMPLETED','rid':rid,'source':source,'producerFactSha256':binding['factSha256'],'producerQualifiedOn':fact['qualifiedOn'],'currentExecution':{k:host[k] for k in ['hostClass','rid','runId','job','attempt','imageVersion','instanceId']},'caps':backend.caps(),'stages':records,'admissionSha256':R.digest(HERE/'dotnet11-consumer04-admission.lock.json'),'commonNormalModuleSha256':COMMON_NORMAL_SHA,'normalCatalogSha256':COMMON_CATALOG_SHA,'normalInputReceiptSha256':R.digest(root/'common-normal-input-receipt.json'),'scope':'Alloriginal109/17/4acceptance remains in originaltools; not automaticallypassed by SDKqualification.'})
  if os.name!='nt':signal.setitimer(signal.ITIMER_REAL,0)
 def finish_consumer(spec,terminal,peak):
+ R.f.need(spec.get('purpose')!='PRODUCER04_LINUX_INPUT_CURATION','CURATION_METHOD_HOLD_NO_SUCCESS_RECEIPT')
  R.f.terminal(terminal);value=R.read(Path(spec['root'])/'consumer-worker.json');value['terminal']=terminal;value['caps']['peakMemoryBytes']=int(peak);R.f.need(R.clock()<spec['startTick']+900000,'CONSUMER900_DEADLINE');R.write(R.ROOT/'artifacts/controlled-consumer04.json',value)
 def check_stage(name,expected):
  R.f.need(name in STAGES,'FIXED_STAGE_REQUIRED');v=R.read(R.ROOT/'artifacts/controlled-consumer04.json');R.f.source(v['source']['commit'],expected);R.f.terminal(v['terminal']);R.f.need(any(x['stage']==name and x['exitCode']==0 for x in v['stages']),'CONTROLLED_STAGE_NOT_COMPLETED')
 def consumer_worker(path):
- s=R.read(path);R.f.need(s['purpose']=='CONSUMER04_PRODUCT','FIXED_CONSUMER_ROLE')
+ s=R.read(path);R.f.need(s['purpose'] in ('CONSUMER04_PRODUCT',CURATION_PURPOSE),'FIXED_CONSUMER_ROLE')
+ if s['purpose']==CURATION_PURPOSE:
+  R.f.need(os.name!='nt','CURATION_LINUX_ONLY');curation_module().parent_admission(s['curationAdmissionPath'],s['curationAdmissionSHA256'],s['expectedCommit'])
  if os.name=='nt':
   boot=R.read(s['bootstrap']);R.f.need(Path(sys.executable).resolve()==Path(boot['pythonExe']).resolve() and R.digest(sys.executable)==boot['pythonExeSha256'] and boot['pythonSignature']=='ValidPythonSoftwareFoundationWithTimestamp','PYTHON_BOOTSTRAP_IDENTITY');consumer_work(s,Q.Backend(s));return
- j.bind(s);cap=j.linux_caps();R.write(Path(s['root'])/'stopped-worker.json',{'pid':os.getpid(),'start':Q.start_identity(os.getpid()),'cap':cap,'uid':os.getuid(),'gid':os.getgid()});os.kill(os.getpid(),signal.SIGSTOP);w=R.read(Path(s['root'])/'held-worker-before-continue.json');R.f.need(w['pid']==os.getpid() and w['start']==Q.start_identity(os.getpid()),'HELD_WORKER_PREEXEC_IDENTITY');s['parentHeldWorkerBeforeExec']=True;consumer_work(s,Q.Backend(s))
+ j.bind(s);cap=j.linux_caps();R.write(Path(s['root'])/'stopped-worker.json',{'pid':os.getpid(),'start':Q.start_identity(os.getpid()),'cap':cap,'uid':os.getuid(),'gid':os.getgid()});os.kill(os.getpid(),signal.SIGSTOP);w=R.read(Path(s['root'])/'held-worker-before-continue.json');R.f.need(w['pid']==os.getpid() and w['start']==Q.start_identity(os.getpid()),'HELD_WORKER_PREEXEC_IDENTITY');s['parentHeldWorkerBeforeExec']=True
+ if s['purpose']==CURATION_PURPOSE:curation_module().worker(s,Q.Backend(s),R,Q)
+ else:consumer_work(s,Q.Backend(s))
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('--expected-commit');parser.add_argument('--worker',type=Path);parser.add_argument('--stop-post',type=Path);parser.add_argument('--check-stage',choices=STAGES);args=parser.parse_args()
+ parser=argparse.ArgumentParser();parser.add_argument('--expected-commit');parser.add_argument('--worker',type=Path);parser.add_argument('--stop-post',type=Path);parser.add_argument('--check-stage',choices=STAGES);parser.add_argument('--curation-admission',type=Path);parser.add_argument('--curation-admission-sha256');args=parser.parse_args()
+ R.f.need(bool(args.curation_admission)==bool(args.curation_admission_sha256),'CURATION_GATE_ARGUMENT_PAIR')
+ if args.curation_admission:
+  R.f.need(not (args.worker or args.stop_post or args.check_stage) and os.name!='nt','CURATION_EXCLUSIVE_LINUX_PURPOSE')
+  curation_module().parent_admission(args.curation_admission,args.curation_admission_sha256,args.expected_commit)
  if args.check_stage:check_stage(args.check_stage,args.expected_commit);return
  if args.stop_post:R.f.need(os.name!='nt','FIXED_OBSERVER_HOST');Q.stop_post(args.stop_post);return
  if args.worker:consumer_worker(args.worker);return
@@ -92,7 +104,9 @@ def win_parent(args):
 def linux_parent(args):
  R.f.need(os.name!='nt' and os.getuid()>0 and os.environ.get('RUNNER_ENVIRONMENT')=='github-hosted' and os.environ.get('RUNNER_OS')=='Linux' and Path('/proc/1/comm').read_text().strip()=='systemd' and not Path('/.dockerenv').exists(),'NAMED_UBUNTU_HOST_REQUIRED');R.host('linux-x64');R.f.source(os.environ.get('GITHUB_SHA'),args.expected_commit)
  start=int(os.environ['SDK11_QUALIFICATION_START_TICK']);R.f.need(0<=R.clock()-start<60000,'STARTUP60_EXPIRED');temp=Path(os.environ['RUNNER_TEMP']).resolve();root=temp/('admission04-sdk11-linux-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);R.a.scoped(root,temp,absent=True);root.mkdir(mode=0o700);R.f.need(root.stat().st_uid==os.getuid() and root.stat().st_gid==os.getgid() and (root.stat().st_mode&0o777)==0o700,'FRESH_PRIVATE_RUNNER_ROOT')
- unit='admission04-sdk11-ci-'+uuid.uuid4().hex;private=root/'private-spec.json';s={'purpose':'CONSUMER04_PRODUCT','rid':'linux-x64','root':str(root),'unit':unit,'uid':os.getuid(),'gid':os.getgid(),'expectedCommit':args.expected_commit,'startTick':start,'supervisorPID':os.getpid(),'supervisorStartIdentity':'proc-start:'+Q.start_identity(os.getpid())};R.write(private,s);R.write(root/'stage-0.json',{'index':0,'startedTick':start,'deadlineTick':start+60000})
+ unit='admission04-sdk11-ci-'+uuid.uuid4().hex;private=root/'private-spec.json';s={'purpose':'CONSUMER04_PRODUCT','rid':'linux-x64','root':str(root),'unit':unit,'uid':os.getuid(),'gid':os.getgid(),'expectedCommit':args.expected_commit,'startTick':start,'supervisorPID':os.getpid(),'supervisorStartIdentity':'proc-start:'+Q.start_identity(os.getpid())}
+ if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256})
+ R.write(private,s);R.write(root/'stage-0.json',{'index':0,'startedTick':start,'deadlineTick':start+60000})
  for path in [str(HERE),str(root),sys.executable]:R.f.need(not any(c in path for c in ['\n','\r','%','$','"',"'"]),'SYSTEMD_FIXED_ARGV_PATH')
  envnames=['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_REF','GITHUB_EVENT_NAME','GITHUB_EVENT_PATH','GITHUB_JOB','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_NAME','ImageOS','ImageVersion','RUNNER_TEMP'];sets=['--setenv='+k+'='+os.environ[k] for k in envnames if k in os.environ];remaining=max(1,(start+840000-R.clock())//1000);observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private])
  argv=['/usr/bin/sudo','-n','/usr/bin/systemd-run','--wait','--collect','--pipe','--unit='+unit,'--uid='+str(s['uid']),'--gid='+str(s['gid']),'--property=Description='+unit,'--property=MemoryMax=4294967296','--property=MemorySwapMax=0','--property=TasksMax=64','--property=CPUQuota=200%','--property=CPUQuotaPeriodSec=100ms','--property=RuntimeMaxSec='+str(remaining),'--property=TimeoutStopSec=5','--property=KillMode=control-group','--property=WorkingDirectory='+str(R.ROOT),'--property=ExecStopPost='+observer,'--setenv=PYTHONDONTWRITEBYTECODE=1',*sets,sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--worker',str(private)]

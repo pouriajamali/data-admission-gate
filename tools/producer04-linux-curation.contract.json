@@ -1,0 +1,395 @@
+{
+  "schema": "producer04-complete-linux-input-curation-source-runtime-contract/v1",
+  "date": "2026-11-16",
+  "state": "SOURCE_STAGE_APPROVED_COMPLETE_LINUX_ROUTE_CONDITIONAL_ON_ONE_EXACT_SIGNED_SOURCE_BINDING",
+  "soleOperator": "01a1a0df-6c77-7bb0-b900-c3b3501198f3",
+  "producer": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "baseline": {
+    "sourceHEAD": "706059362aa5bb3c05acf57534e7d66bf4641dd4",
+    "sourceTree": "e4d2fff30a92b328f88854c34173ee808e9c8358",
+    "StageCPacket": {
+      "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\FINAL-CANDIDATE.json",
+      "bytes": 170807,
+      "sha256": "40bffcb47d150f0db60b2d41fa0b8c259db4e39fd45ef24fb107b0465c29d26b"
+    },
+    "acceptedRangeRootReviewSHA256": "0eb194f63577e222d410992d64ab184ab6b9cf879c2b400bbcbf76abe03c6333",
+    "rawInputs": [
+      {
+        "index": 0,
+        "id": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+        "version": "11.0.0",
+        "rid": "linux-x64",
+        "rawPath": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE\\raw\\microsoft.aspnetcore.app.runtime.linux-x64.11.0.0.nupkg",
+        "bytes": 13048557,
+        "sha256": "3f4bdd1255f9ccf02a3ad22656e165bd86e9f0179f18d88cf0fc7de02b230593",
+        "sha512": "ec6ed1b5be30b1acf04abe10f173b0c1f8df48f470da277685c2821aee7cb6e6ad21748c56a15b6c9a857e6758e0aba066048a644ccaeaad09ff82e3ee463814"
+      },
+      {
+        "index": 1,
+        "id": "Microsoft.NETCore.App.Host.linux-x64",
+        "version": "11.0.0",
+        "rid": "linux-x64",
+        "rawPath": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\STAGE-B-DISCOVERY-ONCE\\raw\\microsoft.netcore.app.host.linux-x64.11.0.0.nupkg",
+        "bytes": 5085644,
+        "sha256": "a152b2d7ebb7fb9431ab96490e4c35c86af564419c20d81745e71760a4465469",
+        "sha512": "a7d54c6d254dd2f5807f5a23f8d4e6d98ba48b9954fbb7af26994f7a26760bcf41d762fa63626b4c0773bc44c5285cc73f19ffe1c466cb9b48e2d27f11de616c"
+      },
+      {
+        "index": 2,
+        "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+        "version": "11.0.0",
+        "rid": "linux-x64",
+        "rawPath": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\range-source-amendment-20261116\\RANGE-DISCOVERY-ONCE\\raw\\runtime-linux-x64-byte-candidate.nupkg",
+        "bytes": 42270532,
+        "sha256": "458f0a7e0de107e4c08b3f375b920cd9427bbb5463870187b5f8afff0eb8664f",
+        "sha512": "f76bc258a41b896f53d90802453c221d51e9c69bfc7c300e8824549e53bd4242e1776a1618a26df7384737899b77b025fd6981c03fad17426df14c7939fa31ee"
+      }
+    ]
+  },
+  "scope": "One producer04 curation-only Linux purpose: inspect three already-present signed native11.0.0 inputs using acceptedSDK11.0.100, derive realNuGet content identities, verify current trust/advisory/servicing and produce four private graph/lock candidates. No appbuild/test/run/package or Windows or healthySDK qualification. This is one complete conditional route; one source candidate and final technical exactidentity binding, not perURI/command approvals.",
+  "primaryMethodEvidence": [
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-verify",
+      "fact": "Official docs say .NET10+ verify outputs package contenthash, supports --all/--configfile/--certificate-fingerprint/verbosity; this is chosen operation, not a custom normalization algorithm."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NuGet/NuGet.Client/dev/src/NuGet.Core/NuGet.Commands/VerifyCommand/VerifyCommandRunner.cs",
+      "fact": "Reviewed upstream source uses PackageArchiveReader.GetContentHash and the Content hash logging resource after signatureverification; configtrustedSigners and primarysignature fingerprintallowlist are verificationproviders. Floatingdev is mechanism evidence, not a mapping of this releasedSDK binary to that source."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/NuGet/NuGet.Client/dev/src/NuGet.Core/NuGet.Commands/Strings.resx",
+      "fact": "Current upstream label is Content hash: {0}. ExactSDK11 output remains unobserved and must be recognized at actualrun; a future format is not assumedPASS."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/core/tools/nuget-signed-package-verification",
+      "fact": "Linux NuGet code-signing roots may prefer /etc/pki/ca-trust/extracted/pem/objsign-ca-bundle.pem; timestamping uses SDKbundles. Bind actualstore choice; never silently import new roots."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/nuget/reference/nuget-config-file",
+      "fact": "Explicit trustedSigners supports exactcertificateSHA256/repository serviceIndex/allowUntrustedRoot=false."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/nuget/api/repository-signatures-resource",
+      "fact": "RepositorySignatures serviceindex resource advertises official signingcertificates; removed certificates are not silently valid."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/nuget/api/vulnerability-info",
+      "fact": "VulnerabilityInfo index advertises finite complete pages; retain originals and evaluate complete selectedID/version set."
+    }
+  ],
+  "stageA_source": {
+    "immediateAuthorization": "Implement narrow source/profile/wiring and new delta mocks only, plus one knownSSHsigned local candidate. No newSDK/PKI/advisory/servicing/rawGET/CI/push/liveLinuxprobe in this source stage. Read existing originaldata/catalog inventories as needed for actualhandoff/space plan, not healthy test replay.",
+    "allowedDelta": [
+      "tools/consume_dotnet11_host_fact.py: dedicated closed purpose dispatch; product UNBOUND remains closed",
+      "tools/curate_dotnet11_linux_inputs.py: new dedicated finite curationworker/helpers",
+      "tools/producer04-linux-curation.profile.json and matching ownpurpose contract/admission schema",
+      "tools/linux_qualification_job.py and launcher only if needed for curation-scoped heldchild/networktransition; healthyqualification semantics/caps unchanged",
+      "tools/dotnet11-consumer04-source-pins.json plus causal caller hash pins",
+      "existing .github/workflows/verify.yml opt-in Linuxcuration selector only if needed, defaultfalse; reuse existing row/event/proof3day paths, no Windows/newworkflow/cache/job/qualification",
+      "README.md and existing SDK11delivery notes: precise inertpurpose/operation/resource/limitations",
+      "new bounded tests only for actual newpurpose/hashparser/config/finiteorigin/broker/deny/primaryfailure deltas"
+    ],
+    "frozen": "common d76a/7758 interface,63e schema,686catalog,7420guard/5fmaterializer,757Linuxfact/0452acceptance unchanged; no16keycontext extension, mutablecatalogreplacement, ASThealthyreplay, Windowsqualification or appalgorithm changes. Keep existingWindowsdata706 controls immutable except causal inventorypins.",
+    "mockCaps": {
+      "newCasesMaxPerMode": 24,
+      "modes": [
+        "normal",
+        "python -O"
+      ],
+      "secondsPerModeMax": 30,
+      "inputBytesMax": 524288,
+      "outputBytesMax": 32768,
+      "actualSDKNetworkNativeKernelOperations": 0
+    },
+    "normalizationImplementation": "Do NOT implement unsignedZIP rewriting/removal/rehashing, newAPI harness/compiler or an eighthSDK operation. Use actual Content hash output from each of the same three verify vectors below. Bind SDKarchive/memberidentity and NuGet.Packaging.dll d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b. Force controlled English CLI locale, bound log, exactlyone hash attachedto exactpackage ID/version; canonicalbase64 decoding64bytes/reencoding equality and no duplicate/missing/extra blocks. Schema/label/algorithm mismatch HOLD. RawSHA512, normalizedcontentHash and HTTPcontinuity remain distinct.",
+    "sourceCandidate": "One exactknownSSHHEAD/tree/parent/clean and all changedfile modes/blob/size/SHA256/pinrows plus minimaldelta and boundednewmock receipts; actualLinuxhost/currentcaps/SDKoutput/PKI/status remainUNEXECUTED. Include exact proposed launch/7vectors/networkroute/spaceledger/inputhandoff/profile and one finite externalrequest manifest. Root reviews once and supplies exactidentity activation under this contract; no hidden later endpoint or command approvals."
+  },
+  "inputAdmissionOrder": [
+    "Accept source/profile/ownpurpose/currentheldPID-start-cgroup/caps/originalclock/lease BEFORE commonSDK transport or target execution.",
+    "AcceptedSDK code may run these signature-only vectors on UNTRUSTED nativebytes after strict raw/framing validation. Do not require already-accepted nativeCMS before running the verifier that must establish it. No application payload.",
+    "Record actual canonical NuGet Content hash from each successful verifier, actual signer/chain/timestamp/currentrevocation and currentadvisory/servicing. Fresh measuredcontent identities may become candidateinputcatalog values; do not require a preexisting guessednormalizedliteral.",
+    "Only after ALL THREE exact inputs pass this curation admission may four graphcommands run. Compare every resulting applicable lock contentHash/actualNupkgMetadataFile ContentHash to SDK-derivednormalizedvalue, keepraw.nupkg.sha512 separate, forbidambient/global packages or newdependency.",
+    "Curationcandidate is input/graph evidence only; SDK_READY/product/Windows/sixupgrade completion remainfalse until later ordinary consumer gates."
+  ],
+  "sevenSDKVectors": [
+    {
+      "id": "cms-Microsoft.AspNetCore.App.Runtime.linux-x64",
+      "phase": "INPUT_SIGNATURE_ONLY_AFTER_RAW_FRAME_VALIDATION",
+      "argv": [
+        "${SDK}/dotnet",
+        "nuget",
+        "verify",
+        "--all",
+        "${PHASE_ROOT}/raw/microsoft.aspnetcore.app.runtime.linux-x64.11.0.0.nupkg",
+        "--verbosity",
+        "detailed",
+        "--certificate-fingerprint",
+        "9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630",
+        "--configfile",
+        "${PHASE_ROOT}/nuget.audit.sources.config"
+      ],
+      "cwd": "${CHECKOUT}",
+      "secondsMax": 20
+    },
+    {
+      "id": "cms-Microsoft.NETCore.App.Host.linux-x64",
+      "phase": "INPUT_SIGNATURE_ONLY_AFTER_RAW_FRAME_VALIDATION",
+      "argv": [
+        "${SDK}/dotnet",
+        "nuget",
+        "verify",
+        "--all",
+        "${PHASE_ROOT}/raw/microsoft.netcore.app.host.linux-x64.11.0.0.nupkg",
+        "--verbosity",
+        "detailed",
+        "--certificate-fingerprint",
+        "9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630",
+        "--configfile",
+        "${PHASE_ROOT}/nuget.audit.sources.config"
+      ],
+      "cwd": "${CHECKOUT}",
+      "secondsMax": 20
+    },
+    {
+      "id": "cms-Microsoft.NETCore.App.Runtime.linux-x64",
+      "phase": "INPUT_SIGNATURE_ONLY_AFTER_RAW_FRAME_VALIDATION",
+      "argv": [
+        "${SDK}/dotnet",
+        "nuget",
+        "verify",
+        "--all",
+        "${PHASE_ROOT}/raw/microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg",
+        "--verbosity",
+        "detailed",
+        "--certificate-fingerprint",
+        "9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630",
+        "--configfile",
+        "${PHASE_ROOT}/nuget.audit.sources.config"
+      ],
+      "cwd": "${CHECKOUT}",
+      "secondsMax": 20
+    },
+    {
+      "id": "graph-Admission-net11",
+      "phase": "GRAPH_AND_LOCK_ONLY_AFTER_ALL_INPUT_ACCEPTANCE",
+      "argv": [
+        "${SDK}/dotnet",
+        "restore",
+        "${CHECKOUT}/src/Admission/Admission.csproj",
+        "--configfile",
+        "${PHASE_ROOT}/nuget.audit.sources.config",
+        "--packages",
+        "${PHASE_ROOT}/packages",
+        "--use-lock-file",
+        "--force-evaluate",
+        "--no-dependencies",
+        "--disable-parallel",
+        "--lock-file-path",
+        "${PHASE_ROOT}/locks/Admission.net11.lock.json",
+        "-p:NuGetAudit=true",
+        "-p:NuGetAuditMode=all",
+        "-p:NuGetAuditLevel=low"
+      ],
+      "cwd": "${CHECKOUT}",
+      "secondsMax": 45,
+      "produces": "${PHASE_ROOT}/locks/Admission.net11.lock.json"
+    },
+    {
+      "id": "graph-Admission.Tests-net11",
+      "phase": "GRAPH_AND_LOCK_ONLY_AFTER_ALL_INPUT_ACCEPTANCE",
+      "argv": [
+        "${SDK}/dotnet",
+        "restore",
+        "${CHECKOUT}/tests/Admission.Tests/Admission.Tests.csproj",
+        "--configfile",
+        "${PHASE_ROOT}/nuget.audit.sources.config",
+        "--packages",
+        "${PHASE_ROOT}/packages",
+        "--use-lock-file",
+        "--force-evaluate",
+        "--no-dependencies",
+        "--disable-parallel",
+        "--lock-file-path",
+        "${PHASE_ROOT}/locks/Admission.Tests.net11.lock.json",
+        "-p:NuGetAudit=true",
+        "-p:NuGetAuditMode=all",
+        "-p:NuGetAuditLevel=low"
+      ],
+      "cwd": "${CHECKOUT}",
+      "secondsMax": 45,
+      "produces": "${PHASE_ROOT}/locks/Admission.Tests.net11.lock.json"
+    },
+    {
+      "id": "graph-Admission-linux-x64",
+      "phase": "GRAPH_AND_LOCK_ONLY_AFTER_ALL_INPUT_ACCEPTANCE",
+      "argv": [
+        "${SDK}/dotnet",
+        "restore",
+        "${CHECKOUT}/src/Admission/Admission.csproj",
+        "--configfile",
+        "${PHASE_ROOT}/nuget.audit.sources.config",
+        "--packages",
+        "${PHASE_ROOT}/packages",
+        "--use-lock-file",
+        "--force-evaluate",
+        "--no-dependencies",
+        "--disable-parallel",
+        "--lock-file-path",
+        "${PHASE_ROOT}/locks/Admission.linux-x64.lock.json",
+        "--runtime",
+        "linux-x64",
+        "-p:NuGetAudit=true",
+        "-p:NuGetAuditMode=all",
+        "-p:NuGetAuditLevel=low"
+      ],
+      "cwd": "${CHECKOUT}",
+      "secondsMax": 45,
+      "produces": "${PHASE_ROOT}/locks/Admission.linux-x64.lock.json"
+    },
+    {
+      "id": "graph-Admission.Tests-linux-x64",
+      "phase": "GRAPH_AND_LOCK_ONLY_AFTER_ALL_INPUT_ACCEPTANCE",
+      "argv": [
+        "${SDK}/dotnet",
+        "restore",
+        "${CHECKOUT}/tests/Admission.Tests/Admission.Tests.csproj",
+        "--configfile",
+        "${PHASE_ROOT}/nuget.audit.sources.config",
+        "--packages",
+        "${PHASE_ROOT}/packages",
+        "--use-lock-file",
+        "--force-evaluate",
+        "--no-dependencies",
+        "--disable-parallel",
+        "--lock-file-path",
+        "${PHASE_ROOT}/locks/Admission.Tests.linux-x64.lock.json",
+        "--runtime",
+        "linux-x64",
+        "-p:NuGetAudit=true",
+        "-p:NuGetAuditMode=all",
+        "-p:NuGetAuditLevel=low"
+      ],
+      "cwd": "${CHECKOUT}",
+      "secondsMax": 45,
+      "produces": "${PHASE_ROOT}/locks/Admission.Tests.linux-x64.lock.json"
+    }
+  ],
+  "normalizationCrosscheck": "All actualsignature results/context must bind exactraw receipts; graph/effective metadata must use sameadmittedbytes/content identity. .NET11 recognizedoutput is a hypothesis until observed; no fallback to rawSHA512 or manual formula or silent parserextension.",
+  "closedConfig": {
+    "serialization": "ElementTree, controlled ownpaths, exactbytes/hash and parseback before use; explicit--configfile on all7vectors, no ambient hierarchy.",
+    "packageSources": "clear + exactly ownraw directory holding exactly3admittednativepackages; clearfallback, emptyprivate globalpackages/httpcache/home, no ambient caches. SDKbundled referencepacks allowed only exact strictSDKinventory; no newtestdependencies.",
+    "signatureValidationMode": "require",
+    "trustedSigners": {
+      "clear": true,
+      "repository": "nuget.org",
+      "serviceIndex": "https://api.nuget.org/v3/index.json",
+      "certificateSHA256": "1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D",
+      "allowUntrustedRoot": false,
+      "owners": "No invented ownershiprestriction",
+      "primaryAuthorSHA256": "9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630",
+      "primaryConstraint": "Exactly knownMicrosoft9A1B on these3specificrawinputs; --certificate-fingerprint restrictsprimary, trustedrepository1F4B separatelyrequired. Freshofficialrepositoryindex mustretain1F4B. Embeddedcertpresence alone is not trust."
+    },
+    "audit": "NuGetAudit=true,Mode=all,Level=low; exact ownloopback staticV3snapshot adapter, no suppressions/ignored-source-errors/disabled audit; allowInsecureConnections only specificowned127.0.0.1 auditURL if SDKrequires it. No externalHTTPpackage feed.",
+    "revocation": "Keep verification enabled/current revocationrequired; no AnySigned/accept/allowUntrustedRoot/offlineModewaiver/unknownstatus PASS."
+  },
+  "finiteMetadataAcquisition": {
+    "activation": "Only after root exactsignedsource/handoff/manifest activation, inside same original900s/owncaps and before SDK networkdenial. No SOURCE-stage fetch authority.",
+    "sdkMetadataOnly": [
+      {
+        "url": "https://api.nuget.org/v3/index.json",
+        "purpose": "Closed officialresource discovery for RepositorySignatures and VulnerabilityInfo",
+        "requestsMax": 1
+      },
+      {
+        "url": "https://builds.dotnet.microsoft.com/dotnet/release-metadata/11.0/releases.json",
+        "purpose": "Current exactSDK11.0.100/runtime11.0.0 servicing/support/security policy",
+        "requestsMax": 1
+      }
+    ],
+    "repositoryAndAdvisory": "Only one exactRepositorySignatures/5.0.0 or highestsupported declaredresource and oneVulnerabilityInfo index from that exactserviceindex; officialhttps api.nuget.org:443 only, no userinfo/query/fragment/alias/traversal. Then atmost8 exactVulnerabilityInfo page @id values fromindex, namespace/v3-vulnerabilities allowed as proven10pattern; dynamicclosedtuple, no hardcodedwrong/v3/vulnerabilities prefix. Atmostone officialrepositorycertificatecontentURL for exact1F4B if needed, bound to its publishedfingerprint; no dynamic unrelatedURL.",
+    "PKIExactObservedGETs": [
+      "http://cacerts.digicert.com/DigiCertAssuredIDRootCA.crt",
+      "http://cacerts.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crt",
+      "http://cacerts.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crt",
+      "http://cacerts.digicert.com/DigiCertTrustedRootG4.crt",
+      "http://crl3.digicert.com/DigiCertAssuredIDRootCA.crl",
+      "http://crl3.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl",
+      "http://crl3.digicert.com/DigiCertTrustedG4TimeStampingRSA4096SHA2562025CA1.crl",
+      "http://crl3.digicert.com/DigiCertTrustedRootG4.crl",
+      "http://crl4.digicert.com/DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1.crl"
+    ],
+    "PKIRequests": "AtmostoneGET each of these9exactcertificate/CRL URIs; no URL alternatives/retry/redirect/auth/proxy/systemtrustmutation. HTTPCAdata is untrusted until originalissuer signatures/chain/currentCRL validity are established by actualverifier. Fetchedroot neverbecomestrustanchor. No externalOCSP POST/GET authorized; currentcomplete CRLs are selectedfinite route.",
+    "limits": {
+      "externalMetadataGETsMax": 23,
+      "inflightMax": 2,
+      "perRequestSecondsMax": 10,
+      "acquisitionAbsoluteEndSeconds": 420,
+      "serviceIndexAndRepositoryEachRawPlusDecodedBytesMax": 2097152,
+      "advisoryAllRawPlusDecodedBytesMax": 33554432,
+      "CRLEachBytesMax": 16777216,
+      "PKIAllBytesMax": 67108864,
+      "servicingBytesMax": 4194304,
+      "allBodiesCountTowardOriginal512MiB": true
+    },
+    "transport": "Identity or strictlyvalidated single gzip only for JSON using reviewed10boundeddecoder pattern; sizes count raw+decoded. No transfer/auth/redirect retries or malformedbody acceptance; archive/data transport remains exactraw bytes. Retain origin/asof/requesttime/header policy/size/SHA256 and typedfailures, no secret/query logs.",
+    "freshness": "ClientUTC reliable, recordasof/HTTPDate/LastModified/cache metadata and enforce applicable freshness <=24h for mutablepolicy/snapshots, no futuretime beyond300s skew; CRLthisUpdate<=verificationtime+skew andnextUpdate>verificationtime and validissuer signature covering every nonrootchaincert. MissingnextUpdate/currentstatus/issuer/mapping HOLD. Servicing must show exactversions current supported releasewithin11 and no latersecurityservicing requirement; no automaticupgrade.",
+    "advisory": "Retain COMPLETE index/pages snapshot, not selectedemptyplaceholder. Reuse inspected10strictNuGetversion/range/origin logic with causalpins/newinputs only; evaluate all3explicitnativeIDs and everyactualgraphdependency. Any matchingvulnerability atlow+ HOLD. No data/resource/schema/incompletepages =>UNKNOWN/HOLD.",
+    "originalEvidenceRetention": "Retain actual originalPKI/advisory/servicing bytes with their hashes and effectiveconfiguration within existing8MiB combinedproof if they fit. Candidate must compute actualboundedretention ledger; if requiredoriginals plus proof exceed8MiB, HOLD beforeSDK ratherthan silently omit evidence, add artifact/permission or increasebudget. Only an already-available explicitlybound private identityhandoff data slot can be proposed in the same sourcepacket as an alternative; no implicit newupload permission."
+  },
+  "networkAndPKIMethod": {
+    "selectedDesign": "Narrow offline static response adapter for these3packages, using realcurrentprefetchedAIA/CRL bytes and completeadvisory snapshot. No genericPKI engine/customsignature algorithm/newtrustroot. ActualNuGet/OS crypto remains the signature/chain/timestamp/revocation authority.",
+    "beforeSDK": "AfterSDKtransport/materialization and finiteinputacquisition finish, transition ONLY thisownedcurationunit to kernel-enforced externalnetworkdeny, loopbackallowed (existing systemd scoped IPAddressDeny=any/IPAddressAllow=localhost or equivalently inspectednativefacility). Existingprivileged launcher may set/readback only exactownunit; no globalfirewall/DNS/hostnetwork/truststore edit. Verify currentunitidentity/cgroup/resourcecaps unchanged and actualoutbounddenial/loopbackpositive witness before anySDK child; unsupported enforcement HOLD.",
+    "staticAdapter": "One ownboundedloopback server inside SAMEcgroup/budget serves only frozenauditindex/pages plus exact9AIA/CRL originalURI responses; configure onlycurationchildren HTTP_PROXY/HTTPS_PROXY as needed with NO externalforwarding/CONNECT/DNS/auth capability. Strictclosedmethod/path/host/query/size/count; unexpectedrequest is typedHOLD. OCSP exactobservedendpoint may receive deterministic unavailable withinloopback to allow platformCRLfallback, but externalOCSP neverrequested and missingrevocationcannotPASS. If runtime bypassesproxy, networkdenial must failclosed. No permissive networkfallback.",
+    "acceptance": "Actual errorfree SDK integrity/trust/RFC3161 with completecurrentCRL-basedchainrevocation coverage required; merely exit0/embeddedcerts/URLstrings/no networkerror is not revocationproof. Owner must bind an inspectable feasible method toprove this in source; if actualplatformcannotproduce/use required offlineCRLs or unsupportedoutput, HOLD ratherthan add an eighthSDK helper, skiprevocation or implement generalPKI framework.",
+    "roots": "Pin exactrootbundle files from accepted strictSDKinventory and recordeffectiveLinuxcode-signingstore selection andtimestampbundle beforecommands. Unexpected /etc/pki override HOLD unless byte-identical knownapprovedbundle; no import/delete/update truststore. CopiedAIAroots may be intermediates only, nevernewtrustanchors.",
+    "auditConsumption": "StaticV3adapter logs exactboundedrequests andsnapshot hashes; keep NuGetAudit all/low and report actualSDK consumption. If a validgraph has zero applicablePackageReference and SDK makesno auditrequest, report explicitNOT_APPLICABLE ratherthan claiming consumedPASS; separatecomplete3nativeID evaluation and servicing gates stillmandatory."
+  },
+  "rawHandoffAndSDK": {
+    "rawBodyReGETs": 0,
+    "handoff": "One purpose-bound identity-preserving privatecapsule of these3alreadyretainedoriginalrawfiles plus minimalmanifest (60404733B+containeroverhead). Necessary onecopy/hash duringhandoff is allowed, not healthyevidence reinspection; oldpartial41943040B neverincluded/modified. All originalraws/CMS/notices remainimmutable.",
+    "transfer": "If targethost cannotreadthoseexactbytes, prepare ONE fresh unpublished own-repo draft inputcapsule asset using existingaccessible maintainerroute; exactrelease/assetID/name/size/SHA256/source/gate must be bound in finalcandidate beforeexecution. Draft-only, neverpublic/tag-promoted; no existingassetoverwrite/newsecret or accountpermission. Targettransport may use existingCI service token only for thisexactownrepoasset, neverpass it toSDKchildren or uploadit. Strictbounded3entrymaterialization/size/hash/type/path/collision. Do not usepublicNuGetredownloads or a proof8MiB slot for60MiB input.",
+    "SDK": "Reuse unchanged acceptedcommontransport+7420guard/5fmaterializer/686catalog under actualown04heldcontext. SDK211463422B source/hash/memberinventory fixed; atmostone necessary controlledtransport iftargetmissing, not a qualificationreplay. Same originaldownload120+extract180 inside caller300; no extra SDK--info/version/help/compiler run. NuGet.Packaging.dll exactd752 mustmatch.",
+    "disk": "SOURCEhandoff combined old+fresh+capsule+metadata within existingWindows256MiB/proof8MiB; no localSDKmaterialization. Candidate must compute exactLinuxallocation ledger from6015entrySDKinventory/native/cache/locks/logs/proof/inputcapsule, bind actualrequired/free space. Initialcuration-onlyscratch cap2GiB is a hardupperbound within original4GiBRAM/64CPU2 profile, subordinate to ANY smaller applicableown04ownerlimit; do not borrow10or12caps or raise a conflictinglimit. If requirement exceeds applicablecap/free space HOLD with concreteledger.",
+    "target": "Existing supported GitHubUbuntu24.04/nonroot/nativeX64/systemd/cgroupv2 only, exacthost/currentheldPID/start/bootID/context/ownlease; no localWindows/WSL/migration/newserver.",
+    "activationOrder": "Root exactsource binding can authorize one specifiedprivateinputdraft/asset creation; persist returned release/assetidentity and exactmanifesthash in exclusive runtimehandoff before targetexecution. Server-assignedID is a bound result of that one operation, not a reason for a new perURI approval. No reuse/overwrite of an unrelateddraft."
+  },
+  "runtimeEnvelope": {
+    "rowSeconds": 900,
+    "workerEndFromOriginalStartSeconds": 840,
+    "terminalReserveSeconds": 60,
+    "memoryBytes": 4294967296,
+    "swapBytes": 0,
+    "tasksMax": 64,
+    "CPUEquivalentMax": 2,
+    "bodyBytesMax": 536870912,
+    "proofBytesMax": 8388608,
+    "retentionDays": 3,
+    "absoluteStageCeilings": {
+      "bootstrap": 60,
+      "acceptedSharedSDKTransportAndExtract": 360,
+      "dataAndConfigPreflight": 420,
+      "threeFiniteNativeBodies": 540,
+      "rawNormalizedCMSTimestampNoticesAdvisory": 630,
+      "fourGraphLockCommands": 810,
+      "durableInputProof": 840,
+      "terminalAndExistingUpload": 900
+    },
+    "signaturePerCommandSecondsMax": 20,
+    "graphPerCommandSecondsMax": 45,
+    "SDKCommandsMax": 7,
+    "existingPolicyJobSecondsMax": 300,
+    "newJobsEventsCachesWindowsRows": 0,
+    "forbid": "No900/540reset, quota/cap/timeincrease, nativeapp/build/test/compiler command or qualification replay. One exactcuration row; ambiguity GET-only, no secondPOST/rerun."
+  },
+  "privateGraphSafety": "Allfour candidate locks andobj/assets must be redirected to distinctownedprivatepaths; --no-dependencies projectReference ordering retained, preserveprojectReference and net11/Linuxflavors. No trackednet10locks/projectfiles/globalcache overwrite. Any actualadditionalpackage/request/graph/schema/contentHash drift HOLD; neveremptygraph or inferredSUCCESS.",
+  "terminalOutput": "Retain exactsource/profile/context/host/caps/originalclocks, finiteactualHTTP receipts, raw/CMS/notices/signer/timestamp/revocation/normalization provenance,servicing/asof/advisory/config/adapter/bundle hashes,7exactcommandexit+boundedredactedreports,4privategraphlocks andactualeffectivecontentidentities. Kill onlyownchildren ifneeded, reportforcednotPASS; require actualnaturalterminal/ownedpopulation0/exactownlease-release. proof8MiB excludes rawpackages/SDK/globalcache; no extraartifact/copy forreport.",
+  "next": "Root exact-source activation after ONEconsolidated candidate: includes allsource/policy/method/transport/disk/metadataallowlist/launch andknownsignature. Then manager executes boundedmetadata/input/signature/graph stages through finalcurationcandidate without perURL/command ACK. Root reviews sameactualdata once. Inputcatalog remains candidateuntil accepted; all6 consumers canlaterbind identity-boundproducerhandoff through existingown-normal gates, no sharedmodule rewrite or blanketSDK_READY.",
+  "standingHolds": [
+    "04Windowsqualification unchangedHOLD/no diagnosticretry",
+    "11runtimeunchangedHOLD; newinputproposal independentlyqueued",
+    "12disk amendmentstillhumanpending; own04cap neverapplies12",
+    "07..09 upgrades/newWave/newGoalnotauthorized",
+    "Stratino localonly/wholeproductOPEN/automation4STOPPED/nohosting/main/deploy/newmarket"
+  ]
+}

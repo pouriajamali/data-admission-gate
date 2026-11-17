@@ -341,3 +341,9 @@ admission. New18 fixtures passed per normal/-O mode; old85 and files0/1 were not
 replayed.40s/file,whole180s/30s terminal reserve,4GiB/64/CPU2,combined old+fresh
 disk256MiB,proof8MiB and canonical9120 lease remain. No actual Range GET/Job/SDK
 is authorized or executed by this source candidate; Windows remains HOLD.
+
+Linux input curation has a separate inert source mode. Its same-command NuGet
+Content hash parser, closed config and finite static-response helpers do not
+admit packages. The method feasibility gate currently stops before SDK or
+network: complete current CRL coverage and scoped network denial are unbound.
+See docs/SDK11_SHARED_NORMAL_INPUT.md. Windows qualification remains HOLD.

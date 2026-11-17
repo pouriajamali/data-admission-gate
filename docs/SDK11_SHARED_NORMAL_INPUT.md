@@ -68,3 +68,41 @@ admission. New18 fixtures passed per normal/-O mode; old85 and files0/1 were not
 replayed.40s/file,whole180s/30s terminal reserve,4GiB/64/CPU2,combined old+fresh
 disk256MiB,proof8MiB and canonical9120 lease remain. No actual Range GET/Job/SDK
 is authorized or executed by this source candidate; Windows remains HOLD.
+
+### Complete Linux curation source candidate (2026-11-16)
+
+Contract f19c85da binds the existing three raw inputs and seven future SDK
+operations. `--curation-admission` selects a dedicated Linux purpose and leaves
+product UNBOUND guards intact. The profile is SOURCE_CANDIDATE_METHOD_HOLD_NO_RUNTIME.
+The mode stops before worker launch, SDK transport or target/network operations.
+No runtime JSON can waive this source-bound feasibility decision.
+
+The pure helper parses exactly one successful English verify package block and
+one canonical 64-byte base64 Content hash from that same command. Released SDK
+output remains unobserved; a different format holds rather than borrowing raw
+SHA512 or running another SDK operation. The three signature-only vectors precede
+native input admission; four graph vectors follow all-input acceptance.
+
+Config serialization requires signatures, exact primary/repository signer pins,
+a private local raw source, no fallback packages and a specific loopback audit
+source. The frozen response dispatcher cannot forward, resolve DNS or CONNECT;
+OCSP is unavailable locally and never treated as valid revocation evidence.
+It is a pure component; no live server or kernel-deny transition is claimed.
+
+The reviewed mechanism does not yet bind a per-certificate current CRL signature,
+validity/serial coverage report from these seven commands, a scoped kernel-deny
+transition with witnesses, or the causal project10 advisory range helper. The
+Linux runtime path therefore remains closed. No custom crypto, trust-store change,
+eighth SDK operation or assumed proxy consumption is introduced.
+
+Graph planning adds an explicit DirectoryBuildPropsPath argument to the same four
+restore operations; generated props retain the original project props and put obj
+and project extensions under per-flavor/per-project private directories. This
+causal argv delta requires the final exact-source review; locks remain private.
+
+Retention counts original metadata plus other proof against 8 MiB before SDK.
+Scratch uses exact SDK inventory plus native/cache/capsule allocation under the
+smaller applicable owner cap, never more than 2 GiB. Source scratch remains 256 MiB.
+Actual current metadata sizes, target free space, kernel method, SDK output and
+trust/advisory/servicing status are UNEXECUTED or UNKNOWN. The source candidate and
+checkpoint retain the concrete ledger, finite route and conditional launch plan.

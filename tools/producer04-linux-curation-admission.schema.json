@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Own04 curation-only future execution admission; profile method HOLD is not overridable",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "state",
+    "purpose",
+    "sourceHEAD",
+    "sourceTree",
+    "contractSHA256",
+    "profileSHA256",
+    "inputManifestSHA256",
+    "runId",
+    "attempt",
+    "leaseAdmissionSHA256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "producer04-linux-curation-execution-admission/v1"
+    },
+    "state": {
+      "const": "EXACT_SOURCE_RUNTIME_BOUND"
+    },
+    "purpose": {
+      "const": "PRODUCER04_LINUX_INPUT_CURATION"
+    },
+    "sourceHEAD": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sourceTree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "contractSHA256": {
+      "const": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
+    },
+    "profileSHA256": {
+      "const": "67d3f67a15f946e89d46c660fd71aa3d3a845dc574db255ce65e5a8db6c24afa"
+    },
+    "inputManifestSHA256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "attempt": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "leaseAdmissionSHA256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

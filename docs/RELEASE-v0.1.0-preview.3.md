@@ -112,3 +112,8 @@ admission. New18 fixtures passed per normal/-O mode; old85 and files0/1 were not
 replayed.40s/file,whole180s/30s terminal reserve,4GiB/64/CPU2,combined old+fresh
 disk256MiB,proof8MiB and canonical9120 lease remain. No actual Range GET/Job/SDK
 is authorized or executed by this source candidate; Windows remains HOLD.
+
+- Local source preparation only: dedicated Linux input-curation mode and bounded
+  Content hash/config/finite-response/ledger/graph-identity helpers. Runtime
+  remains blocked by explicit method feasibility gaps; no product release,
+  SDK/network execution, new lock evidence or Windows qualification is claimed.

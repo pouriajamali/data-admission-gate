@@ -1,0 +1,47 @@
+{
+  "schema": "producer04-linux-input-curation-profile/v1",
+  "state": "SOURCE_CANDIDATE_METHOD_HOLD_NO_RUNTIME",
+  "purpose": "PRODUCER04_LINUX_INPUT_CURATION",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "rid": "linux-x64",
+  "contractSHA256": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241",
+  "rowSeconds": 900,
+  "workerEndSeconds": 840,
+  "terminalReserveSeconds": 60,
+  "memoryBytes": 4294967296,
+  "swapBytes": 0,
+  "tasksMax": 64,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "SDKCommandsMax": 7,
+  "signaturePerCommandSeconds": 20,
+  "graphPerCommandSeconds": 45,
+  "externalMetadataGETsMax": 23,
+  "rawBodyReGETs": 0,
+  "bodyBytesMax": 536870912,
+  "proofBytesMax": 8388608,
+  "sourceScratchMaxBytes": 268435456,
+  "linuxScratchMaxBytes": 2147483648,
+  "retentionDays": 3,
+  "newJobsEventsCachesWindowsRows": 0,
+  "methodFeasibility": "HOLD_BEFORE_TARGET_OR_NETWORK",
+  "SDKReady": false,
+  "WindowsQualification": "HOLD_NO_RETRY",
+  "networkTransitionImplemented": false,
+  "PKIRevocationCoverageMethodBound": false,
+  "productAdmission": false,
+  "bundles": [
+    {
+      "path": "sdk/11.0.100/trustedroots/codesignctl.pem",
+      "bytes": 521718,
+      "sha256": "77f5a5ab1d70964e0efabe14840decbd87a909990c48f55be2dda42702a17018"
+    },
+    {
+      "path": "sdk/11.0.100/trustedroots/timestampctl.pem",
+      "bytes": 563922,
+      "sha256": "42188f73a3ddf2c10a24827def3a2ee004a4672851103c5a8fb3571e7e41760e"
+    }
+  ],
+  "NuGetPackagingSHA256": "d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b"
+}
