@@ -20,12 +20,12 @@ CURATION_SAFE_ROOT=None
 def safe_cause_module():
  global CURATION_DIAGNOSTICS
  if CURATION_DIAGNOSTICS is None:
-  CURATION_DIAGNOSTICS=R.load_module('curation_safe_cause04','73e49eda3fb928eb79dd0d469702d4bbbd3c315959cd9bb43e85618d46e4bde3')
+  CURATION_DIAGNOSTICS=R.load_module('curation_safe_cause04','a41eed9ce86d00ce28c51488977773811b35d070473e960243aaaa3ce54e4fc2')
   D=CURATION_DIAGNOSTICS.STATE;D.bind(CURATION_DIAGNOSTICS,R.digest(CURATION_DIAGNOSTICS.__file__),'safe-cause');D.bind(sys.modules[__name__],R.read(HERE/'dotnet11-consumer04-admission.lock.json')['controllerSha256'],'caller');D.bind_loaded(HERE)
  return CURATION_DIAGNOSTICS
 
 def curation_module():
- m=R.load_module('curate_dotnet11_linux_inputs','49b92363136e4651eb94f4f731f73b725402e44caee0509ab84625010847513f');safe_cause_module().STATE.bind(m,'49b92363136e4651eb94f4f731f73b725402e44caee0509ab84625010847513f','curation');return m
+ m=R.load_module('curate_dotnet11_linux_inputs','b96d38975d6c36d4b791050189b35e6bedfa0f33c227aa7927be8eb834b64aa0');safe_cause_module().STATE.bind(m,'b96d38975d6c36d4b791050189b35e6bedfa0f33c227aa7927be8eb834b64aa0','curation');return m
 
 def capture_curation_cause(exc,secondary=False):
  try:
@@ -92,7 +92,7 @@ def consumer_worker(path):
  global CURATION_ACTIVE,CURATION_SAFE_ROOT
  s=R.read(path);R.f.need(s['purpose'] in ('CONSUMER04_PRODUCT',CURATION_PURPOSE),'FIXED_CONSUMER_ROLE')
  if s['purpose']==CURATION_PURPOSE:
-  CURATION_ACTIVE=True;CURATION_SAFE_ROOT=Path(s['root']);safe_cause_module().require_workspace(os.environ,R.ROOT);safe_cause_module().STATE.mark('bootstrap',spec=s,now=R.clock())
+  CURATION_ACTIVE=True;CURATION_SAFE_ROOT=Path(s['root']);safe_cause_module().require_workspace(os.environ,R.ROOT);safe_cause_module().STATE.mark('bootstrap',spec=None if s.get('executionMode')=='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY' else s,now=R.clock())
   R.f.need(os.name!='nt','CURATION_LINUX_ONLY');curation_module().parent_admission(s['curationAdmissionPath'],s['curationAdmissionSHA256'],s['expectedCommit'])
  if os.name=='nt':
   boot=R.read(s['bootstrap']);R.f.need(Path(sys.executable).resolve()==Path(boot['pythonExe']).resolve() and R.digest(sys.executable)==boot['pythonExeSha256'] and boot['pythonSignature']=='ValidPythonSoftwareFoundationWithTimestamp','PYTHON_BOOTSTRAP_IDENTITY');consumer_work(s,Q.Backend(s));return
@@ -110,7 +110,8 @@ def main():
  if args.curation_admission:
   R.f.need(not (args.worker or args.stop_post or args.check_stage) and os.name!='nt','CURATION_EXCLUSIVE_LINUX_PURPOSE')
   gate=curation_module().parent_admission(args.curation_admission,args.curation_admission_sha256,args.expected_commit)
-  curation_module().load_json(args.curation_input_manifest,gate['inputManifestSHA256'])
+  manifest=curation_module().load_json(args.curation_input_manifest,gate['inputManifestSHA256'])
+  if curation_module().diagnostic_selected(gate):curation_module().validate_diagnostic_manifest(manifest,args.expected_commit)
  if args.check_stage:check_stage(args.check_stage,args.expected_commit);return
  if args.stop_post:R.f.need(os.name!='nt','FIXED_OBSERVER_HOST');Q.stop_post(args.stop_post);return
  if args.worker:consumer_worker(args.worker);return
@@ -135,18 +136,23 @@ def linux_parent(args):
  start=int(os.environ['SDK11_QUALIFICATION_START_TICK']);R.f.need(0<=R.clock()-start<60000,'STARTUP60_EXPIRED');temp=Path(os.environ['RUNNER_TEMP']).resolve();root=temp/('admission04-sdk11-linux-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);R.a.scoped(root,temp,absent=True);root.mkdir(mode=0o700);R.f.need(root.stat().st_uid==os.getuid() and root.stat().st_gid==os.getgid() and (root.stat().st_mode&0o777)==0o700,'FRESH_PRIVATE_RUNNER_ROOT')
  if args.curation_admission:CURATION_SAFE_ROOT=root
  unit='admission04-sdk11-ci-'+uuid.uuid4().hex;private=root/'private-spec.json';s={'purpose':'CONSUMER04_PRODUCT','rid':'linux-x64','root':str(root),'unit':unit,'uid':os.getuid(),'gid':os.getgid(),'expectedCommit':args.expected_commit,'startTick':start,'supervisorPID':os.getpid(),'supervisorStartIdentity':'proc-start:'+Q.start_identity(os.getpid())}
- if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256,'curationInputManifestPath':str(args.curation_input_manifest)})
+ if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256,'curationInputManifestPath':str(args.curation_input_manifest),'executionMode':curation_module().parent_admission(args.curation_admission,args.curation_admission_sha256,args.expected_commit)['executionMode']})
  if args.curation_admission:
   R.f.need(curation_module().policies()[1]['inputTransport']=='PUBLIC_ORIGINALS_V1','PUBLIC_INPUT_TRANSPORT_REQUIRED');R.f.need('CURATION_INPUT_TOKEN' not in os.environ,'PUBLIC_INPUT_TOKEN_CONFIG_FORBIDDEN')
  R.write(private,s);R.write(root/'stage-0.json',{'index':0,'startedTick':start,'deadlineTick':start+60000})
  for path in [str(HERE),str(root),sys.executable]:R.f.need(not any(c in path for c in ['\n','\r','%','$','"',"'"]),'SYSTEMD_FIXED_ARGV_PATH')
- envnames=['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_REF','GITHUB_EVENT_NAME','GITHUB_EVENT_PATH','GITHUB_JOB','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_NAME','ImageOS','ImageVersion','RUNNER_TEMP'];sets=safe_cause_module().forward_environment(os.environ,R.ROOT) if args.curation_admission else ['--setenv='+k+'='+os.environ[k] for k in envnames if k in os.environ];remaining=max(1,(start+840000-R.clock())//1000);observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private])
+ envnames=['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_REF','GITHUB_EVENT_NAME','GITHUB_EVENT_PATH','GITHUB_JOB','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_NAME','ImageOS','ImageVersion','RUNNER_TEMP'];sets=safe_cause_module().forward_environment(os.environ,R.ROOT) if args.curation_admission else ['--setenv='+k+'='+os.environ[k] for k in envnames if k in os.environ];remaining=max(1,(start+(70000 if s.get('executionMode')=='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY' else 840000)-R.clock())//1000);observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private])
+ if s.get('executionMode')=='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY':R.f.need(R.clock()<start+60000,'DIAGNOSTIC_BOOTSTRAP60');remaining=max(1,remaining-3)
  argv=['/usr/bin/sudo','-n','/usr/bin/systemd-run','--wait','--collect','--pipe','--unit='+unit,'--uid='+str(s['uid']),'--gid='+str(s['gid']),'--property=Description='+unit,'--property=MemoryMax=4294967296','--property=MemorySwapMax=0','--property=TasksMax=64','--property=CPUQuota=200%','--property=CPUQuotaPeriodSec=100ms','--property=RuntimeMaxSec='+str(remaining),'--property=TimeoutStopSec=5','--property=KillMode=control-group','--property=WorkingDirectory='+str(R.ROOT),'--property=ExecStopPost='+observer,'--setenv=PYTHONDONTWRITEBYTECODE=1',*sets,sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--worker',str(private)]
  R.write(root/'root-starter.json',{'argv':argv,'boundary':'ExistingtrustedrootOSstarter only; fixednonrootUser/Group. Allworker/acquisition/extraction/targets/observer insideactualcgroup; norootSDK/arbitraryrootcommand/install/config.'})
- terminal,stop=(run_curation_linux(s,argv) if s['purpose']==CURATION_PURPOSE else Q.run_owned_linux(s,argv));finish_consumer(s,terminal,stop['actualCaps']['memoryPeak'])
+ if s.get('executionMode')=='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY':
+  with curation_module().diagnostic_original_deadline(s,130):
+   terminal,stop=run_curation_linux(s,argv);finish_metadata_diagnostic(s,terminal,stop['actualCaps']['memoryPeak'])
+ else:
+  terminal,stop=(run_curation_linux(s,argv) if s['purpose']==CURATION_PURPOSE else Q.run_owned_linux(s,argv));finish_consumer(s,terminal,stop['actualCaps']['memoryPeak'])
 
 def run_curation_linux(s,argv):
- root=Path(s['root']);proc=None;pidfd=None;error=None;stop=None;terminal=None;transitioned=False;L=curation_module();M,_=L.method_modules()
+ root=Path(s['root']);proc=None;pidfd=None;error=None;stop=None;terminal=None;transitioned=False;L=curation_module();M,_=L.method_modules();diagnostic=s.get('executionMode')==L.DIAGNOSTIC_MODE
  try:
   prior,code=Q.own_unit_show(s['unit'],min(s['startTick']+60000,R.clock()+2000));R.f.need(prior.get('LoadState')=='not-found','OWN_UNIT_MUST_BE_ABSENT')
   with (root/'launcher-stdout.log').open('xb') as out,(root/'launcher-stderr.log').open('xb') as err:
@@ -156,11 +162,15 @@ def run_curation_linux(s,argv):
    held=R.read(root/'stopped-worker.json');pid=held['pid'];R.f.need(held['uid']==s['uid'] and held['gid']==s['gid'] and Q.start_identity(pid)==held['start'],'STOPPED_WORKER_IDENTITY');pidfd=os.pidfd_open(pid);snap=M.pid_snapshot(pid,s['unit'])
    while snap['state'] not in ('T','t'):
     R.f.need(R.clock()<deadline and proc.poll() is None,'WORKER_NOT_STOPPED');time.sleep(.01);snap=M.pid_snapshot(pid,s['unit'])
-   R.f.need(snap['start']==held['start'] and snap['limits']==held['cap']['kernelLimits'],'WORKER_KERNEL_READBACK');R.write(root/'held-worker-before-continue.json',{'pid':pid,'start':held['start'],'kernelLimits':snap['limits'],'pidfdRetained':True,'state':snap['state'],'cgroup':snap['cgroup']});signal.pidfd_send_signal(pidfd,signal.SIGCONT)
+   R.f.need(snap['start']==held['start'] and snap['limits']==held['cap']['kernelLimits'],'WORKER_KERNEL_READBACK');R.write(root/'held-worker-before-continue.json',{'pid':pid,'start':held['start'],'kernelLimits':snap['limits'],'pidfdRetained':True,'state':snap['state'],'cgroup':snap['cgroup']})
+   if diagnostic:diagnostic_kernel_deadline(s,pid,held['start'])
+   signal.pidfd_send_signal(pidfd,signal.SIGCONT)
    while proc.poll() is None:
-    R.f.need(R.clock()<s['startTick']+840000,'OWNED_WORKER840_DEADLINE');R.f.need(out.tell()+err.tell()<=1048576,'OWNED_LAUNCHER_LOG_CAP')
+    R.f.need(R.clock()<s['startTick']+(70000 if diagnostic else 840000),'DIAGNOSTIC_WORKER70' if diagnostic else 'OWNED_WORKER840_DEADLINE');
+    if diagnostic:L._scratch_bytes([root],33554432)
+    R.f.need(out.tell()+err.tell()<=1048576,'OWNED_LAUNCHER_LOG_CAP')
     requestPath=root/'network-transition-request.json'
-    if not transitioned and requestPath.with_name(requestPath.name+'.ready').is_file():
+    if not diagnostic and not transitioned and requestPath.with_name(requestPath.name+'.ready').is_file():
      R.f.need(R.clock()<s['startTick']+540000,'OWNED_NETWORK_STAGE540');body=requestPath.read_bytes();request=json.loads(body);R.f.need(request['worker']['pid']==pid and request['worker']['start']==held['start'] and request['unit']==s['unit'] and request['sourceHEAD']==s['expectedCommit'] and request['originalStartMonotonicNs']==s['startTick']*1000000,'NETWORK_EXACT_HELD_GENERATION')
      while M.pid_snapshot(pid,s['unit'])['state'] not in ('T','t'):
       R.f.need(R.clock()<s['startTick']+540000,'NETWORK_STOPPED_HANDSHAKE');time.sleep(.001)
@@ -171,10 +181,10 @@ def run_curation_linux(s,argv):
       code=policy.get('code','OWNED_DENY_PARENT_FAILED');R.f.need(re.fullmatch('[A-Z][A-Z0-9_]{0,95}',code),'OWNED_DENY_TYPED_FAILURE');raise R.f.Denied(code)
      R.f.need(call.returncode==0,'OWNED_DENY_PARENT_FAILED');R.f.need(policy['requestSHA256']==request['requestSHA256'] and policy['worker']['pid']==pid and policy['worker']['start']==held['start'],'OWNED_DENY_PARENT_RESULT');R.write(root/'network-policy-applied.json',policy);transitioned=True;signal.pidfd_send_signal(pidfd,signal.SIGCONT)
     time.sleep(.02)
-   R.f.need(proc.returncode==0 and transitioned,'OWNED_CURATION_NONZERO_OR_NO_TRANSITION')
+   R.f.need(proc.returncode==0 and (diagnostic or transitioned),'OWNED_CURATION_NONZERO_OR_NO_TRANSITION')
  except BaseException as exc:error=exc;capture_curation_cause(exc)
  finally:
-  safe_cause_module().STATE.mark('terminal',spec=s,now=R.clock())
+  safe_cause_module().STATE.mark('terminal',spec=None if diagnostic else s,now=R.clock())
   try:terminal,stop=Q.cleanup_owned_linux(s,proc,pidfd,error is not None)
   except BaseException as cleanup:
    capture_curation_cause(cleanup,secondary=error is not None)
@@ -185,6 +195,25 @@ def run_curation_linux(s,argv):
   if error is not None:raise error
   raise R.f.Denied('TYPED_CURATION_TERMINAL_REQUIRED')
  return {'workerExitCode':0,'ownedPopulation':0,'supervisorObservedTerminal':True,'typedStopResult':'success','terminalEvidenceSha256':terminal['evidenceSha256']},stop
+
+def diagnostic_kernel_deadline(spec,pid,start):
+ L=curation_module();end=spec['startTick']+70000;now=R.clock();R.f.need(0<=now-spec['startTick']<60000,'DIAGNOSTIC_BOOTSTRAP60');deadline=min(spec['startTick']+60000,now+2000)
+ call=subprocess.run(['/usr/bin/systemctl','show',spec['unit']+'.service','--property=ActiveEnterTimestampMonotonic,RuntimeMaxUSec,Type'],capture_output=True,text=True,env=Q.OS_ENV,timeout=max(.001,(deadline-R.clock())/1000));R.f.need(call.returncode==0 and not call.stderr and len(call.stdout)<=4096 and R.clock()<deadline,'DIAGNOSTIC_KERNEL_CLOCK_READBACK');rows=call.stdout.splitlines();R.f.need(len(rows)==3 and all('=' in line for line in rows),'DIAGNOSTIC_KERNEL_CLOCK_SHAPE');props=dict(line.split('=',1) for line in rows);R.f.need(set(props)=={'ActiveEnterTimestampMonotonic','RuntimeMaxUSec','Type'} and all(len(v)<=128 for v in props.values()) and props['Type'] in ('simple','exec'),'DIAGNOSTIC_KERNEL_CLOCK_SHAPE');R.f.need(re.fullmatch('[1-9][0-9]{0,19}',props['ActiveEnterTimestampMonotonic']) is not None,'DIAGNOSTIC_KERNEL_CLOCK_SHAPE');activation=int(props['ActiveEnterTimestampMonotonic'])*1000;duration=L.diagnostic_duration_ns(props['RuntimeMaxUSec']);R.f.need(spec['startTick']*1000000<=activation<=time.monotonic_ns() and activation+duration<=end*1000000,'DIAGNOSTIC_KERNEL_WORKER70');R.write(Path(spec['root'])/'metadata-diagnostic-kernel-clock.json',{'schema':'producer04-diagnostic-kernel-clock/v1','executionMode':L.DIAGNOSTIC_MODE,'unit':spec['unit'],'pid':pid,'processStartIdentity':start,'sourceHEAD':spec['expectedCommit'],'activationMonotonicNs':activation,'runtimeMaxNs':duration,'originalWorkerEndMonotonicNs':end*1000000,'observedMonotonicNs':time.monotonic_ns(),'observedBeforeContinue':True})
+
+def finish_metadata_diagnostic(spec,terminal,peak,failure=False):
+ L=curation_module();root=Path(spec['root']);R.f.need(L.diagnostic_selected(spec),'DIAGNOSTIC_FINISH_MODE');R.f.need(R.clock()<spec['startTick']+130000,'DIAGNOSTIC_TERMINAL130');dest=R.ROOT/'artifacts/sdk11-curation-linux-x64'
+ if failure and dest.exists():return
+ R.f.need(not dest.exists(),'CURATION_PROOF_EXISTS');R.f.need(terminal.get('ownedPopulation')==0 and terminal.get('supervisorObservedTerminal') is True,'DIAGNOSTIC_OWNED_TERMINAL')
+ path=root/'metadata-diagnostic-result.json';value=R.read(path,16384) if path.is_file() else {'state':'HOLD_DIAGNOSTIC_INCOMPLETE','semanticResult':'HOLD','observationComplete':False,'primaryCode':'UNKNOWN_OR_REDACTED'}
+ if not failure:
+  R.f.terminal(terminal);_,A=L.method_modules();L.validate_diagnostic_result(value,A);R.f.need(value.get('executionMode')==L.DIAGNOSTIC_MODE and value.get('state') in ('FRAMING_OBSERVED_GUARD_HOLD','SERVICE_REQUEST_ACCEPTED_DIAGNOSTIC_ONLY') and value.get('observationComplete') is True and value.get('requestCount')==1 and A.framing_shape(value.get('framing')),'DIAGNOSTIC_TYPED_OBSERVATION')
+  R.f.need(all(value.get(k) is False for k in ('SDK_READY','inputAdmitted','advisoryAccepted','productAdmission','fullProducerAcceptance')),'DIAGNOSTIC_NEVER_ADMISSION');R.f.need((value['state']=='SERVICE_REQUEST_ACCEPTED_DIAGNOSTIC_ONLY' and value['semanticResult']=='SERVICE_REQUEST_ACCEPTED_ONLY' and value['primaryCode']=='NONE') or (value['state']=='FRAMING_OBSERVED_GUARD_HOLD' and value['semanticResult']=='HOLD' and value['primaryCode'] in A.METADATA_PRIMARY_CODES and value['primaryCode'] not in ('NONE','UNKNOWN','UNKNOWN_OR_REDACTED')),'DIAGNOSTIC_SEMANTIC_HOLD_NOT_PROCESS_PASS')
+ bodies,total=L.diagnostic_proof_payloads(root,R);summary={'schema':'producer04-metadata-framing-diagnostic-terminal/v1','state':'HOLD_DIAGNOSTIC_INCOMPLETE' if failure else value['state'],'executionMode':L.DIAGNOSTIC_MODE,'semanticResult':value['semanticResult'],'observationComplete':value.get('observationComplete') is True and not failure,'primaryCode':value.get('primaryCode','UNKNOWN_OR_REDACTED'),'terminal':terminal,'peakMemoryBytes':peak,'originalStartTick':spec['startTick'],'originalWorkerEndTick':spec['startTick']+70000,'originalTerminalEndTick':spec['startTick']+130000,'observedTerminalTick':R.clock(),'proofBytes':total,'proofFiles':[{'path':p,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()} for p,b in bodies],'SDK_READY':False,'inputAdmitted':False,'advisoryAccepted':False,'productAdmission':False,'fullProducerAcceptance':False,'futureFullMode':'CLOSED_SEPARATE_EXACT_GATE_REQUIRED','retentionDays':3};body=(json.dumps(summary,indent=2)+'\n').encode();R.f.need(total+len(body)<=8388608,'DIAGNOSTIC_PROOF8M');dest.mkdir(parents=True,mode=0o700)
+ for name,payload in bodies:
+  target=dest/name;target.parent.mkdir(parents=True,exist_ok=True)
+  with target.open('xb') as out:out.write(payload)
+ with (dest/'DIAGNOSTIC-ONLY.json').open('xb') as out:out.write(body)
+
 
 def finish_curation(spec,terminal,peak):
  R.f.terminal(terminal);root=Path(spec['root']);value=R.read(root/'curation-worker.json');R.f.need(value['state']=='LINUX_CURATED_INPUT_GRAPH_CANDIDATE_NOT_PRODUCT_ADMITTED' and len(value['commands'])==7 and len(value['locks'])==4 and value['network']['state']=='OWN_CURRENT_KERNEL_DENY_AND_LOOPBACK_WITNESSED','CURATION_INPUT_GRAPH_RESULTS_REQUIRED');R.f.need(R.clock()<spec['startTick']+900000,'CURATION900_DEADLINE');value.update(terminal=terminal,peakMemoryBytes=peak)
@@ -212,6 +241,9 @@ def publish_curation_failure_data(code):
  if not terminalPath.is_file() or R.read(terminalPath).get('cleanupResult')!='OWNED_TERMINAL_OBSERVED':return
  dest=R.ROOT/'artifacts/sdk11-curation-linux-x64'
  if dest.exists():return
+ privateSpec=root/'private-spec.json'
+ if privateSpec.is_file() and R.read(privateSpec).get('executionMode')=='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY':
+  s=R.read(privateSpec);raw=R.read(terminalPath);terminal={'workerExitCode':raw.get('workerExitCode','UNKNOWN'),'ownedPopulation':raw.get('ownedPopulation','UNKNOWN'),'supervisorObservedTerminal':raw.get('cleanupResult')=='OWNED_TERMINAL_OBSERVED','typedStopResult':'HOLD','terminalEvidenceSha256':R.digest(terminalPath)};return finish_metadata_diagnostic(s,terminal,0,True)
  value=R.read(root/'curation-worker.json') if (root/'curation-worker.json').is_file() else R.read(root/'curation-method-failure.json') if (root/'curation-method-failure.json').is_file() else {};evidenceHold=None;proofModule=curation_module()
  try:candidates,durable=proofModule.curation_proof_candidates(root,value,False)
  except proofModule.Hold as failure:

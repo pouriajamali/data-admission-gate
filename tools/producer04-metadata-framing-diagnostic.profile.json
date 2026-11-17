@@ -1,0 +1,842 @@
+{
+  "schema": "producer04-metadata-framing-diagnostic-profile/v1",
+  "state": "ADMITTED_SOURCE_PROFILE",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "purpose": "PRODUCER04_LINUX_INPUT_CURATION",
+  "executionMode": "METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY",
+  "sourceAllowanceSHA256": "9ea01032176240f55edc2f36b0ced58471bb564c79fb255e5832e08dd0f3b0e8",
+  "contractSHA256": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241",
+  "methodAmendmentSHA256": "0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770",
+  "publicTransportAmendmentSHA256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484",
+  "advisoryNamespaceAmendmentSHA256": "c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614",
+  "advisoryHelperSHA256": "3de1882c41521c9967382bc0837ad6846177e8a86100e73acb2c789fdd609d8a",
+  "knownSigner": "SHA256:AgU5bZlJSjUu0KsWMmVEEr+BfXpcMVNroTA33bHcQdU",
+  "allowedSigners": "pouriajamali ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE3HcCoaqX2eKglIpCpVS04stHolalzViq2mbU/Tp8Q/\n",
+  "canonicalLeaseProtocolSHA256": "9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b",
+  "rowSeconds": 130,
+  "workerEndSeconds": 70,
+  "terminalReserveSeconds": 60,
+  "bootstrapEndSeconds": 60,
+  "requestSecondsMax": 10,
+  "requestTerminalReserveWithin10Ms": 200,
+  "method": "GET",
+  "URL": "https://api.nuget.org/v3/index.json",
+  "GETsMax": 1,
+  "rawPlusDecodedBytesMax": 2097152,
+  "memoryMaxBytes": 4294967296,
+  "swapMaxBytes": 0,
+  "tasksMax": 64,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "privateScratchMaxBytes": 33554432,
+  "sourceScratchMaxBytes": 268435456,
+  "proofBytesMax": 8388608,
+  "retentionDays": 3,
+  "newJobsEventsCachesWindowsRows": 0,
+  "SDKArchiveGETsMax": 0,
+  "SDKInputTransportOrExtractMax": 0,
+  "publicOriginalGETsMax": 0,
+  "OpenSSLOrOtherNativeTargetsMax": 0,
+  "SDKCommandsMax": 0,
+  "otherMetadataGETsMax": 0,
+  "fullAdvisoryPKIOrGraphAuditMax": 0,
+  "productCommandsMax": 0,
+  "fullModeDefault": "FULL_PRODUCER_CURATION",
+  "fullModeActivation": "CLOSED_SEPARATE_EXACT_FULL_GATE_REQUIRED",
+  "runtimeActivation": "SOURCE_ONLY_SEPARATE_EXACT_DIAGNOSTIC_GATE_REQUIRED",
+  "SDKReady": false,
+  "inputAdmitted": false,
+  "productAdmission": false,
+  "headersPolicy": "Original framing/gzip/status/origin/freshness guards unchanged; finite observation precedes them. Raw header values never emitted. Application reads are not network/prefetch byte counts.",
+  "clockBoundary": "Original start retained before bootstrap; request eligibility before original60, worker70, terminal130; reused own cleanup<=50s from worker terminal/failure inside original130. No fresh outer clock.",
+  "signatureBoundary": "Known public verification material extracted from exact signed parent commit; same fingerprint, no key/account/Windows-owned file read.",
+  "detectionByteReservedWithinCombinedCeiling": 1,
+  "usableWirePlusDecodedBytesMax": 2097151,
+  "kernelClockReadbacksMax": 1,
+  "kernelClockReadbackSecondsMax": 2,
+  "kernelClockReadbackOutputBytesMax": 4096,
+  "kernelWorkerDeadlineRule": "Same actual unit ActiveEnterTimestampMonotonic plus RuntimeMaxUSec must be no later than originalStart+70 before held worker CONT; unknown/overflow/late HOLD.",
+  "framingObservationSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "actualStatus",
+      "applicationBodyBytesRead",
+      "contentEncodingCategory",
+      "contentEncodingHeaderCount",
+      "contentLengthHeaderCount",
+      "contentLengthShape",
+      "currentRequestIndex",
+      "declaredContentLength",
+      "elapsedNs",
+      "headerCountsAllowed",
+      "noTransferEncoding",
+      "observationState",
+      "primaryCode",
+      "responseURLMatchesExpected",
+      "sourceOperation",
+      "statusAllowed",
+      "transferEncodingCategory",
+      "transferEncodingHeaderCount",
+      "urlAllowed"
+    ],
+    "properties": {
+      "responseURLMatchesExpected": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "const": "UNKNOWN"
+          }
+        ]
+      },
+      "statusAllowed": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "const": "UNKNOWN"
+          }
+        ]
+      },
+      "urlAllowed": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "const": "UNKNOWN"
+          }
+        ]
+      },
+      "noTransferEncoding": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "const": "UNKNOWN"
+          }
+        ]
+      },
+      "headerCountsAllowed": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "const": "UNKNOWN"
+          }
+        ]
+      },
+      "contentLengthHeaderCount": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          {
+            "enum": [
+              "OVER_LIMIT",
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "transferEncodingHeaderCount": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          {
+            "enum": [
+              "OVER_LIMIT",
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "contentEncodingHeaderCount": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          {
+            "enum": [
+              "OVER_LIMIT",
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "declaredContentLength": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2097152
+          },
+          {
+            "enum": [
+              "OVER_LIMIT",
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "applicationBodyBytesRead": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 536936448
+          },
+          {
+            "enum": [
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "currentRequestIndex": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 22
+          },
+          {
+            "enum": [
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "elapsedNs": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000000000000
+          },
+          {
+            "enum": [
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "observationState": {
+        "enum": [
+          "OBSERVED",
+          "UNKNOWN"
+        ]
+      },
+      "actualStatus": {
+        "oneOf": [
+          {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          },
+          {
+            "const": "UNKNOWN"
+          }
+        ]
+      },
+      "contentLengthShape": {
+        "enum": [
+          "ABSENT",
+          "DECIMAL",
+          "DUPLICATE",
+          "INVALID",
+          "OVER_LIMIT",
+          "UNKNOWN"
+        ]
+      },
+      "transferEncodingCategory": {
+        "enum": [
+          "ABSENT",
+          "CHUNKED",
+          "IDENTITY",
+          "GZIP",
+          "DEFLATE",
+          "OTHER",
+          "MULTIPLE",
+          "UNKNOWN"
+        ]
+      },
+      "contentEncodingCategory": {
+        "enum": [
+          "ABSENT",
+          "IDENTITY",
+          "GZIP",
+          "OTHER",
+          "MULTIPLE",
+          "UNKNOWN"
+        ]
+      },
+      "sourceOperation": {
+        "enum": [
+          "METADATA_GET",
+          "UNKNOWN"
+        ]
+      },
+      "primaryCode": {
+        "enum": [
+          "ADVISORY_COMPLETE_SNAPSHOT",
+          "ADVISORY_EXACT_RANGE",
+          "ADVISORY_RANGE",
+          "COMPLETE",
+          "CURRENT_ADVISORY_MATCH",
+          "DECODED_BEFORE_PARSE",
+          "DIAGNOSTIC_ORIGINAL_DEADLINE",
+          "FAILED_BEFORE_OPEN",
+          "HOLD",
+          "JSON_PARSED_NOT_ADMITTED",
+          "METADATA_BODY_BOUND",
+          "METADATA_CALLER_ORIGIN_BINDING",
+          "METADATA_CANONICAL_SEGMENT",
+          "METADATA_CHILD_HOLD",
+          "METADATA_CHILD_OUTPUT_UNEXPECTED",
+          "METADATA_CHILD_RECEIPT_IDENTITY",
+          "METADATA_CHILD_RESULT_BOUND",
+          "METADATA_CHILD_WIRE_BOUND",
+          "METADATA_CHILD_WIRE_HASH",
+          "METADATA_CLOSED_ONCE",
+          "METADATA_COMBINED_BYTES_CAP",
+          "METADATA_DUPLICATE_KEY",
+          "METADATA_ENCODING",
+          "METADATA_FRESHNESS",
+          "METADATA_GZIP_BOUND_OR_MEMBER",
+          "METADATA_GZIP_EOF",
+          "METADATA_GZIP_PROGRESS",
+          "METADATA_HTTP_DATE",
+          "METADATA_HTTP_FRAMING",
+          "METADATA_HTTP_STATUS_OR_URL",
+          "METADATA_JSON_INVALID",
+          "METADATA_LENGTH",
+          "METADATA_LENGTH_MISMATCH",
+          "METADATA_NAMESPACE",
+          "METADATA_NONFINITE",
+          "METADATA_ORIGIN",
+          "METADATA_OWN_CHILD_CGROUP",
+          "METADATA_OWN_CHILD_FAILED",
+          "METADATA_OWN_CHILD_IDENTITY",
+          "METADATA_OWN_CHILD_TERMINAL",
+          "METADATA_OWN_MAIN_ALARM_REQUIRED",
+          "METADATA_PERIODIC_ALARM_UNSUPPORTED",
+          "METADATA_PHASE_IDENTITY",
+          "METADATA_REDIRECT",
+          "METADATA_REQUEST10_DEADLINE",
+          "METADATA_REQUEST_FILE",
+          "METADATA_REQUEST_FILE_HASH",
+          "METADATA_REQUEST_OUTPUT_SCOPE",
+          "METADATA_REQUEST_SOURCE",
+          "METADATA_REQUEST_SPEC_BOUND",
+          "METADATA_TRANSPORT_FAILURE",
+          "METADATA_URL",
+          "METADATA_URL_ALLOWLIST",
+          "METADATA_URL_NOT_IN_INDEX",
+          "NONE",
+          "NO_SELECTED_NUGET_ADVISORY_MATCH",
+          "ORIGINAL_BODY_BUDGET",
+          "ORIGINAL_METADATA_DEADLINE",
+          "RAW_COMPLETE",
+          "RAW_PARTIAL",
+          "SELECTED_VERSION_NOT_STABLE",
+          "SIGALRM",
+          "STARTED",
+          "UNKNOWN",
+          "UNKNOWN_OR_REDACTED",
+          "UNSUPPORTED_ADVISORY_VERSION",
+          "VULNERABILITY_INDEX_AMBIGUOUS",
+          "VULNERABILITY_INDEX_NOT_ALLOWLISTED",
+          "VULNERABILITY_INDEX_NOT_DECLARED",
+          "VULNERABILITY_INDEX_SHAPE",
+          "VULNERABILITY_PAGE_PARTITION",
+          "VULNERABILITY_PAGE_SELF_REFERENCE",
+          "VULNERABILITY_PAGE_SHAPE",
+          "VULNERABILITY_PAGE_TUPLE_CHANGED",
+          "VULNERABILITY_SERVICE_INDEX_AMBIGUOUS",
+          "VULNERABILITY_SERVICE_RESOURCES",
+          "VULNERABILITY_SUPPORTED_RESOURCE_MISSING"
+        ]
+      }
+    }
+  },
+  "resultSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schema",
+      "state",
+      "executionMode",
+      "observationComplete",
+      "semanticResult",
+      "primaryCode",
+      "framing",
+      "requestCount",
+      "combinedBodyBytes",
+      "SDK_READY",
+      "inputAdmitted",
+      "advisoryAccepted",
+      "productAdmission",
+      "fullProducerAcceptance"
+    ],
+    "properties": {
+      "schema": {
+        "const": "producer04-metadata-framing-diagnostic-result/v1"
+      },
+      "state": {
+        "enum": [
+          "SERVICE_REQUEST_ACCEPTED_DIAGNOSTIC_ONLY",
+          "FRAMING_OBSERVED_GUARD_HOLD",
+          "HOLD_DIAGNOSTIC_INCOMPLETE"
+        ]
+      },
+      "executionMode": {
+        "const": "METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY"
+      },
+      "observationComplete": {
+        "type": "boolean"
+      },
+      "semanticResult": {
+        "enum": [
+          "SERVICE_REQUEST_ACCEPTED_ONLY",
+          "HOLD"
+        ]
+      },
+      "primaryCode": {
+        "enum": [
+          "ADVISORY_COMPLETE_SNAPSHOT",
+          "ADVISORY_EXACT_RANGE",
+          "ADVISORY_RANGE",
+          "COMPLETE",
+          "CURRENT_ADVISORY_MATCH",
+          "DECODED_BEFORE_PARSE",
+          "DIAGNOSTIC_ORIGINAL_DEADLINE",
+          "FAILED_BEFORE_OPEN",
+          "HOLD",
+          "JSON_PARSED_NOT_ADMITTED",
+          "METADATA_BODY_BOUND",
+          "METADATA_CALLER_ORIGIN_BINDING",
+          "METADATA_CANONICAL_SEGMENT",
+          "METADATA_CHILD_HOLD",
+          "METADATA_CHILD_OUTPUT_UNEXPECTED",
+          "METADATA_CHILD_RECEIPT_IDENTITY",
+          "METADATA_CHILD_RESULT_BOUND",
+          "METADATA_CHILD_WIRE_BOUND",
+          "METADATA_CHILD_WIRE_HASH",
+          "METADATA_CLOSED_ONCE",
+          "METADATA_COMBINED_BYTES_CAP",
+          "METADATA_DUPLICATE_KEY",
+          "METADATA_ENCODING",
+          "METADATA_FRESHNESS",
+          "METADATA_GZIP_BOUND_OR_MEMBER",
+          "METADATA_GZIP_EOF",
+          "METADATA_GZIP_PROGRESS",
+          "METADATA_HTTP_DATE",
+          "METADATA_HTTP_FRAMING",
+          "METADATA_HTTP_STATUS_OR_URL",
+          "METADATA_JSON_INVALID",
+          "METADATA_LENGTH",
+          "METADATA_LENGTH_MISMATCH",
+          "METADATA_NAMESPACE",
+          "METADATA_NONFINITE",
+          "METADATA_ORIGIN",
+          "METADATA_OWN_CHILD_CGROUP",
+          "METADATA_OWN_CHILD_FAILED",
+          "METADATA_OWN_CHILD_IDENTITY",
+          "METADATA_OWN_CHILD_TERMINAL",
+          "METADATA_OWN_MAIN_ALARM_REQUIRED",
+          "METADATA_PERIODIC_ALARM_UNSUPPORTED",
+          "METADATA_PHASE_IDENTITY",
+          "METADATA_REDIRECT",
+          "METADATA_REQUEST10_DEADLINE",
+          "METADATA_REQUEST_FILE",
+          "METADATA_REQUEST_FILE_HASH",
+          "METADATA_REQUEST_OUTPUT_SCOPE",
+          "METADATA_REQUEST_SOURCE",
+          "METADATA_REQUEST_SPEC_BOUND",
+          "METADATA_TRANSPORT_FAILURE",
+          "METADATA_URL",
+          "METADATA_URL_ALLOWLIST",
+          "METADATA_URL_NOT_IN_INDEX",
+          "NONE",
+          "NO_SELECTED_NUGET_ADVISORY_MATCH",
+          "ORIGINAL_BODY_BUDGET",
+          "ORIGINAL_METADATA_DEADLINE",
+          "RAW_COMPLETE",
+          "RAW_PARTIAL",
+          "SELECTED_VERSION_NOT_STABLE",
+          "SIGALRM",
+          "STARTED",
+          "UNKNOWN",
+          "UNKNOWN_OR_REDACTED",
+          "UNSUPPORTED_ADVISORY_VERSION",
+          "VULNERABILITY_INDEX_AMBIGUOUS",
+          "VULNERABILITY_INDEX_NOT_ALLOWLISTED",
+          "VULNERABILITY_INDEX_NOT_DECLARED",
+          "VULNERABILITY_INDEX_SHAPE",
+          "VULNERABILITY_PAGE_PARTITION",
+          "VULNERABILITY_PAGE_SELF_REFERENCE",
+          "VULNERABILITY_PAGE_SHAPE",
+          "VULNERABILITY_PAGE_TUPLE_CHANGED",
+          "VULNERABILITY_SERVICE_INDEX_AMBIGUOUS",
+          "VULNERABILITY_SERVICE_RESOURCES",
+          "VULNERABILITY_SUPPORTED_RESOURCE_MISSING"
+        ]
+      },
+      "framing": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "actualStatus",
+          "applicationBodyBytesRead",
+          "contentEncodingCategory",
+          "contentEncodingHeaderCount",
+          "contentLengthHeaderCount",
+          "contentLengthShape",
+          "currentRequestIndex",
+          "declaredContentLength",
+          "elapsedNs",
+          "headerCountsAllowed",
+          "noTransferEncoding",
+          "observationState",
+          "primaryCode",
+          "responseURLMatchesExpected",
+          "sourceOperation",
+          "statusAllowed",
+          "transferEncodingCategory",
+          "transferEncodingHeaderCount",
+          "urlAllowed"
+        ],
+        "properties": {
+          "responseURLMatchesExpected": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "const": "UNKNOWN"
+              }
+            ]
+          },
+          "statusAllowed": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "const": "UNKNOWN"
+              }
+            ]
+          },
+          "urlAllowed": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "const": "UNKNOWN"
+              }
+            ]
+          },
+          "noTransferEncoding": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "const": "UNKNOWN"
+              }
+            ]
+          },
+          "headerCountsAllowed": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "const": "UNKNOWN"
+              }
+            ]
+          },
+          "contentLengthHeaderCount": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "enum": [
+                  "OVER_LIMIT",
+                  "UNKNOWN"
+                ]
+              }
+            ]
+          },
+          "transferEncodingHeaderCount": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "enum": [
+                  "OVER_LIMIT",
+                  "UNKNOWN"
+                ]
+              }
+            ]
+          },
+          "contentEncodingHeaderCount": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              {
+                "enum": [
+                  "OVER_LIMIT",
+                  "UNKNOWN"
+                ]
+              }
+            ]
+          },
+          "declaredContentLength": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2097152
+              },
+              {
+                "enum": [
+                  "OVER_LIMIT",
+                  "UNKNOWN"
+                ]
+              }
+            ]
+          },
+          "applicationBodyBytesRead": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 536936448
+              },
+              {
+                "enum": [
+                  "UNKNOWN"
+                ]
+              }
+            ]
+          },
+          "currentRequestIndex": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 22
+              },
+              {
+                "enum": [
+                  "UNKNOWN"
+                ]
+              }
+            ]
+          },
+          "elapsedNs": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000000000000
+              },
+              {
+                "enum": [
+                  "UNKNOWN"
+                ]
+              }
+            ]
+          },
+          "observationState": {
+            "enum": [
+              "OBSERVED",
+              "UNKNOWN"
+            ]
+          },
+          "actualStatus": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 100,
+                "maximum": 599
+              },
+              {
+                "const": "UNKNOWN"
+              }
+            ]
+          },
+          "contentLengthShape": {
+            "enum": [
+              "ABSENT",
+              "DECIMAL",
+              "DUPLICATE",
+              "INVALID",
+              "OVER_LIMIT",
+              "UNKNOWN"
+            ]
+          },
+          "transferEncodingCategory": {
+            "enum": [
+              "ABSENT",
+              "CHUNKED",
+              "IDENTITY",
+              "GZIP",
+              "DEFLATE",
+              "OTHER",
+              "MULTIPLE",
+              "UNKNOWN"
+            ]
+          },
+          "contentEncodingCategory": {
+            "enum": [
+              "ABSENT",
+              "IDENTITY",
+              "GZIP",
+              "OTHER",
+              "MULTIPLE",
+              "UNKNOWN"
+            ]
+          },
+          "sourceOperation": {
+            "enum": [
+              "METADATA_GET",
+              "UNKNOWN"
+            ]
+          },
+          "primaryCode": {
+            "enum": [
+              "ADVISORY_COMPLETE_SNAPSHOT",
+              "ADVISORY_EXACT_RANGE",
+              "ADVISORY_RANGE",
+              "COMPLETE",
+              "CURRENT_ADVISORY_MATCH",
+              "DECODED_BEFORE_PARSE",
+              "DIAGNOSTIC_ORIGINAL_DEADLINE",
+              "FAILED_BEFORE_OPEN",
+              "HOLD",
+              "JSON_PARSED_NOT_ADMITTED",
+              "METADATA_BODY_BOUND",
+              "METADATA_CALLER_ORIGIN_BINDING",
+              "METADATA_CANONICAL_SEGMENT",
+              "METADATA_CHILD_HOLD",
+              "METADATA_CHILD_OUTPUT_UNEXPECTED",
+              "METADATA_CHILD_RECEIPT_IDENTITY",
+              "METADATA_CHILD_RESULT_BOUND",
+              "METADATA_CHILD_WIRE_BOUND",
+              "METADATA_CHILD_WIRE_HASH",
+              "METADATA_CLOSED_ONCE",
+              "METADATA_COMBINED_BYTES_CAP",
+              "METADATA_DUPLICATE_KEY",
+              "METADATA_ENCODING",
+              "METADATA_FRESHNESS",
+              "METADATA_GZIP_BOUND_OR_MEMBER",
+              "METADATA_GZIP_EOF",
+              "METADATA_GZIP_PROGRESS",
+              "METADATA_HTTP_DATE",
+              "METADATA_HTTP_FRAMING",
+              "METADATA_HTTP_STATUS_OR_URL",
+              "METADATA_JSON_INVALID",
+              "METADATA_LENGTH",
+              "METADATA_LENGTH_MISMATCH",
+              "METADATA_NAMESPACE",
+              "METADATA_NONFINITE",
+              "METADATA_ORIGIN",
+              "METADATA_OWN_CHILD_CGROUP",
+              "METADATA_OWN_CHILD_FAILED",
+              "METADATA_OWN_CHILD_IDENTITY",
+              "METADATA_OWN_CHILD_TERMINAL",
+              "METADATA_OWN_MAIN_ALARM_REQUIRED",
+              "METADATA_PERIODIC_ALARM_UNSUPPORTED",
+              "METADATA_PHASE_IDENTITY",
+              "METADATA_REDIRECT",
+              "METADATA_REQUEST10_DEADLINE",
+              "METADATA_REQUEST_FILE",
+              "METADATA_REQUEST_FILE_HASH",
+              "METADATA_REQUEST_OUTPUT_SCOPE",
+              "METADATA_REQUEST_SOURCE",
+              "METADATA_REQUEST_SPEC_BOUND",
+              "METADATA_TRANSPORT_FAILURE",
+              "METADATA_URL",
+              "METADATA_URL_ALLOWLIST",
+              "METADATA_URL_NOT_IN_INDEX",
+              "NONE",
+              "NO_SELECTED_NUGET_ADVISORY_MATCH",
+              "ORIGINAL_BODY_BUDGET",
+              "ORIGINAL_METADATA_DEADLINE",
+              "RAW_COMPLETE",
+              "RAW_PARTIAL",
+              "SELECTED_VERSION_NOT_STABLE",
+              "SIGALRM",
+              "STARTED",
+              "UNKNOWN",
+              "UNKNOWN_OR_REDACTED",
+              "UNSUPPORTED_ADVISORY_VERSION",
+              "VULNERABILITY_INDEX_AMBIGUOUS",
+              "VULNERABILITY_INDEX_NOT_ALLOWLISTED",
+              "VULNERABILITY_INDEX_NOT_DECLARED",
+              "VULNERABILITY_INDEX_SHAPE",
+              "VULNERABILITY_PAGE_PARTITION",
+              "VULNERABILITY_PAGE_SELF_REFERENCE",
+              "VULNERABILITY_PAGE_SHAPE",
+              "VULNERABILITY_PAGE_TUPLE_CHANGED",
+              "VULNERABILITY_SERVICE_INDEX_AMBIGUOUS",
+              "VULNERABILITY_SERVICE_RESOURCES",
+              "VULNERABILITY_SUPPORTED_RESOURCE_MISSING"
+            ]
+          }
+        }
+      },
+      "requestCount": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "combinedBodyBytes": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 2097152
+      },
+      "SDK_READY": {
+        "const": false
+      },
+      "inputAdmitted": {
+        "const": false
+      },
+      "advisoryAccepted": {
+        "const": false
+      },
+      "productAdmission": {
+        "const": false
+      },
+      "fullProducerAcceptance": {
+        "const": false
+      }
+    }
+  }
+}

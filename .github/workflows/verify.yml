@@ -19,6 +19,11 @@ on:
         type: boolean
         required: false
         default: false
+      curation_execution_mode:
+        type: choice
+        options: [FULL_PRODUCER_CURATION, METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY]
+        default: FULL_PRODUCER_CURATION
+        required: false
       curation_handoff:
         type: string
         required: false

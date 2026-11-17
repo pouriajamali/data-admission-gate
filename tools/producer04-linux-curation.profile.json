@@ -51,7 +51,7 @@
   "ownedUnitPrefix": "admission04-sdk11-ci-",
   "methodAmendmentSHA256": "0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770",
   "certificateRolesSHA256": "5ad49caddbd7fa5bc2ee47fed80280b28d32e5533b51ab919d45d067ec784a83",
-  "public10ProvenanceSHA256": "448ef55f65ae66016da117571b7a7009108354ed268a7428467baa89787a4b21",
+  "public10ProvenanceSHA256": "264d9e3cea89e9a26e9adf28a1fcf6b21644094b12027aedb9670b6f82ac337e",
   "OSOpenSSLCommandsMax": 3,
   "OSOpenSSLVersionSeconds": 2,
   "OSOpenSSLVerifySecondsEach": 10,
@@ -84,12 +84,12 @@
   "safeOriginalCauseBytesMax": 16384,
   "safeCauseNodesMax": 3,
   "safeMappedFramesMax": 10,
-  "sourceAllowanceSHA256": "08a1248d051eb33b87f7c2b2f8270f23a859fb5dbee7fb6a9515ffc182bb97e9",
+  "sourceAllowanceSHA256": "9ea01032176240f55edc2f36b0ced58471bb564c79fb255e5832e08dd0f3b0e8",
   "frozenCommonContextKeysObserved": 15,
   "inputTransport": "PUBLIC_ORIGINALS_V1",
   "publicInputTransportAmendmentSHA256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484",
   "publicInputHelperSHA256": "658448fc0e981c9b1bac9efab8ed18623d4980054cb7d2358c35efac88112bb0",
-  "safeCauseHelperSHA256": "73e49eda3fb928eb79dd0d469702d4bbbd3c315959cd9bb43e85618d46e4bde3",
+  "safeCauseHelperSHA256": "a41eed9ce86d00ce28c51488977773811b35d070473e960243aaaa3ce54e4fc2",
   "publicBodyGETsMax": 3,
   "publicOriginalBodyBytes": 60404733,
   "publicOriginalsPerRequestSeconds": 45,
@@ -97,5 +97,7 @@
   "publicOriginalsInflightMax": 1,
   "publicOriginalsChunkBytesMax": 65536,
   "advisoryNamespaceAmendmentSHA256": "c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614",
-  "advisoryHelperSHA256": "50416b4a399f435311faac5a6e59c923ced511cbf108f4766e1201cc26804d1f"
+  "advisoryHelperSHA256": "3de1882c41521c9967382bc0837ad6846177e8a86100e73acb2c789fdd609d8a",
+  "executionMode": "FULL_PRODUCER_CURATION",
+  "diagnosticProfileSHA256": "20449ce3ccea11b5a10b8f9f4884fb81e2dc16eb1b8ca60bbaf736e13ecab150"
 }

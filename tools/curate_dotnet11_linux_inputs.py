@@ -11,13 +11,13 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='160b90e87d709f310c0e7f1955e48e8deb7a8fd58312f348283532cd82736b36'
+PROFILE_SHA='7a0f89e4bfa3ea1ab90aea99c227d9fe096d722c3ed19ee5818ee24f1aa50bea'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
 PACKAGING_SHA='d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b'
 IDS=('Microsoft.AspNetCore.App.Runtime.linux-x64','Microsoft.NETCore.App.Host.linux-x64','Microsoft.NETCore.App.Runtime.linux-x64')
-METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'50416b4a399f435311faac5a6e59c923ced511cbf108f4766e1201cc26804d1f'}
+METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'3de1882c41521c9967382bc0837ad6846177e8a86100e73acb2c789fdd609d8a'}
 AMENDMENT_SHA='0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770'
 class Hold(RuntimeError): pass
 def need(value,code):
@@ -239,21 +239,161 @@ def validate_lock(lock,admitted,local_source,metadata):
    m=metadata.get(name.lower());need(type(m) is dict and m.get('contentHash')==value and m.get('source')==local_source,'GRAPH_ACTUAL_NUPKG_METADATA')
    seen.append(name.lower())
  return {'state':'APPLICABLE_CONTENT_IDENTITIES_MATCH','packages':sorted(set(seen)),'auditConsumption':'NOT_ESTABLISHED_BY_LOCK','productAdmission':False}
+FULL_EXECUTION_MODE='FULL_PRODUCER_CURATION'
+DIAGNOSTIC_MODE='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY'
+DIAGNOSTIC_PROFILE_SHA='20449ce3ccea11b5a10b8f9f4884fb81e2dc16eb1b8ca60bbaf736e13ecab150'
+DIAGNOSTIC_URL='https://api.nuget.org/v3/index.json'
+LEASE_PROTOCOL_SHA='9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b'
+
+def diagnostic_policies():
+ p=load_json(HERE/'producer04-metadata-framing-diagnostic.profile.json',DIAGNOSTIC_PROFILE_SHA)
+ need(p['executionMode']==DIAGNOSTIC_MODE and p['sourceAllowanceSHA256']=='9ea01032176240f55edc2f36b0ced58471bb564c79fb255e5832e08dd0f3b0e8','DIAGNOSTIC_PROFILE_IDENTITY')
+ for file,h in [('producer04-linux-curation.contract.json',CONTRACT_SHA),('producer04-linux-curation-method-amendment.json',AMENDMENT_SHA),('producer04-linux-curation-public-input-transport.json',PUBLIC_TRANSPORT_SHA),('producer04-linux-advisory-namespace-amendment.json',NAMESPACE_AMENDMENT_SHA)]:load_json(HERE/file,h)
+ return p
+
+def diagnostic_selected(value):
+ mode=value.get('executionMode') if type(value) is dict else None
+ need(mode in (FULL_EXECUTION_MODE,DIAGNOSTIC_MODE),'CURATION_EXECUTION_MODE_REQUIRED')
+ return mode==DIAGNOSTIC_MODE
+
+def validate_diagnostic_admission(gate,head):
+ required={'schema','state','purpose','executionMode','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','publicTransportAmendmentSHA256','advisoryNamespaceAmendmentSHA256','profileSHA256','diagnosticProfileSHA256','inputManifestSHA256','leaseAdmissionSHA256','runId','attempt','dispatchNonce'}
+ need(type(gate) is dict and set(gate)==required and all(type(v) is str for v in gate.values()),'DIAGNOSTIC_GATE_SCHEMA')
+ need(gate['schema']=='producer04-metadata-framing-diagnostic-admission/v1' and gate['state']=='EXACT_SOURCE_RUNTIME_BOUND' and gate['purpose']==PURPOSE and gate['executionMode']==DIAGNOSTIC_MODE,'DIAGNOSTIC_GATE_MODE')
+ need(gate['sourceHEAD']==head and re.fullmatch('[0-9a-f]{40}',head or '') and re.fullmatch('[0-9a-f]{40}',gate['sourceTree']),'DIAGNOSTIC_GATE_SOURCE')
+ need(gate['profileSHA256']==gate['diagnosticProfileSHA256']==DIAGNOSTIC_PROFILE_SHA and gate['contractSHA256']==CONTRACT_SHA and gate['amendmentSHA256']==AMENDMENT_SHA and gate['publicTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA and gate['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'DIAGNOSTIC_GATE_PROFILE')
+ need(all(re.fullmatch('[0-9a-f]{64}',gate[k]) for k in ('inputManifestSHA256','leaseAdmissionSHA256')) and re.fullmatch('[0-9a-f]{32}',gate['dispatchNonce']) and re.fullmatch('[1-9][0-9]*',gate['runId']) and gate['attempt']=='1','DIAGNOSTIC_GATE_RUN')
+ return gate
+
+def validate_diagnostic_manifest(value,head):
+ need(type(value) is dict and set(value)=={'schema','sourceHEAD','executionMode','ownerScratchLimitBytes','leaseAdmissionPath'} and value['schema']=='producer04-metadata-framing-diagnostic-manifest/v1' and value['sourceHEAD']==head and value['executionMode']==DIAGNOSTIC_MODE,'DIAGNOSTIC_MANIFEST')
+ need(type(value['ownerScratchLimitBytes']) is int and 0<value['ownerScratchLimitBytes']<=33554432 and type(value['leaseAdmissionPath']) is str and Path(value['leaseAdmissionPath']).is_absolute(),'DIAGNOSTIC_PRIVATE_LIMIT')
+ return value
+
+def render_diagnostic_handoff(payload,head,run,attempt,private):
+ need(type(payload) is dict and set(payload)=={'gate','inputManifest'},'DIAGNOSTIC_HANDOFF_SCHEMA');g=dict(payload['gate']);m=dict(payload['inputManifest']);lease=dict(m.pop('leaseAdmission'))
+ need(g['runId']=='CURRENT_SINGLE_DISPATCH' and g['attempt']==attempt=='1' and g['inputManifestSHA256']==g['leaseAdmissionSHA256']=='DERIVED_FROM_SAME_HANDOFF','DIAGNOSTIC_SINGLE_RUN')
+ need(g['sourceHEAD']==m['sourceHEAD']==lease.get('sourceHEAD')==head and lease.get('runId')=='CURRENT_SINGLE_DISPATCH' and lease.get('attempt')=='1' and lease.get('dispatchNonce')==g['dispatchNonce'] and lease.get('protocolSHA256')==LEASE_PROTOCOL_SHA and lease.get('state')=='OWN_CANONICAL_LEASE_BOUND_TO_THIS_RUN','DIAGNOSTIC_CURRENT_LEASE')
+ lease['runId']=run;lb=(json.dumps(lease,sort_keys=True,separators=(',',':'))+'\n').encode();m['leaseAdmissionPath']=str(Path(private)/'lease-admission.json');validate_diagnostic_manifest(m,head);mb=(json.dumps(m,sort_keys=True,separators=(',',':'))+'\n').encode();g.update(runId=run,inputManifestSHA256=digest(mb),leaseAdmissionSHA256=digest(lb));validate_diagnostic_admission(g,head);return g,mb,lb
+
+def diagnostic_original_deadline(spec,seconds):
+ import contextlib,signal,threading
+ @contextlib.contextmanager
+ def guard():
+  need(type(spec.get('startTick')) is int and seconds in (70,130) and threading.current_thread() is threading.main_thread(),'DIAGNOSTIC_ORIGINAL_CLOCK');end=spec['startTick']*1000000+seconds*1000000000;previous=signal.getitimer(signal.ITIMER_REAL);handler=signal.getsignal(signal.SIGALRM);need(previous[1]==0 and time.monotonic_ns()<end,'DIAGNOSTIC_ORIGINAL_DEADLINE');old=time.monotonic_ns()+int(previous[0]*10**9) if previous[0] else None
+  if old is not None:end=min(end,old)
+  def expired(*unused):raise Hold('DIAGNOSTIC_ORIGINAL_DEADLINE')
+  signal.signal(signal.SIGALRM,expired);signal.setitimer(signal.ITIMER_REAL,max(.000001,(end-time.monotonic_ns())/10**9))
+  try:yield end
+  finally:
+   signal.setitimer(signal.ITIMER_REAL,0);now=time.monotonic_ns();signal.signal(signal.SIGALRM,handler);signal.setitimer(signal.ITIMER_REAL,max(0,(old-now)/10**9) if old else 0)
+   if now>=end:raise Hold('DIAGNOSTIC_ORIGINAL_DEADLINE') from None
+ return guard()
+
+class DiagnosticBootstrapBudget:
+ def __init__(self,spec):self.end=spec['startTick']+60000
+ def deadline(self,seconds):
+  now=time.monotonic_ns()//1000000;need(now<self.end,'DIAGNOSTIC_BOOTSTRAP60');return min(self.end,now+seconds*1000)
+
+def diagnostic_duration_ns(value):
+ need(type(value) is str and 0<len(value)<=128,'DIAGNOSTIC_KERNEL_DURATION');parts=value.split(' ');need(1<=len(parts)<=5,'DIAGNOSTIC_KERNEL_DURATION');total=0;seen=set();units={'h':3600000000000,'min':60000000000,'s':1000000000,'ms':1000000,'us':1000,'ns':1}
+ for part in parts:
+  match=re.fullmatch(r'(0|[1-9][0-9]{0,8})(?:\.([0-9]{1,9}))?(min|ms|us|ns|h|s)',part);need(match is not None and match[3] not in seen,'DIAGNOSTIC_KERNEL_DURATION');seen.add(match[3]);fraction=match[2] or '';numerator=int(match[1])*10**len(fraction)+(int(fraction) if fraction else 0);scale=units[match[3]];need(numerator*scale%10**len(fraction)==0,'DIAGNOSTIC_KERNEL_DURATION');total+=numerator*scale//10**len(fraction);need(total<=70000000000,'DIAGNOSTIC_KERNEL_DURATION')
+ need(total>0,'DIAGNOSTIC_KERNEL_DURATION');return total
+
+def diagnostic_source_identity(spec,backend,R,env,profile):
+ root=Path(spec['root']);budget=DiagnosticBootstrapBudget(spec);source=R.source_context(spec['expectedCommit'],backend.run,env,budget,root,qualification=False)
+ def git(args,label,limit=65536):
+  dest=root/label;rec=backend.run(['/usr/bin/git','-C',str(R.ROOT),*args],R.ROOT,env,budget.deadline(10),dest);need(rec.get('exitCode')==0,'DIAGNOSTIC_SOURCE_COMMAND');raw=(dest/'stdout.log').read_bytes();need(len(raw)<=limit and (dest/'stderr.log').stat().st_size<=16384,'DIAGNOSTIC_SOURCE_REPORT');return raw
+ need(git(['status','--porcelain=v1','--untracked-files=all'],'diagnostic-source-clean')==b'','DIAGNOSTIC_SOURCE_DIRTY')
+ rows=git(['ls-tree','-r','-z','HEAD'],'diagnostic-source-tree',262144);actual={};sourcebytes=0
+ for row in rows.split(b'\0'):
+  if not row:continue
+  meta,path=row.split(b'\t');mode,kind,blob=meta.decode('ascii').split();name=path.decode('utf-8');need(kind=='blob' and mode in ('100644','100755'),'DIAGNOSTIC_SOURCE_MODE');p=R.ROOT/name;need(p.is_file() and not p.is_symlink(),'DIAGNOSTIC_SOURCE_FILE');size=p.stat().st_size;sourcebytes+=size;need(sourcebytes<=268435456,'DIAGNOSTIC_SOURCE256M');body=p.read_bytes();need(len(body)==size and __import__('hashlib').sha1(b'blob '+str(len(body)).encode()+b'\0'+body).hexdigest()==blob,'DIAGNOSTIC_SOURCE_BYTES');actual[name]={'path':name,'mode':mode,'gitBlob':blob}
+ pins=R.read(HERE/'dotnet11-consumer04-source-pins.json');need(pins.get('state')=='EXACT_SOURCE_REVIEWED' and pins.get('projectId')=='04','DIAGNOSTIC_SOURCE_PINS');need('tools/dotnet11-consumer04-source-pins.json' in actual,'DIAGNOSTIC_SOURCE_PINS');actual.pop('tools/dotnet11-consumer04-source-pins.json');need(pins['sourcePins']==[actual[k] for k in sorted(actual)],'DIAGNOSTIC_SOURCE_PINS')
+ signer=root/'diagnostic-allowed-signers';_private_write(signer,profile['allowedSigners'].encode('ascii'));git(['-c','gpg.format=ssh','-c','gpg.ssh.allowedSignersFile='+str(signer),'verify-commit','--raw',spec['expectedCommit']],'diagnostic-known-signature')
+ return source,{'knownSignatureVerified':True,'sourcePinRows':len(actual),'sourceTrackedBytes':sourcebytes,'sourceScratchCapBytes':268435456}
+
+def diagnostic_held_caps(spec,Q,R):
+ import os
+ raw=Q.j.linux_caps();held=R.read(Path(spec['root'])/'held-worker-before-continue.json');pid=os.getpid();start=Q.start_identity(pid)
+ need(spec.get('parentHeldWorkerBeforeExec') is True and raw['uid']==os.getuid()>0 and raw['gid']==os.getgid() and raw['cgroup']=='/system.slice/'+spec['unit']+'.service' and held.get('pid')==pid and held.get('start')==start and held.get('state') in ('T','t') and held.get('pidfdRetained') is True and held.get('cgroup')==raw['cgroup'] and held.get('kernelLimits')==raw['kernelLimits'],'DIAGNOSTIC_ACTUAL_HELD_GENERATION')
+ need(raw['kernelLimits']=={'memory.max':'4294967296','memory.swap.max':'0','pids.max':'64','cpu.max':'200000 100000'},'DIAGNOSTIC_ACTUAL_CAPS')
+ clock=R.read(Path(spec['root'])/'metadata-diagnostic-kernel-clock.json');need(clock.get('schema')=='producer04-diagnostic-kernel-clock/v1' and clock.get('executionMode')==DIAGNOSTIC_MODE and clock.get('unit')==spec['unit'] and clock.get('pid')==pid and clock.get('processStartIdentity')==start and clock.get('sourceHEAD')==spec['expectedCommit'] and clock.get('observedBeforeContinue') is True,'DIAGNOSTIC_HELD_KERNEL_CLOCK')
+ need(all(type(clock.get(k)) is int and 0<clock[k]<10**24 for k in ('activationMonotonicNs','runtimeMaxNs','originalWorkerEndMonotonicNs','observedMonotonicNs')) and clock['originalWorkerEndMonotonicNs']==spec['startTick']*1000000+70000000000 and spec['startTick']*1000000<=clock['activationMonotonicNs']<=clock['observedMonotonicNs']<=time.monotonic_ns() and clock['activationMonotonicNs']+clock['runtimeMaxNs']<=clock['originalWorkerEndMonotonicNs'],'DIAGNOSTIC_KERNEL_WORKER70')
+ return {'pid':pid,'processStartIdentity':'proc-start:'+start,'uid':raw['uid'],'gid':raw['gid'],'cgroup':raw['cgroup'],'kernelLimits':raw['kernelLimits'],'heldBeforeExec':True}
+
+def diagnostic_request(spec,A,Q,R,root,env,total):
+ deadline=spec['startTick']*1000000+70000000000;need(R.clock()<spec['startTick']+60000,'DIAGNOSTIC_BOOTSTRAP60');metadata=root/'curation/metadata';metadata.mkdir(parents=True,mode=0o700);work=metadata/'owned-http';work.mkdir(mode=0o700)
+ ctx={'deadlineMonotonicNs':deadline,'deadlineCode':'DIAGNOSTIC_ORIGINAL_DEADLINE','utcNow':int(time.time()),'requested':set(),'records':[],'allowedURLs':{DIAGNOSTIC_URL},'ownedJob':Q.j,'requestWorkRoot':str(work),'requestCwd':str(R.ROOT),'requestEnvironment':env}
+ primary=None;accepted=False
+ try:
+  # One detection byte is reserved inside the original combined 2 MiB ceiling.
+  A.bounded_json_get(ctx,DIAGNOSTIC_URL,metadata/'service.json',2097151,total,'service-index');accepted=True
+ except A.Hold as exc:
+  primary=exc
+ finally:
+  need(len(ctx['requested'])<=1 and ctx['requested']<={DIAGNOSTIC_URL} and len(ctx['records'])<=1,'DIAGNOSTIC_ONE_FIXED_GET')
+ record=ctx['records'][0] if len(ctx['records'])==1 else {};code=A.safe_metadata_code(primary) if primary is not None else 'NONE';A.retain_framing(record,code);framing=record.get('framing',A.unknown_framing());framing=framing if A.framing_shape(framing) else A.unknown_framing();observed=framing['observationState']=='OBSERVED';need(total['bodyBytes']<=2097152,'DIAGNOSTIC_COMBINED2M')
+ state='SERVICE_REQUEST_ACCEPTED_DIAGNOSTIC_ONLY' if accepted and observed else 'FRAMING_OBSERVED_GUARD_HOLD' if observed and primary is not None and code!='UNKNOWN_OR_REDACTED' else 'HOLD_DIAGNOSTIC_INCOMPLETE'
+ result={'schema':'producer04-metadata-framing-diagnostic-result/v1','state':state,'executionMode':DIAGNOSTIC_MODE,'observationComplete':observed,'semanticResult':'SERVICE_REQUEST_ACCEPTED_ONLY' if accepted else 'HOLD','primaryCode':code,'framing':framing,'requestCount':len(ctx['requested']),'combinedBodyBytes':total['bodyBytes'],'SDK_READY':False,'inputAdmitted':False,'advisoryAccepted':False,'productAdmission':False,'fullProducerAcceptance':False}
+ if primary is not None:
+  D=diagnostics();D.bind_loaded(HERE);D.capture(primary);D.emit(root,__import__('os').environ,R.ROOT)
+ R.write(root/'metadata-diagnostic-result.json',result)
+ need(state!='HOLD_DIAGNOSTIC_INCOMPLETE','DIAGNOSTIC_OBSERVATION_INCOMPLETE');return result
+
+def validate_diagnostic_result(value,A):
+ keys={'schema','state','executionMode','observationComplete','semanticResult','primaryCode','framing','requestCount','combinedBodyBytes','SDK_READY','inputAdmitted','advisoryAccepted','productAdmission','fullProducerAcceptance'}
+ need(type(value) is dict and set(value)==keys and value['schema']=='producer04-metadata-framing-diagnostic-result/v1' and value['executionMode']==DIAGNOSTIC_MODE,'DIAGNOSTIC_RESULT_SCHEMA')
+ need(value['state'] in ('SERVICE_REQUEST_ACCEPTED_DIAGNOSTIC_ONLY','FRAMING_OBSERVED_GUARD_HOLD','HOLD_DIAGNOSTIC_INCOMPLETE') and type(value['observationComplete']) is bool and value['semanticResult'] in ('SERVICE_REQUEST_ACCEPTED_ONLY','HOLD') and type(value['primaryCode']) is str and value['primaryCode'] in A.METADATA_PRIMARY_CODES and A.framing_shape(value['framing']),'DIAGNOSTIC_RESULT_ENUMS')
+ need(type(value['requestCount']) is int and 0<=value['requestCount']<=1 and type(value['combinedBodyBytes']) is int and 0<=value['combinedBodyBytes']<=2097152 and all(value[k] is False for k in ('SDK_READY','inputAdmitted','advisoryAccepted','productAdmission','fullProducerAcceptance')),'DIAGNOSTIC_RESULT_BOUNDS')
+ return value
+
+def run_metadata_diagnostic_worker(spec,backend,R,Q):
+ import os,shutil
+ need(spec.get('purpose')==PURPOSE and spec.get('rid')=='linux-x64' and diagnostic_selected(spec),'DIAGNOSTIC_WORKER_MODE');need(type(spec.get('startTick')) is int and 0<=R.clock()-spec['startTick']<60000,'DIAGNOSTIC_BOOTSTRAP60');profile=diagnostic_policies();gate=parent_admission(spec['curationAdmissionPath'],spec['curationAdmissionSHA256'],spec['expectedCommit']);need(diagnostic_selected(gate),'DIAGNOSTIC_WORKER_GATE');manifest=validate_diagnostic_manifest(load_json(spec['curationInputManifestPath'],gate['inputManifestSHA256']),spec['expectedCommit']);root=Path(spec['root'])
+ need(os.environ.get('GITHUB_RUN_ID')==gate['runId'] and os.environ.get('GITHUB_RUN_ATTEMPT')==gate['attempt']=='1','DIAGNOSTIC_CURRENT_RUN');lease=load_json(manifest['leaseAdmissionPath'],gate['leaseAdmissionSHA256']);need(lease.get('state')=='OWN_CANONICAL_LEASE_BOUND_TO_THIS_RUN' and lease.get('sourceHEAD')==gate['sourceHEAD'] and lease.get('runId')==gate['runId'] and lease.get('attempt')==gate['attempt'] and lease.get('dispatchNonce')==gate['dispatchNonce'] and lease.get('protocolSHA256')==LEASE_PROTOCOL_SHA,'DIAGNOSTIC_CURRENT_LEASE')
+ need(type(lease.get('ownerPID')) is int and lease['ownerPID']>0 and type(lease.get('ownerProcessStartIdentity')) is str and 0<len(lease['ownerProcessStartIdentity'])<=128 and type(lease.get('tokenSHA256')) is str and re.fullmatch('[0-9a-f]{64}',lease['tokenSHA256']),'DIAGNOSTIC_REAL_LEASE_OWNER')
+ D=diagnostics();D.mark('metadata',now=R.clock());main=__import__('sys').modules['__main__'];main.safe_cause_module().require_workspace(os.environ,R.ROOT);cap=backend.caps();R.f.caps(cap,'linux-x64');held=diagnostic_held_caps(spec,Q,R);bootstrap=R.bootstrap_identity();R.write(root/'metadata-diagnostic-bootstrap.json',{k:bootstrap[k] for k in ('pythonVersion','pythonExeSha256','stdlibClosureSha256','nativeTools')})
+ env={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','PYTHONDONTWRITEBYTECODE':'1'}
+ for key in ('LD_PRELOAD','LD_LIBRARY_PATH','PYTHONPATH','PYTHONHOME'):need(not os.environ.get(key),'DIAGNOSTIC_UNSAFE_ENVIRONMENT')
+ R.host('linux-x64');source,verified=diagnostic_source_identity(spec,backend,R,env,profile);need(source['commit']==gate['sourceHEAD'] and source['tree']==gate['sourceTree'],'DIAGNOSTIC_CURRENT_SOURCE');need(Path(main.__file__).resolve()==R.ROOT/'tools/consume_dotnet11_host_fact.py' and R.digest(main.__file__)==R.read(HERE/'dotnet11-consumer04-admission.lock.json')['controllerSha256'],'DIAGNOSTIC_CURRENT_CONTROLLER');verified['actualSourceAllocatedBytes']=_scratch_bytes([R.ROOT],268435456);held=diagnostic_held_caps(spec,Q,R)
+ free=shutil.disk_usage(root).free;need(manifest['ownerScratchLimitBytes']>=33554432 and free>=33554432,'DIAGNOSTIC_FREE_SPACE');need(_scratch_bytes([root],33554432)<=33554432,'DIAGNOSTIC_SCRATCH32M');R.write(root/'metadata-diagnostic-current-admission.json',{'executionMode':DIAGNOSTIC_MODE,'source':source,'verified':verified,'profileSHA256':DIAGNOSTIC_PROFILE_SHA,'executionAdmissionSHA256':spec['curationAdmissionSHA256'],'leaseAdmissionSHA256':gate['leaseAdmissionSHA256'],'runId':gate['runId'],'attempt':gate['attempt'],'dispatchNonce':gate['dispatchNonce'],'worker':held,'originalStartTick':spec['startTick'],'originalBootstrapEndTick':spec['startTick']+60000,'originalWorkerEndTick':spec['startTick']+70000,'originalTerminalEndTick':spec['startTick']+130000,'requiredPrivateBytes':33554432,'observedFreeBytes':free})
+ _,A=method_modules();result=diagnostic_request(spec,A,Q,R,root,env,{'bodyBytes':0});need(_scratch_bytes([root],33554432)<=33554432 and R.clock()<spec['startTick']+70000,'DIAGNOSTIC_WORKER70');return result
+
+def diagnostic_proof_payloads(root,R):
+ """Finite proof paths; accepted response header strings never reach artifact."""
+ root=Path(root);paths=['metadata-diagnostic-result.json','metadata-diagnostic-current-admission.json','metadata-diagnostic-bootstrap.json','metadata-diagnostic-kernel-clock.json','curation-original-cause.json','cleanup-terminal.json','held-worker-before-continue.json','stopped-worker.json','stop-outcome.json','curation/metadata/service.json.wire','curation/metadata/service.json','curation/metadata/owned-http/request-0/request.json','curation/metadata/owned-http/request-0/result.json','curation/metadata/owned-http/request-0/process/process.json'];out=[];total=0
+ for name in paths:
+  p=root/name
+  if not p.exists():continue
+  need(not p.is_symlink() and p.is_file() and p.stat().st_size<=8388608,'DIAGNOSTIC_PROOF_FILE');body=p.read_bytes()
+  if name.endswith('/result.json'):
+   value=strict_json(body,32768);e=value.get('entry',{});framing=e.get('framing');_,A=method_modules();need(A.framing_shape(framing),'DIAGNOSTIC_PROOF_FRAMING');entry={k:e[k] for k in ('url','state','rawBytes','rawSHA256','encoding','ownedHTTP') if k in e};entry['framing']=framing;value={k:value[k] for k in ('state','code','bodyBytesAfter') if k in value};value['entry']=entry;body=(json.dumps(value,separators=(',',':'))+'\n').encode()
+  if name=='cleanup-terminal.json':
+   value=strict_json(body);value.pop('remainingBudgetMs',None);value['clockBoundary']='LEGACY_CLEANUP_FIELD_NOT_DIAGNOSTIC_AUTHORITY_SEE_ORIGINAL130';body=(json.dumps(value,separators=(',',':'))+'\n').encode()
+  if name.endswith('.json') and '/service.json' not in name:
+   text=body.decode('utf-8');text=text.replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}').replace(__import__('os').environ['RUNNER_TEMP'],'${RUNNER_TEMP}');body=text.encode()
+  total+=len(body);need(total<=8388608-65536,'DIAGNOSTIC_PROOF8M');out.append((name,body))
+ return out,total
+
+
 def method_modules():
- import importlib.util
+ import importlib.util,sys
  out=[]
  for name,expected in METHOD_SOURCE_PINS.items():
-  p=HERE/(name+'.py');need(digest(p.read_bytes())==expected,'METHOD_HELPER_SOURCE_IDENTITY');s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);out.append(m)
+  p=HERE/(name+'.py');need(digest(p.read_bytes())==expected,'METHOD_HELPER_SOURCE_IDENTITY');s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m);out.append(m)
  return tuple(out)
 def method_feasibility():
  return {'state':'SOURCE_IMPLEMENTED_RUNTIME_GUARDS_REQUIRED','normalization':'SAME_THREE_SDK_VERIFY_CONTENT_HASH_OUTPUT_UNOBSERVED','blockers':[],'actualCurrentCRLNativeResults':'UNEXECUTED','actualOwnedKernelDenyAndWitness':'UNEXECUTED','advisoryHandoffSHA256':'c49f46dde2e3e0b36e0cf8c50c882f60a8434d9f6ed8a0cb378dd7c6df2701ca','nativeMethods':'One OpenSSL3 version <=2s plus two current-CRL verify operations <=10s each, exact SDK anchors and original CMS SID role mapping; NuGet remains CMS/RFC3161/Content hash authority.','networkMethod':'Same generation-stopped own worker; exact-unit runtime deny/allow, direct kernel BPF ingress/egress readback and same-unit loopback plus explicit permission-denial socket witness; timeout/unreachable alone HOLD.','SDKReady':False}
 def require_method():
  method_modules();load_json(HERE/'producer04-linux-curation-method-amendment.json',AMENDMENT_SHA)
 def validate_admission(gate,expected_head,profile_sha):
- required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce','inputTransport','publicTransportAmendmentSHA256','advisoryNamespaceAmendmentSHA256'}
+ required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce','inputTransport','publicTransportAmendmentSHA256','advisoryNamespaceAmendmentSHA256','executionMode','diagnosticProfileSHA256'}
  need(type(gate) is dict and set(gate)==required,'CURATION_GATE_SCHEMA')
  need(all(type(v) is str for v in gate.values()),'CURATION_GATE_VALUE_TYPES')
  need(gate['schema']=='producer04-linux-curation-execution-admission/v1' and gate['state']=='EXACT_SOURCE_RUNTIME_BOUND' and gate['purpose']==PURPOSE,'CURATION_GATE_STATE_PURPOSE')
+ need(gate['executionMode']==FULL_EXECUTION_MODE and gate['diagnosticProfileSHA256']==DIAGNOSTIC_PROFILE_SHA,'CURATION_FULL_MODE_PROFILE')
  need(gate['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'ADVISORY_NAMESPACE_GATE')
  need(gate['inputTransport']=='PUBLIC_ORIGINALS_V1' and gate['publicTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA,'PUBLIC_INPUT_GATE')
  need(gate['sourceHEAD']==expected_head and re.fullmatch('[0-9a-f]{40}',expected_head or '') is not None,'CURATION_GATE_HEAD')
@@ -263,7 +403,10 @@ def validate_admission(gate,expected_head,profile_sha):
  need(re.fullmatch('[0-9a-f]{32}',gate['dispatchNonce']) is not None,'CURATION_DISPATCH_NONCE')
  return gate
 def parent_admission(path,sha,expected_head):
- contract,profile=policies();gate=validate_admission(load_json(path,sha),expected_head,PROFILE_SHA)
+ raw=load_json(path,sha)
+ if diagnostic_selected(raw):
+  diagnostic_policies();method_modules();return validate_diagnostic_admission(raw,expected_head)
+ contract,profile=policies();gate=validate_admission(raw,expected_head,PROFILE_SHA)
  # A runtime JSON cannot override this source-bound feasibility decision.
  require_method()
  return gate
@@ -272,8 +415,11 @@ def diagnostics():
  return sys.modules['__main__'].safe_cause_module().STATE
 
 def worker(spec,backend,runtime,qualifier):
- D=diagnostics();D.mark('bootstrap',spec=spec,now=runtime.clock())
+ D=diagnostics();diagnostic=diagnostic_selected(spec);D.mark('bootstrap',spec=None if diagnostic else spec,now=runtime.clock())
+ if diagnostic:D.clock.update(startTick=spec['startTick'],originalRowEndTick=spec['startTick']+130000,originalWorkerEndTick=spec['startTick']+70000)
  try:
+  if diagnostic:
+   with diagnostic_original_deadline(spec,70):return run_metadata_diagnostic_worker(spec,backend,runtime,qualifier)
   need(spec.get('purpose')==PURPOSE and spec.get('rid')=='linux-x64','CURATION_FIXED_PURPOSE')
   cap=backend.caps();runtime.f.caps(cap,'linux-x64');D.mark('bootstrap',caps=cap)
   need(spec.get('parentHeldWorkerBeforeExec') is True,'CURATION_ACTUAL_HELD_WORKER')
@@ -296,7 +442,9 @@ def _private_write(path,body):
  p.chmod(0o400)
 def render_event_handoff(payload,expected_head,run_id,attempt,private_root):
  """Only declared server-assigned run/path substitutions; no policy weakening."""
- need(type(payload) is dict and set(payload)=={'gate','inputManifest'},'CURATION_EVENT_HANDOFF_SCHEMA');gate=dict(payload['gate']);manifest=dict(payload['inputManifest']);need(gate['runId']=='CURRENT_SINGLE_DISPATCH' and gate['attempt']==attempt=='1' and gate['inputManifestSHA256']==gate['leaseAdmissionSHA256']=='DERIVED_FROM_SAME_HANDOFF','CURATION_SINGLE_EVENT_INTENT');need(gate['sourceHEAD']==manifest['sourceHEAD']==expected_head,'CURATION_INTENT_SOURCE');lease=dict(manifest.pop('leaseAdmission'));need(lease.get('dispatchNonce')==gate['dispatchNonce'] and lease.get('sourceHEAD')==expected_head and lease.get('runId')=='CURRENT_SINGLE_DISPATCH' and lease.get('attempt')=='1' and lease.get('protocolSHA256')=='9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b','CURATION_EVENT_LEASE_INTENT');lease['runId']=run_id;leasebody=(json.dumps(lease,sort_keys=True,separators=(',',':'))+'\n').encode();manifest['leaseAdmissionPath']=str(Path(private_root)/'lease-admission.json');validate_input_manifest(manifest,expected_head);manifestbody=(json.dumps(manifest,sort_keys=True,separators=(',',':'))+'\n').encode();gate.update(runId=run_id,inputManifestSHA256=digest(manifestbody),leaseAdmissionSHA256=digest(leasebody));validate_admission(gate,expected_head,PROFILE_SHA);return gate,manifestbody,leasebody
+ need(type(payload) is dict and set(payload)=={'gate','inputManifest'},'CURATION_EVENT_HANDOFF_SCHEMA')
+ if diagnostic_selected(payload['gate']):return render_diagnostic_handoff(payload,expected_head,run_id,attempt,private_root)
+ gate=dict(payload['gate']);manifest=dict(payload['inputManifest']);need(gate['runId']=='CURRENT_SINGLE_DISPATCH' and gate['attempt']==attempt=='1' and gate['inputManifestSHA256']==gate['leaseAdmissionSHA256']=='DERIVED_FROM_SAME_HANDOFF','CURATION_SINGLE_EVENT_INTENT');need(gate['sourceHEAD']==manifest['sourceHEAD']==expected_head,'CURATION_INTENT_SOURCE');lease=dict(manifest.pop('leaseAdmission'));need(lease.get('dispatchNonce')==gate['dispatchNonce'] and lease.get('sourceHEAD')==expected_head and lease.get('runId')=='CURRENT_SINGLE_DISPATCH' and lease.get('attempt')=='1' and lease.get('protocolSHA256')=='9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b','CURATION_EVENT_LEASE_INTENT');lease['runId']=run_id;leasebody=(json.dumps(lease,sort_keys=True,separators=(',',':'))+'\n').encode();manifest['leaseAdmissionPath']=str(Path(private_root)/'lease-admission.json');validate_input_manifest(manifest,expected_head);manifestbody=(json.dumps(manifest,sort_keys=True,separators=(',',':'))+'\n').encode();gate.update(runId=run_id,inputManifestSHA256=digest(manifestbody),leaseAdmissionSHA256=digest(leasebody));validate_admission(gate,expected_head,PROFILE_SHA);return gate,manifestbody,leasebody
 RETAINED_CAPSULE={'releaseID': 448158592, 'assetID': 757707680, 'name': 'producer04-linux-native11-inputs-071a5f477ef77def9c638cb982bc2c4157325e06.tar', 'bytes': 60416000, 'sha256': '167906c5a1740e3ded7a15c2cb6c1323247d9ad4549253fcc19f405d56794eae', 'draft': True, 'producedSourceHEAD': '071a5f477ef77def9c638cb982bc2c4157325e06', 'capsuleReceiptSHA256': 'a27bb882342f452f576c3c5197cce9f7d6e5829c5f023b347310393202b851a3', 'uploadReceiptSHA256': '6f391c4104e4df6c38ec39f8a3dda6e77c303638efb7521979b844d0ffc31470', 'threeRawProvenanceSHA256': 'c29be905b8b1a7d7e31c2615d631f028a75b091b487c25ea1f5b2e275495cba4'}
 
 def validate_capsule_descriptor(desc,expected_head):
@@ -310,7 +458,7 @@ def validate_input_manifest(manifest,expected_head):
 
 def prepare_event_handoff(expected_head):
  import os
- need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_SHA')==expected_head,'CURATION_MANUAL_EXACT_SOURCE');event=strict_json(Path(os.environ['GITHUB_EVENT_PATH']).read_bytes(),4194304);inputs=event.get('inputs',{});need(inputs.get('linux_curation') in (True,'true') and inputs.get('mode')=='ordinary' and inputs.get('expected_commit')==expected_head,'CURATION_EVENT_SELECTOR');text=inputs.get('curation_handoff','');expected=inputs.get('curation_handoff_sha256','');need(type(text) is str and len(text.encode())<=16384 and digest(text.encode())==expected,'CURATION_ROOT_INTENT_HASH');payload=strict_json(text.encode(),16384);private=Path(os.environ['RUNNER_TEMP'])/('admission04-curation-intent-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);private.mkdir(mode=0o700);gate,mb,lb=render_event_handoff(payload,expected_head,os.environ['GITHUB_RUN_ID'],os.environ['GITHUB_RUN_ATTEMPT'],private);gb=(json.dumps(gate,sort_keys=True,separators=(',',':'))+'\n').encode();_private_write(private/'root-intent.json',text.encode());_private_write(private/'input-manifest.json',mb);_private_write(private/'lease-admission.json',lb);_private_write(private/'execution-admission.json',gb);return private/'execution-admission.json',digest(gb),private/'input-manifest.json'
+ need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_SHA')==expected_head,'CURATION_MANUAL_EXACT_SOURCE');event=strict_json(Path(os.environ['GITHUB_EVENT_PATH']).read_bytes(),4194304);inputs=event.get('inputs',{});need(inputs.get('linux_curation') in (True,'true') and inputs.get('mode')=='ordinary' and inputs.get('expected_commit')==expected_head,'CURATION_EVENT_SELECTOR');text=inputs.get('curation_handoff','');expected=inputs.get('curation_handoff_sha256','');need(type(text) is str and len(text.encode())<=16384 and digest(text.encode())==expected,'CURATION_ROOT_INTENT_HASH');payload=strict_json(text.encode(),16384);need(inputs.get('curation_execution_mode',FULL_EXECUTION_MODE)==payload.get('gate',{}).get('executionMode'),'CURATION_EVENT_MODE_BINDING');private=Path(os.environ['RUNNER_TEMP'])/('admission04-curation-intent-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);private.mkdir(mode=0o700);gate,mb,lb=render_event_handoff(payload,expected_head,os.environ['GITHUB_RUN_ID'],os.environ['GITHUB_RUN_ATTEMPT'],private);gb=(json.dumps(gate,sort_keys=True,separators=(',',':'))+'\n').encode();_private_write(private/'root-intent.json',text.encode());_private_write(private/'input-manifest.json',mb);_private_write(private/'lease-admission.json',lb);_private_write(private/'execution-admission.json',gb);return private/'execution-admission.json',digest(gb),private/'input-manifest.json'
 def _capsule(spec,manifest,contract,total,phase):
  """One exact private draft asset transfer; never NuGet body re-acquisition."""
  import os,tarfile,urllib.request,urllib.error

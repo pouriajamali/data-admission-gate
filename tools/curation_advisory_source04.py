@@ -77,13 +77,85 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
  def redirect_request(self,*a,**k):raise Hold('METADATA_REDIRECT')
 def save(path,data):
  with Path(path).open('xb') as f:f.write(data)
+METADATA_PRIMARY_CODES=('ADVISORY_COMPLETE_SNAPSHOT', 'ADVISORY_EXACT_RANGE', 'ADVISORY_RANGE', 'COMPLETE', 'CURRENT_ADVISORY_MATCH', 'DECODED_BEFORE_PARSE', 'DIAGNOSTIC_ORIGINAL_DEADLINE', 'FAILED_BEFORE_OPEN', 'HOLD', 'JSON_PARSED_NOT_ADMITTED', 'METADATA_BODY_BOUND', 'METADATA_CALLER_ORIGIN_BINDING', 'METADATA_CANONICAL_SEGMENT', 'METADATA_CHILD_HOLD', 'METADATA_CHILD_OUTPUT_UNEXPECTED', 'METADATA_CHILD_RECEIPT_IDENTITY', 'METADATA_CHILD_RESULT_BOUND', 'METADATA_CHILD_WIRE_BOUND', 'METADATA_CHILD_WIRE_HASH', 'METADATA_CLOSED_ONCE', 'METADATA_COMBINED_BYTES_CAP', 'METADATA_DUPLICATE_KEY', 'METADATA_ENCODING', 'METADATA_FRESHNESS', 'METADATA_GZIP_BOUND_OR_MEMBER', 'METADATA_GZIP_EOF', 'METADATA_GZIP_PROGRESS', 'METADATA_HTTP_DATE', 'METADATA_HTTP_FRAMING', 'METADATA_HTTP_STATUS_OR_URL', 'METADATA_JSON_INVALID', 'METADATA_LENGTH', 'METADATA_LENGTH_MISMATCH', 'METADATA_NAMESPACE', 'METADATA_NONFINITE', 'METADATA_ORIGIN', 'METADATA_OWN_CHILD_CGROUP', 'METADATA_OWN_CHILD_FAILED', 'METADATA_OWN_CHILD_IDENTITY', 'METADATA_OWN_CHILD_TERMINAL', 'METADATA_OWN_MAIN_ALARM_REQUIRED', 'METADATA_PERIODIC_ALARM_UNSUPPORTED', 'METADATA_PHASE_IDENTITY', 'METADATA_REDIRECT', 'METADATA_REQUEST10_DEADLINE', 'METADATA_REQUEST_FILE', 'METADATA_REQUEST_FILE_HASH', 'METADATA_REQUEST_OUTPUT_SCOPE', 'METADATA_REQUEST_SOURCE', 'METADATA_REQUEST_SPEC_BOUND', 'METADATA_TRANSPORT_FAILURE', 'METADATA_URL', 'METADATA_URL_ALLOWLIST', 'METADATA_URL_NOT_IN_INDEX', 'NONE', 'NO_SELECTED_NUGET_ADVISORY_MATCH', 'ORIGINAL_BODY_BUDGET', 'ORIGINAL_METADATA_DEADLINE', 'RAW_COMPLETE', 'RAW_PARTIAL', 'SELECTED_VERSION_NOT_STABLE', 'SIGALRM', 'STARTED', 'UNKNOWN', 'UNKNOWN_OR_REDACTED', 'UNSUPPORTED_ADVISORY_VERSION', 'VULNERABILITY_INDEX_AMBIGUOUS', 'VULNERABILITY_INDEX_NOT_ALLOWLISTED', 'VULNERABILITY_INDEX_NOT_DECLARED', 'VULNERABILITY_INDEX_SHAPE', 'VULNERABILITY_PAGE_PARTITION', 'VULNERABILITY_PAGE_SELF_REFERENCE', 'VULNERABILITY_PAGE_SHAPE', 'VULNERABILITY_PAGE_TUPLE_CHANGED', 'VULNERABILITY_SERVICE_INDEX_AMBIGUOUS', 'VULNERABILITY_SERVICE_RESOURCES', 'VULNERABILITY_SUPPORTED_RESOURCE_MISSING')
+
+FRAMING_LIMIT=2097152
+FRAMING_KEYS=('observationState','actualStatus','responseURLMatchesExpected','contentLengthHeaderCount','contentLengthShape','declaredContentLength','transferEncodingHeaderCount','transferEncodingCategory','contentEncodingHeaderCount','contentEncodingCategory','statusAllowed','urlAllowed','noTransferEncoding','headerCountsAllowed','applicationBodyBytesRead','primaryCode','sourceOperation','currentRequestIndex','elapsedNs')
+
+def unknown_framing():
+ return dict.fromkeys(FRAMING_KEYS,'UNKNOWN')
+
+def framing_shape(value):
+ if type(value) is not dict or set(value)!=set(FRAMING_KEYS):return False
+ enums={'observationState':('OBSERVED','UNKNOWN'),'contentLengthShape':('ABSENT','DECIMAL','DUPLICATE','INVALID','OVER_LIMIT','UNKNOWN'),'transferEncodingCategory':('ABSENT','CHUNKED','IDENTITY','GZIP','DEFLATE','OTHER','MULTIPLE','UNKNOWN'),'contentEncodingCategory':('ABSENT','IDENTITY','GZIP','OTHER','MULTIPLE','UNKNOWN'),'sourceOperation':('METADATA_GET','UNKNOWN')}
+ for key,allowed in enums.items():
+  if type(value[key]) is not str or value[key] not in allowed:return False
+ for key in ('responseURLMatchesExpected','statusAllowed','urlAllowed','noTransferEncoding','headerCountsAllowed'):
+  if type(value[key]) is not bool and value[key]!='UNKNOWN':return False
+ for key in ('contentLengthHeaderCount','transferEncodingHeaderCount','contentEncodingHeaderCount'):
+  if not(type(value[key]) is int and 0<=value[key]<=100 or type(value[key]) is str and value[key] in ('OVER_LIMIT','UNKNOWN')):return False
+ for key,bound in (('declaredContentLength',2097152),('applicationBodyBytesRead',536936448),('currentRequestIndex',22),('elapsedNs',10**15)):
+  if not(type(value[key]) is int and 0<=value[key]<=bound or type(value[key]) is str and value[key] in (('OVER_LIMIT','UNKNOWN') if key=='declaredContentLength' else ('UNKNOWN',))):return False
+ if not(type(value['actualStatus']) is int and 100<=value['actualStatus']<=599 or value['actualStatus']=='UNKNOWN'):return False
+ if type(value['primaryCode']) is not str or value['primaryCode'] not in METADATA_PRIMARY_CODES:return False
+ return len(json.dumps(value,separators=(',',':')).encode())<=16384
+
+def framing_observation(response,url,index):
+ """Only finite categories; raw header values are never returned or formatted."""
+ out=unknown_framing()
+ try:
+  out.update(sourceOperation='METADATA_GET',currentRequestIndex=index,primaryCode='UNKNOWN',applicationBodyBytesRead=0)
+  status=response.status;out['actualStatus']=status if type(status) is int and 100<=status<=599 else 'UNKNOWN';out['statusAllowed']=status==200 if type(status) is int else 'UNKNOWN'
+  actual=response.geturl();match=actual==url if type(actual) is str and len(actual)<=256 else 'UNKNOWN';out.update(responseURLMatchesExpected=match,urlAllowed=match)
+  def values(name):
+   rows=response.headers.get_all(name,[])
+   if type(rows) not in (list,tuple):raise ValueError
+   return rows,len(rows) if len(rows)<=100 else 'OVER_LIMIT'
+  lengths,n=values('Content-Length');transfer,t=values('Transfer-Encoding');encoding,e=values('Content-Encoding')
+  out.update(contentLengthHeaderCount=n,transferEncodingHeaderCount=t,contentEncodingHeaderCount=e,noTransferEncoding=(t==0),headerCountsAllowed=(type(n) is int and n<=1 and type(e) is int and e<=1))
+  if n=='OVER_LIMIT':out['contentLengthShape']='OVER_LIMIT';out['declaredContentLength']='OVER_LIMIT'
+  elif n==0:out['contentLengthShape']='ABSENT'
+  elif n>1:out['contentLengthShape']='DUPLICATE'
+  else:
+   v=lengths[0]
+   if type(v) is not str or len(v)>256:out['contentLengthShape']='OVER_LIMIT' if type(v) is str else 'INVALID'
+   elif re.fullmatch(r'0|[1-9][0-9]*',v) is None:out['contentLengthShape']='INVALID'
+   else:
+    over=len(v)>7 or len(v)==7 and v>'2097152';out['contentLengthShape']='OVER_LIMIT' if over else 'DECIMAL';out['declaredContentLength']='OVER_LIMIT' if over else int(v)
+  def category(rows,count,tokens):
+   if count==0:return 'ABSENT'
+   if count=='OVER_LIMIT' or count>1:return 'MULTIPLE'
+   v=rows[0]
+   if type(v) is not str:return 'UNKNOWN'
+   if len(v)>256:return 'OTHER'
+   return tokens.get(v.lower(),'OTHER')
+  out['transferEncodingCategory']=category(transfer,t,{'chunked':'CHUNKED','identity':'IDENTITY','gzip':'GZIP','deflate':'DEFLATE'})
+  out['contentEncodingCategory']=category(encoding,e,{'identity':'IDENTITY','gzip':'GZIP'})
+  out['observationState']='OBSERVED'
+  return out if framing_shape(out) else unknown_framing()
+ except BaseException:return unknown_framing()
+
+def retain_framing(entry,code='UNKNOWN',started=None):
+ """Observation failure cannot replace the original transport/guard exception."""
+ try:
+  value=entry.get('framing',unknown_framing());value['primaryCode']=code if code in METADATA_PRIMARY_CODES else 'UNKNOWN_OR_REDACTED'
+  if type(started) is int:value['elapsedNs']=min(10**15,max(0,time.monotonic_ns()-started))
+  entry['framing']=value if framing_shape(value) else unknown_framing()
+ except BaseException:entry['framing']=unknown_framing()
+
+def safe_metadata_code(exc):
+ args=BaseException.args.__get__(exc)
+ return args[0] if type(exc) is Hold and len(args)==1 and type(args[0]) is str and args[0] in METADATA_PRIMARY_CODES else 'UNKNOWN_OR_REDACTED'
+
+
 def _wire_request(ctx,url,destination,limit,total,allowed_urls,json_data=False):
  """Own04 finite one-shot transport. Invoked only after exact runtime activation."""
  budget(ctx);need(url in allowed_urls and url not in ctx['requested'] and len(ctx['requested'])<23,'METADATA_CLOSED_ONCE')
  ctx['requested'].add(url);opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect());headers={'Accept-Encoding':'gzip' if json_data else 'identity','User-Agent':'producer04-input-curation/1'}
- entry={'url':url,'rawBytes':0,'state':'STARTED'};ctx['records'].append(entry)
+ entry={'url':url,'rawBytes':0,'state':'STARTED','framing':unknown_framing()};ctx['records'].append(entry)
  request_end=ctx['deadlineMonotonicNs']
  with opener.open(urllib.request.Request(url,headers=headers),timeout=min(10,(request_end-time.monotonic_ns())/1e9)) as response:
+  entry['framing']=framing_observation(response,url,ctx.get('currentRequestIndex',len(ctx['records'])-1))
   budget(ctx)
   need(response.status==200 and response.geturl()==url,'METADATA_HTTP_STATUS_OR_URL')
   need(not response.headers.get_all('Transfer-Encoding',[]) and len(response.headers.get_all('Content-Encoding',[]))<=1 and len(response.headers.get_all('Content-Length',[]))<=1,'METADATA_HTTP_FRAMING')
@@ -100,7 +172,7 @@ def _wire_request(ctx,url,destination,limit,total,allowed_urls,json_data=False):
   while length is None or size<int(length):
    budget(ctx);remaining=(request_end-time.monotonic_ns())/1e9;need(remaining>0,'METADATA_REQUEST10_DEADLINE');sock.settimeout(remaining);piece=response.read(min(65536,limit-size+1));need(time.monotonic_ns()<request_end,'METADATA_REQUEST10_DEADLINE')
    if not piece:break
-   size+=len(piece);entry['rawBytes']=size;entry['state']='RAW_PARTIAL';need(size<=limit,'METADATA_BODY_BOUND');total['bodyBytes']+=len(piece);need(total['bodyBytes']<=536870912,'ORIGINAL_BODY_BUDGET');chunks.append(piece)
+   size+=len(piece);entry['rawBytes']=size;entry['framing']['applicationBodyBytesRead']=size;entry['state']='RAW_PARTIAL';need(size<=limit,'METADATA_BODY_BOUND');total['bodyBytes']+=len(piece);need(total['bodyBytes']<=536870912,'ORIGINAL_BODY_BUDGET');chunks.append(piece)
   need(length is None or size==int(length),'METADATA_LENGTH_MISMATCH');wire=b''.join(chunks)
   # Peer is recorded only when the underlying transport exposes it; never DNS re-resolve.
   entry.update(rawBytes=size,rawSHA256=sha(wire),encoding=encoding,date=date,lastModified=response.headers.get('Last-Modified'),cacheControl=response.headers.get('Cache-Control'),state='RAW_COMPLETE')
@@ -122,26 +194,29 @@ def absolute_request(ctx):
 
 def _owned_request_child(spec):
  """Only the fixed one-shot public metadata operation; no stdout or SDK action."""
- ctx={'deadlineMonotonicNs':spec['deadlineMonotonicNs'],'deadlineCode':spec['deadlineCode'],'utcNow':spec['utcNow'],'requested':set(),'records':[]};total={'bodyBytes':spec['bodyBytesBefore']};result=None
+ ctx={'deadlineMonotonicNs':spec['deadlineMonotonicNs'],'deadlineCode':spec['deadlineCode'],'utcNow':spec['utcNow'],'currentRequestIndex':spec.get('currentRequestIndex',0),'requested':set(),'records':[]};total={'bodyBytes':spec['bodyBytesBefore']};result=None;started=time.monotonic_ns()
  try:
-  entry,wire=_wire_request(ctx,spec['url'],spec['wirePath'],spec['limit'],total,tuple(spec['allowedURLs']),spec['jsonData']);result={'state':'COMPLETE','entry':entry,'bodyBytesAfter':total['bodyBytes']}
+  entry,wire=_wire_request(ctx,spec['url'],spec['wirePath'],spec['limit'],total,tuple(spec['allowedURLs']),spec['jsonData']);retain_framing(entry,'NONE',started);result={'state':'COMPLETE','entry':entry,'bodyBytesAfter':total['bodyBytes']}
  except BaseException as exc:
-  code=str(exc) if isinstance(exc,Hold) and re.fullmatch('[A-Z][A-Z0-9_]{0,95}',str(exc)) else 'METADATA_TRANSPORT_FAILURE';result={'state':'HOLD','code':code,'entry':ctx['records'][-1] if ctx['records'] else {'url':spec['url'],'state':'FAILED_BEFORE_OPEN'}}
+  code=safe_metadata_code(exc)
+  if ctx['records']:retain_framing(ctx['records'][-1],code,started)
+  result={'state':'HOLD','code':code,'entry':ctx['records'][-1] if ctx['records'] else {'url':spec['url'],'state':'FAILED_BEFORE_OPEN'}}
  save(spec['resultPath'],(json.dumps(result,separators=(',',':'))+'\n').encode())
 
 def bounded_get(ctx,url,destination,limit,total,allowed_urls,json_data=False):
  """One held same-cgroup HTTP child, with a single absolute parent10s budget."""
  with absolute_request(ctx) as (end,deadline_code):
   budget(ctx);need(url in allowed_urls and url not in ctx['requested'] and len(ctx['requested'])<23,'METADATA_CLOSED_ONCE');ctx['requested'].add(url);job=ctx['ownedJob'];cap=job.linux_caps();work=Path(ctx['requestWorkRoot'])/('request-'+str(len(ctx['requested'])-1));work.mkdir(mode=0o700);wirepath=work/'wire.data';resultpath=work/'result.json';specpath=work/'request.json';work_end=end-200000000;need(time.monotonic_ns()<work_end,deadline_code)
-  spec={'schema':'producer04-owned-http-request/v1','sourceSHA256':sha(Path(__file__).read_bytes()),'url':url,'allowedURLs':list(allowed_urls),'limit':limit,'jsonData':json_data,'utcNow':ctx['utcNow'],'deadlineMonotonicNs':end,'deadlineCode':deadline_code,'bodyBytesBefore':total['bodyBytes'],'wirePath':str(wirepath),'resultPath':str(resultpath),'uid':cap['uid'],'gid':cap['gid'],'cgroup':cap['cgroup']};body=(json.dumps(spec,separators=(',',':'))+'\n').encode();need(len(body)<=65536,'METADATA_REQUEST_SPEC_BOUND');save(specpath,body)
+  spec={'schema':'producer04-owned-http-request/v1','sourceSHA256':sha(Path(__file__).read_bytes()),'url':url,'allowedURLs':list(allowed_urls),'limit':limit,'jsonData':json_data,'utcNow':ctx['utcNow'],'deadlineMonotonicNs':end,'deadlineCode':deadline_code,'bodyBytesBefore':total['bodyBytes'],'currentRequestIndex':len(ctx['requested'])-1,'wirePath':str(wirepath),'resultPath':str(resultpath),'uid':cap['uid'],'gid':cap['gid'],'cgroup':cap['cgroup']};body=(json.dumps(spec,separators=(',',':'))+'\n').encode();need(len(body)<=65536,'METADATA_REQUEST_SPEC_BOUND');save(specpath,body)
   argv=[sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--owned-metadata-request',str(specpath),'--sha256',sha(body)]
   try:process=job.run(argv,ctx['requestCwd'],ctx['requestEnvironment'],work_end//1000000,work/'process')
   except BaseException:
    if time.monotonic_ns()>=work_end:raise Hold(deadline_code) from None
    raise Hold('METADATA_OWN_CHILD_FAILED') from None
-  need(time.monotonic_ns()<end,deadline_code);need(process.get('exitCode')==0 and process.get('ownedChildGroupTerminal') is True,'METADATA_OWN_CHILD_TERMINAL');need((work/'process/stdout.log').stat().st_size==(work/'process/stderr.log').stat().st_size==0,'METADATA_CHILD_OUTPUT_UNEXPECTED');need(resultpath.stat().st_size<=32768,'METADATA_CHILD_RESULT_BOUND');result=strict_json(resultpath.read_bytes());entry=result.get('entry',{});ctx['records'].append(entry)
+  need(time.monotonic_ns()<end,deadline_code);need(process.get('exitCode')==0 and process.get('ownedChildGroupTerminal') is True,'METADATA_OWN_CHILD_TERMINAL');need((work/'process/stdout.log').stat().st_size==(work/'process/stderr.log').stat().st_size==0,'METADATA_CHILD_OUTPUT_UNEXPECTED');need(resultpath.stat().st_size<=32768,'METADATA_CHILD_RESULT_BOUND');result=strict_json(resultpath.read_bytes());entry=result.get('entry',{});entry['framing']=entry.get('framing') if framing_shape(entry.get('framing')) else unknown_framing();ctx['records'].append(entry)
   entry['ownedHTTP']={'deadlineMonotonicNs':end,'workDeadlineMonotonicNs':work_end,'terminalReserveWithin10Ns':200000000,'originalStageDeadlineMonotonicNs':ctx['deadlineMonotonicNs'],'processReceiptSHA256':sha((work/'process/process.json').read_bytes()),'resultSHA256':sha(resultpath.read_bytes()),'sourceSHA256':spec['sourceSHA256'],'sameCgroup':cap['cgroup']}
-  if result.get('state')!='COMPLETE':raise Hold(result.get('code','METADATA_CHILD_HOLD'))
+  if result.get('state')!='COMPLETE':
+   code=result.get('code','METADATA_CHILD_HOLD');raise Hold(code if type(code) is str and code in METADATA_PRIMARY_CODES else 'UNKNOWN_OR_REDACTED')
   need(entry.get('url')==url and type(entry.get('rawBytes')) is int and 0<=entry['rawBytes']<=limit,'METADATA_CHILD_RECEIPT_IDENTITY');need(not wirepath.is_symlink() and wirepath.stat().st_size==entry['rawBytes'],'METADATA_CHILD_WIRE_BOUND');wire=wirepath.read_bytes();need(sha(wire)==entry['rawSHA256'] and result['bodyBytesAfter']==total['bodyBytes']+len(wire),'METADATA_CHILD_WIRE_HASH');total['bodyBytes']=result['bodyBytesAfter'];need(total['bodyBytes']<=536870912,'ORIGINAL_BODY_BUDGET')
   if url.startswith('https://api.nuget.org/') and entry.get('peerPort')==443:ctx['boundOfficialPeer']=(entry['peerIP'],443)
   need(time.monotonic_ns()<end,deadline_code);save(destination,wire);wirepath.unlink();need(time.monotonic_ns()<end,deadline_code);return entry,wire
