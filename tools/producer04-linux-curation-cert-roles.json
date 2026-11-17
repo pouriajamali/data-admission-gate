@@ -1,0 +1,221 @@
+{
+  "schema": "producer04-exact-original-certificate-role-data/v1",
+  "state": "STRUCTURAL_OBSERVED_UNVERIFIED_NOT_CRYPTO",
+  "certificatePoolSHA256": [
+    "1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d",
+    "2da09da7f4131f9fe72db6c5e6e9c9656755af043f1ea742cc0d2120e141ebfc",
+    "33846b545a49c9be4903c60e01713c1bd4e4ef31ea65cd95d69e62794f30b941",
+    "3e9099b5015e8f486c00bcea9d111ee721faba355a89bcf1df69561e3dc6325c",
+    "46011ede1c147eb2bc731a539b7c047b7ee93e48b9d3c3ba710ce132bbdfac6b",
+    "552f7bdcf1a7af9e6ce672017f4f12abf77240c78e761ac203d1d9d20ac89988",
+    "9a1b131bee0605433056a4ea3815478a8e177961a968c6c0027c1093d1feb630",
+    "ca0b1554ecd901ea19dcad8749e9f2648c8d6dfcea1add9d2c2109415bb82ccd"
+  ],
+  "packageRoles": [
+    {
+      "author": [
+        "9a1b131bee0605433056a4ea3815478a8e177961a968c6c0027c1093d1feb630"
+      ],
+      "repository": [
+        "1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d"
+      ],
+      "timestamp": [
+        "2da09da7f4131f9fe72db6c5e6e9c9656755af043f1ea742cc0d2120e141ebfc"
+      ]
+    },
+    {
+      "author": [
+        "9a1b131bee0605433056a4ea3815478a8e177961a968c6c0027c1093d1feb630"
+      ],
+      "repository": [
+        "1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d"
+      ],
+      "timestamp": [
+        "2da09da7f4131f9fe72db6c5e6e9c9656755af043f1ea742cc0d2120e141ebfc"
+      ]
+    },
+    {
+      "author": [
+        "9a1b131bee0605433056a4ea3815478a8e177961a968c6c0027c1093d1feb630"
+      ],
+      "repository": [
+        "1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d"
+      ],
+      "timestamp": [
+        "2da09da7f4131f9fe72db6c5e6e9c9656755af043f1ea742cc0d2120e141ebfc"
+      ]
+    }
+  ],
+  "packageCMS": [
+    {
+      "index": 0,
+      "id": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+      "sha256": "f9d28824993ffe5f74052772ca7af0b827774c4a7810ee3bb984fc7ca9256155",
+      "bytes": 26002
+    },
+    {
+      "index": 1,
+      "id": "Microsoft.NETCore.App.Host.linux-x64",
+      "sha256": "e6b246d5bf927b4dcfc7655aa0605c8ed10885cbd708cc96ad21f0d55e21e6b7",
+      "bytes": 25995
+    },
+    {
+      "index": 2,
+      "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+      "sha256": "e5d89bd848a1a32e8f18aa47dd04273d81fb045472ca5d6c6be4ddadf2003fbe",
+      "bytes": 25994
+    }
+  ],
+  "packageOriginalData": [
+    [
+      {
+        "bytes": 1250,
+        "compressedBytes": 683,
+        "crc32": 762830984,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "Microsoft.AspNetCore.App.Runtime.linux-x64.nuspec",
+        "sha256": "c510e4f45c01dd85947b02ddcc60b2c4a8a6e7030959c918399008d7436fc3a8",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 1
+      },
+      {
+        "bytes": 56998,
+        "compressedBytes": 8068,
+        "crc32": 4138878828,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "THIRD-PARTY-NOTICES.TXT",
+        "sha256": "fe970484b338399def0b81b24d8a6005122d5c9f559a257c2ad22cbb83644cab",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 2
+      },
+      {
+        "bytes": 1116,
+        "compressedBytes": 660,
+        "crc32": 2414785601,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "LICENSE.txt",
+        "sha256": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 4
+      },
+      {
+        "bytes": 26002,
+        "compressedBytes": 26002,
+        "crc32": 264656170,
+        "dosAttributes": 0,
+        "method": 0,
+        "path": ".signature.p7s",
+        "sha256": "f9d28824993ffe5f74052772ca7af0b827774c4a7810ee3bb984fc7ca9256155",
+        "type": "regular-data",
+        "zipMode": 0,
+        "memberIndex": 143
+      }
+    ],
+    [
+      {
+        "bytes": 1000,
+        "compressedBytes": 553,
+        "crc32": 1687069431,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "Microsoft.NETCore.App.Host.linux-x64.nuspec",
+        "sha256": "d6cf0867b865f014b38f79408c7303c580eaa03736e114071f90c4ce6f96cadb",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 1
+      },
+      {
+        "bytes": 1116,
+        "compressedBytes": 660,
+        "crc32": 2414785601,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "LICENSE.TXT",
+        "sha256": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 4
+      },
+      {
+        "bytes": 91918,
+        "compressedBytes": 17047,
+        "crc32": 2322328002,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "THIRD-PARTY-NOTICES.TXT",
+        "sha256": "4790bb15f0edd1b105aecb05174fc6c589d4d9fad0c50616ef5f7dc365f1c8a6",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 6
+      },
+      {
+        "bytes": 25995,
+        "compressedBytes": 25995,
+        "crc32": 1351988737,
+        "dosAttributes": 0,
+        "method": 0,
+        "path": ".signature.p7s",
+        "sha256": "e6b246d5bf927b4dcfc7655aa0605c8ed10885cbd708cc96ad21f0d55e21e6b7",
+        "type": "regular-data",
+        "zipMode": 0,
+        "memberIndex": 18
+      }
+    ],
+    [
+      {
+        "bytes": 1003,
+        "compressedBytes": 555,
+        "crc32": 1833558986,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "Microsoft.NETCore.App.Runtime.linux-x64.nuspec",
+        "sha256": "b018757b94b545a3e12a6e655541eec0af12fd425cf077191c5b13d023df8244",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 1
+      },
+      {
+        "bytes": 1116,
+        "compressedBytes": 660,
+        "crc32": 2414785601,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "LICENSE.TXT",
+        "sha256": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 4
+      },
+      {
+        "bytes": 91918,
+        "compressedBytes": 17047,
+        "crc32": 2322328002,
+        "dosAttributes": 0,
+        "method": 8,
+        "path": "THIRD-PARTY-NOTICES.TXT",
+        "sha256": "4790bb15f0edd1b105aecb05174fc6c589d4d9fad0c50616ef5f7dc365f1c8a6",
+        "type": "regular-data",
+        "zipMode": 33188,
+        "memberIndex": 6
+      },
+      {
+        "bytes": 25994,
+        "compressedBytes": 25994,
+        "crc32": 4190407890,
+        "dosAttributes": 0,
+        "method": 0,
+        "path": ".signature.p7s",
+        "sha256": "e5d89bd848a1a32e8f18aa47dd04273d81fb045472ca5d6c6be4ddadf2003fbe",
+        "type": "regular-data",
+        "zipMode": 0,
+        "memberIndex": 210
+      }
+    ]
+  ]
+}

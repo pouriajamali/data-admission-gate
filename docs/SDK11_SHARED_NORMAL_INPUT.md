@@ -106,3 +106,57 @@ smaller applicable owner cap, never more than 2 GiB. Source scratch remains 256 
 Actual current metadata sizes, target free space, kernel method, SDK output and
 trust/advisory/servicing status are UNEXECUTED or UNKNOWN. The source candidate and
 checkpoint retain the concrete ledger, finite route and conditional launch plan.
+
+### Finite method amendment from d50d (2026-11-16)
+
+Amendment 0ced5ea8 replaces the three prototype method blockers with pinned
+implementation and actual-input runtime guards. Only OpenSSL version (2 seconds)
+and two current-CRL verify operations (10 seconds each) are added as OS work,
+inside the same own04 cgroup and original stage deadlines. They supplement
+current X509/CRL chain coverage; NuGet still owns CMS/RFC3161/code-signing/content
+hash verification through the same three signature-only commands. No eighth SDK
+operation, crypto formula, fetched trust anchor or system trust change is used.
+
+Original CMS SID mapping includes issuer+serial and subject-key identifiers.
+The exact eight-certificate pool, author9A1B/repository1F4B and observed shared
+TSA2DA0 are data bindings, not trust. CRL issuer/AKI, explicit nextUpdate/current
+time, complete chain coverage and duplicate-issuer equality are guarded before
+the native verifier; unsupported delta/indirect/scope ambiguity holds. Native
+exit/results/constructed-chain/actual libcrypto evidence must pass at runtime.
+
+At a second held-worker handshake the trusted parent may change only the exact
+nonce unit. One set-property and one show are followed by read-only BPF queries
+on that cgroup. New ingress/egress attachments, unchanged stopped PID/start/boot/
+limits, loopback-positive and permission-denied negative peer witness are all
+required. Timeout/unreachable/property-only evidence cannot pass; unsupported
+kernel behavior holds. Prefetch sockets close before transition, with no external
+FDs passed to the seven children. A frozen loopback PKI/audit dispatcher has no
+forwarding/CONNECT/trust mutation; unknown requests poison the phase.
+
+The seven public10 patterns are adapted as source data with c49f provenance,
+using own04 limits/origins/clock/accounting. No producer10 module/runtime or caps
+are imported. Complete snapshots and current servicing remain mandatory. Their
+original bytes plus all proof must fit 8 MiB before SDK signature work; overflow
+holds and does not authorize an extra artifact.
+
+The prepared profile and inventory use the unchanged common interface operational
+source-review states so its exact tracked-file preflight can operate after root
+activation. These source configuration fields do not authorize runtime: the
+separate exact source/tree/profile/amendment/run/nonce/lease/input gate is checked
+first. Old own-normal profile and product route remain PROPOSED/UNBOUND.
+
+An opt-in Linux selector (default false) reuses the existing verify job and proof
+artifact with 3-day retention. It suppresses product/Windows/qualification work
+for that purpose. The root-approved handoff SHA binds the private draft input
+asset and nonce; only declared server-assigned run/path fields are resolved into
+exclusive admission files. The existing CI token is used only for the exact
+asset transfer, never SDK environment or output. One HTTPS GitHub API response
+may hand off to its returned release-assets HTTPS URL with credentials removed;
+no retry or arbitrary redirect is allowed. This is private input transport, not
+a native NuGet body reGET or metadata allowlist expansion.
+
+Actual OpenSSL version/binary/libcrypto/CRL results, effective root store, kernel
+policy, deny witness, current metadata retention/free space and SDK output remain
+UNEXECUTED/UNKNOWN until the single final-source runtime activation. Negative
+permission errno is intentionally stricter than a timeout; inability to witness
+it closes the phase. Source mocks are not real crypto or kernel qualification.

@@ -1,0 +1,254 @@
+{
+  "schema": "producer04-finite-openssl-crl-and-owned-deny-source-amendment/v1",
+  "date": "2026-11-16",
+  "state": "NARROW_METHOD_SOURCE_AMENDMENT_APPROVED_RUNTIME_STILL_HOLD",
+  "parentContract": {
+    "path": "C:\\Users\\Office\\.codex\\visualizations\\2026\\11\\03\\01a1a0c7-ea18-7642-89d9-12d79bed9f19\\producer04-complete-linux-input-curation-source-runtime-contract-20261116.json",
+    "sha256": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
+  },
+  "sourcePreimage": {
+    "HEAD": "d50d38194a75ab86e258d683ae8e68797d80f58c",
+    "tree": "1db3776c93a5d0863b43ba6a93da05fc9b797c1f",
+    "parent": "706059362aa5bb3c05acf57534e7d66bf4641dd4",
+    "candidate": {
+      "path": "E:\\Codex WorkSpace\\Git Projects\\data-admission-gate\\outputs\\tech-refresh-m0-20261114\\own04-common-normal-wiring-db748-sdk0-20261116\\private-cas-local-20261116\\curation-stage-a-20261116\\linux-input-curation-source-20261116\\SIGNED-SOURCE-CANDIDATE.json",
+      "bytes": 36952,
+      "sha256": "8a2f9cded19016ea9ef17f41d7197a5f9eec38b937fd2f11415074f07fc6457d"
+    },
+    "rootObserved": "ExactHEAD/tree/parent/goodknownSSH/clean readback. This is a method-HOLD sourceprototype, not finalruntimereview orcurationacceptance; old24mock/mode results remain sourceevidenceonly.",
+    "helperSHA256": "ddd6091f341b27d3dd4a978aaf263c37b61a29c6e50469522cee7ab56134db7a"
+  },
+  "remainingSourceWork": [
+    "Implement finite supplemental currentCRLchain coverage with existingOSOpenSSL3 as specified; retain NuGet CMS/RFC3161 authority.",
+    "Implement onlyownedcurationunit networkdeny transition plus actualkernel/loopback/denialwitness, failclosed onunsupported.",
+    "Consume identity-bound public10 helperDATA handoff with own04context/clock/transport/accounting, not wholemoduleimport or10caps."
+  ],
+  "primaryReferences": [
+    {
+      "url": "https://docs.openssl.org/3.0/man1/openssl-verify/",
+      "fact": "verify accepts localCRL input and chaincheck options."
+    },
+    {
+      "url": "https://docs.openssl.org/3.0/man1/openssl-verification-options/",
+      "fact": "-trusted selects anchors and excludes defaultstores; -untrusted supplies chaincandidates; -crl_check_all checks chainCRLs, -attime selects validationtime, -purpose timestampsign checks timestampEKU. These are mechanismreferences, not actualhostcapability evidence."
+    },
+    {
+      "url": "https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html",
+      "fact": "IPAddressDeny/Allow filter per-systemunit ingress/egress AF_INET/AF_INET6; localhost is127.0.0.0/8 and::1. Unsupported eBPF can make settings ineffective, so merepropertysuccess is not acceptance."
+    }
+  ],
+  "scope": "Onlythreeexactnative11packages/eightobservedCMS certificates andoriginalnineAIA/CRL URIs, existingSDKroots, and sevenoriginalSDKvectors. No generalPKI/OCSPframework/eighthSDK/customCMScrypto/normalizationformula/newdependency. No actualOScommand/kernel/SDK/crypto/fetch/push/CI permitteduntiloneexactfinalsignedsourceactivation.",
+  "sourceAllowance": {
+    "allowed": "Append one signedlocalcandidate fromexactd50d; change only curationhelper/narrownewmethodhelper/profile/admission schema/ownlauncher networkhandshake/causalpins/docs andnewmocks required forthese3blockers. Existingproduct/healthyqualifier/Windows/currentcommonmodule andother5ownbindings stay unchanged.",
+    "newDeltaMocks": {
+      "maxCasesPerMode": 18,
+      "modes": [
+        "normal",
+        "python -O"
+      ],
+      "secondsMax": 30,
+      "inputBytesMax": 524288,
+      "outputBytesMax": 32768,
+      "actualOpenSSLSDKKernelNetwork": 0,
+      "old24Replay": 0
+    },
+    "testScope": "Meaningful missingCRL/currenttime/role/issuer/trust/inputhash/revoked-or-error/unknown-output/deny-not-enforced/wrongunit orPID/unsupportedkernel/primaryfailure fixtures; actualcommands mocked. Do not call them realPKI/kernelqualification.",
+    "methodHoldTransition": "Remove unconditional sourceMETHOD_HOLD only when all3methodpaths are implemented/pinnedand reviewed. Replace with actualruntime gates, not a policyboolean claimingPKI/deny alreadyPASS. Rootactivation cannot override missinginputs/currentcaps/unsupportedtool; productUNBOUND remainsclosed."
+  },
+  "OSOpenSSL": {
+    "binary": "Onlyexisting /usr/bin/openssl onallowedUbuntu24.04 nativeCIhost, noinstall/download/fallback. Resolveandhash exactroot-owned/non-groupwritable ELF andactual libcrypto.so.3 inapprovedsystemdirectory, recordversion/OSimage; no assumption aboutobservedversion beforefutureexecution.",
+    "metadataVector": {
+      "argv": [
+        "/usr/bin/openssl",
+        "version"
+      ],
+      "secondsMax": 2,
+      "countMax": 1,
+      "stdoutStderrBytesMax": 16384,
+      "required": "Recognized OpenSSL3 family; pinnedactualbinary/fileidentity beforeandafter, no help/probe/retry.",
+      "stage": "Before original420s metadataend"
+    },
+    "environment": "FixedownprivateHOME/TMPDIR,LC_ALL=C,OPENSSL_CONF=/dev/null; no LD_PRELOAD/LD_LIBRARY_PATH/provider/engine/userconfig override orsecret/account values; alltargetcrypto processes inside sameheld04cgroup/caps. No systemtrust changes.",
+    "supplementalVectors": [
+      {
+        "id": "current-code-leaf-CRL-coverage",
+        "argv": [
+          "/usr/bin/openssl",
+          "verify",
+          "-verbose",
+          "-show_chain",
+          "-x509_strict",
+          "-no-CAfile",
+          "-no-CApath",
+          "-no-CAstore",
+          "-trusted",
+          "${PINNED_SDK_ROOT_BUNDLE}",
+          "-untrusted",
+          "${EXACT_UNTRUSTED_INTERMEDIATES_PEM}",
+          "-CRLfile",
+          "${FRESH_COMPLETE_CRL_PEM_BUNDLE}",
+          "-crl_check",
+          "-crl_check_all",
+          "-attime",
+          "${FIXED_CURRENT_UNIX_TIME}",
+          "-purpose",
+          "any",
+          "${EXACT_MICROSOFT_9A1B_PRIMARY_LEAF_PEM}",
+          "${EXACT_NUGET_1F4B_REPOSITORY_LEAF_PEM}"
+        ],
+        "trustedBundle": "UnchangedexactSDKcodesigningbundle; actualNuGeteffectivecodesigningstore must be sameapprovedpolicy, elseHOLD.",
+        "secondsMax": 10
+      },
+      {
+        "id": "current-timestamp-leaf-CRL-coverage",
+        "argv": [
+          "/usr/bin/openssl",
+          "verify",
+          "-verbose",
+          "-show_chain",
+          "-x509_strict",
+          "-no-CAfile",
+          "-no-CApath",
+          "-no-CAstore",
+          "-trusted",
+          "${PINNED_SDK_ROOT_BUNDLE}",
+          "-untrusted",
+          "${EXACT_UNTRUSTED_INTERMEDIATES_PEM}",
+          "-CRLfile",
+          "${FRESH_COMPLETE_CRL_PEM_BUNDLE}",
+          "-crl_check",
+          "-crl_check_all",
+          "-attime",
+          "${FIXED_CURRENT_UNIX_TIME}",
+          "-purpose",
+          "timestampsign",
+          "${EXACT_RFC3161_TSA_LEAF_PEM_1}",
+          "${EXACT_RFC3161_TSA_LEAF_PEM_2_IF_DISTINCT}"
+        ],
+        "trustedBundle": "UnchangedexactSDKtimestampbundle. Optional secondargument exists only if distinctTSArole linkedfromsame3CMSs anddeclaredinfinalcandidate; noemptyplaceholder.",
+        "secondsMax": 10
+      }
+    ],
+    "OSOpenSSLCommandsMax": 3,
+    "combinedVerifySecondsMax": 20,
+    "combinedOpenSSLReportBytesMax": 65536,
+    "payloadAuthority": "These twocommands provide currentX509chain/CRLcoverage ONLY. NuGet threeverify--all operations stillmustpass actualrawsignedpackageintegrity/primary9A1B/repository1F4B/trust/timestampRfc3161/code-signingpurpose/Contenthash. -purpose any is only supplementalcodechainrevocation, not a codeEKU waiver; NuGet remainscodeEKU/CMSauthority.",
+    "successPredicate": "Actualversionandall leaf-role paths/DERhashes/bundle/intermediate/CRL hashes/source/currentcgroup linked; bothverifyexit0, exactexpectedleafsuccessandconstructedchain output withinbounds, noerrors/expired/revoked/unsupported/ambiguousmapping. FutureCLIformatunknownHOLD. Do not inferthisfromcommandargv/CRLURLstrings. NuGetexit0andnoexplicitinvalid/unknownchain/timestamp/revocation warnings remainmandatory. A missingseparatepositiveSDKrevocationfield can be labelednotseparatelyreported IF actualsupplementalcurrentcoverage forSAMEmappedchaininputs passes, not relabeledSDKproof.",
+    "forbidden": [
+      "-no_check_time",
+      "-ignore_critical",
+      "-partial_chain",
+      "-allow_proxy_certs",
+      "auth_level weakening",
+      "default/ambientCA trust orfetchedrootasanchor",
+      "-crl_download/unboundURI/OCSP requests",
+      "customCMSsignature/hash algorithm",
+      "ignoringnonzeroNuGet/OpenSSL or knownrevocationunknownwarning"
+    ]
+  },
+  "certificateAndCRLBinding": {
+    "roles": "Map all8originalcertificates andallprimary/repository/RFC3161SignerInfo SID\u2192exactcertificateDER fingerprint from thethreeactualCMSobjects. DeduplicateonlybyexactDERhash. ExpectedMicrosoftauthor9A1B andNuGetrepository1F4B remainfixed; atmost2distinctTSAleafroles. Structuralmapping is datauntil actualcrypto. Missingrole/extraunapprovedleaf/ambiguousissuer mapping HOLD.",
+    "formatting": "ExistingboundedDERinspection and DER\u2192PEM formatting oforiginalbytes allowed, not signatureverification implementation. ExactSDKrootbundles usedunchanged as-trusted; allCMS/AIA/intermediates are-untrusted candidates, nevernewanchors. AIAcerts mustmap todeclared8certificatepool orknownSDKanchor identities, elseHOLD.",
+    "CRLs": "Sameexact9URIoneGET list, currentrawbytes andissuer/AKI/thisUpdate/nextUpdate retained. RequirecompletecurrentCRL foreachconstructedchaincertificate requiredby-crl_check_all; missingCRL/HOLD, no skip. ThisUpdate<=fixedcurrenttime+300skew, explicitnextUpdate>fixedtime; invalidsignature/expired/not-yetvalid/revoked serial failsnativeverify. Rejectunsupportedindirect/delta/ambiguousscope instead ofgeneralCRLlogic. Duplicateissuerdistributionresponses mustagree orHOLD, nooldest/cleancherry-pick.",
+    "time": "One actualcurrentUnix UTC capturedforbothcommands, bound tooriginalmonotonicwindow+freshHTTPSmetadata clock within300s; nottimestamp/NotBeforecherrypick. This strictroute checks currentcert/CRL validity; legitimatehistorical-expirycase is HOLD, never-time waiver. NuGetactualRFC3161signature/binding separatelymandatory.",
+    "outputs": "Typedrole/leaf/intermediate/anchorbundle/CRLhash/time/result fields andboundedlogbytehash, no rawprivatepaths/env/unrelatedcertstore enumeration. OriginalPKI/advisory/servicingbytes+allproof mustfit original8MiB; actualoverflowHOLD beforeSDK, noextraartifact/permission inferred."
+  },
+  "ownedNetworkDeny": {
+    "parentTransition": "AfterallSDK/rawcapsule/finitecurrentmetadataacquisition but BEFORE anyOpenSSLverify/NuGet/graph, stopownworker atdeclaredhandshake. Onlyexistingtrustedprivilegedlauncher may apply /usr/bin/systemctl set-property --runtime EXACT_OWN_UNIT.service IPAddressDeny=any IPAddressAllow=localhost. Exactunit fromnonce/spec/ownlease/PID-start/bootID/cgroup matching, neverprefix-only/root.slice/globalfirewall/DNS/truststore. Newclock/token/borrowedcgroup forbidden.",
+    "readback": "Atmostone bounded systemctlshow ofsameexactunit forIPAddressDeny/Allow/ControlGroup/MainPID/ActiveState andoriginalresourceproperties; each systemctl invocation<=5s, countMax2. Verifyactualowncgroup kernelBPF ingress/egressattachment using narrowread-onlyquery ofthatcgroup ifneeded throughsameknownparent, no program/mapmutation orinstallation. Propertiesalone notsufficient: unsupported eBPF can be ignored.",
+    "witness": "Beforecontinue, actualsameunitstoppedPIDidentity/source/limitsunchanged; recordnewactivekernelnetworkfilterattachment/policy and runoneboundedpositiveGETtoownedloopbackadapter plusonedefinednegativeegresssocketprobe toalready-boundofficialmetadata peerIP/port. No newHTTPbody/URL discovery/DNS/proxyorcredentials. Exactkernel/networkpolicy must explainfailure; timeoutbyitself/unreachablehost is NOT denialproof. Probe<=3s andphase540; unsupported/witnessunknownHOLD.",
+    "closure": "CloseallprefetchHTTPconnections beforetransition; no connectedexternalFDs passedtoSDKchildren. Sevenchildren createdafterfilter fromsamecurrentunit; bindexactsamecgroup/UID/PID-start andholdbeforeresume. ApplycontrolbeforeOpenSSLmetadata crypto candidates; neverallow networktemporarilyforSDK or restore.",
+    "staticAdapter": "SameownedboundedloopbackstaticPKI/audit response adapter fromparentcontract only. Noexternalforwarding/CONNECT/roottrustmutation. ActualCSR/unknownOCSPstatus notsilentlyapproved; externalOCSP remains0. Unexpectedpath/method/source/clock/request =>typedHOLD."
+  },
+  "public10DataHandoff": {
+    "path": "E:\\Codex WorkSpace\\Git Projects\\portfolio-management\\development-management-20261110\\wave4-state\\project04-public10-advisory-source-handoff-20261116\\SOURCE-HANDOFF.json",
+    "bytes": 3171,
+    "sha256": "c49f46dde2e3e0b36e0cf8c50c882f60a8434d9f6ed8a0cb378dd7c6df2701ca",
+    "producerHEAD": "90ecf0d07b8486bd208ba2498ba6933d75fbcdbd",
+    "producerSourceSHA256": "c6ce2d1b42db025be50a4c106419344dc3c8a86044308a956cebebd5387a4bfe",
+    "functions": [
+      {
+        "name": "advisory_index_urls",
+        "startLine": 542,
+        "endLine": 550,
+        "bytes": 651,
+        "sha256": "bd7ad25ef9719ad9c82c01e786720637fbecbe3517118884cdcf391f89cf4059"
+      },
+      {
+        "name": "admit_metadata_url",
+        "startLine": 532,
+        "endLine": 539,
+        "bytes": 429,
+        "sha256": "fe743299b7dd8b5e5554a87c7cf1b8baad22481d0cc46e617e24eeca09393d10"
+      },
+      {
+        "name": "bounded_json_get",
+        "startLine": 653,
+        "endLine": 700,
+        "bytes": 3017,
+        "sha256": "0c0fc5652a44bb9b66a5e8cfcd6d8485cb6c3b7cc53745e11e8ed3d170073550"
+      },
+      {
+        "name": "stable_compare",
+        "startLine": 756,
+        "endLine": 764,
+        "bytes": 550,
+        "sha256": "020473a33d6f3f7821b54af0e03babf0f24e095218552c98f8dac6a312e983c1"
+      },
+      {
+        "name": "in_range",
+        "startLine": 767,
+        "endLine": 778,
+        "bytes": 690,
+        "sha256": "360a485ff726ce5e0cbedab059edcc4ff6073da6ff89edb4c4737092eda59047"
+      },
+      {
+        "name": "vulnerability_page_entries",
+        "startLine": 781,
+        "endLine": 789,
+        "bytes": 577,
+        "sha256": "3a1e9391646e2af69a84c6312da0cdc9170799c050e363afeda8253952cfa1c6"
+      },
+      {
+        "name": "advisory_guard",
+        "startLine": 792,
+        "endLine": 818,
+        "bytes": 1883,
+        "sha256": "bc7b020a3a7a962fb63e2369ee6cd6aa1ad3eeadca2f70ccd90ad234f54dcd40"
+      }
+    ],
+    "excerpt": {
+      "path": "E:\\Codex WorkSpace\\Git Projects\\portfolio-management\\development-management-20261110\\wave4-state\\project04-public10-advisory-source-handoff-20261116\\HOSTED-HELPER-EXCERPTS.txt",
+      "bytes": 7809,
+      "sha256": "6c7b6a697a73f2b7ed45d51339866e58cbc992dbe2a66e49242b79ce764ad217"
+    },
+    "rootReview": "Wholefile/excerpt identity andall7function bytecounts/SHA256 verified; hashframingisinclusive sourcefunctionlines withtrailingLF. ASTget_source_segment withoutfinalLF was1byteshort, not a source mismatch.",
+    "consumption": "Copy/adapt onlythese7inspectedsourcehelpers andexplicitnecessarypuredependencies as04narrowreviewabledelta. Do not import/runwhole10hosted_caps module orreferenceitsprivatecontext/transport/qualifiedruntime. Preserve stable-version boundary; unrecognized/prerelease-range interpretationHOLD, notnocleanclaim. Bind04limits/metadataURLs/wholeclock/raw+decodedaccounting/fixtures."
+  },
+  "unchangedBudgets": {
+    "SDKCommandsMax": 7,
+    "signatureSDKCommands": 3,
+    "graphSDKCommands": 4,
+    "rowSeconds": 900,
+    "workerEnd": 840,
+    "memoryBytes": 4294967296,
+    "swapBytes": 0,
+    "tasks": 64,
+    "CPUEquivalentMax": 2,
+    "bodyBytes": 536870912,
+    "proofBytes": 8388608,
+    "scratchBytes": 2147483648,
+    "smallerOwnLimitStillWins": true,
+    "absoluteStages": "60/360/420/540/630/810/840/900 unchanged. OpenSSLversion inmetadata<=420; ownednetworktransition/witness finishes<=540; twoCRLverify<=20s +threeSDKsignatures<=60s fit original90s540..630. Fourgraphs<=45s each630..810. No reset/additionofnewwindow, no quota/retention/newjob/Windows/source10or12caps transfer."
+  },
+  "resourceLedger": "Prior6015SDKfile/1040dir4KiBmodel750051328 andmodeledpeak1548521472<2GiB are planningfacts. Recomputeactualallocation/inodes/targetfree/smallerapprovedlimit andmetadataretention beforedispatch/acquisition; targetstateUNKNOWN untilobserved, no new4GiBdiskwaiver.",
+  "finalCandidate": "One consolidated knownSSHsignedappendfromd50d withactualminimalchangedfiles/modes/blobs/SHA256/causalpinrows/newdelta-onlymockresults/feasibleOpenSSLbinary+argv/profile/networktransitionwitness/sourcehandoff andallfiniteinput/output/source/OScommandclock/ledger bindings. No realPKI/kernel/SDK claimed. Root exactsourceactivation afterreview authorizeswholeboundedroute, no perOScommand/URI approvals. Untilthen runtimeMETHOD_HOLD, nofetch/OS/OpenSSL/Job/CI/push.",
+  "preservedHolds": [
+    "04Windowsqualification/no furtherdiagnosticCI",
+    "11input-source-only; laterexperimentSTOPPED",
+    "12human diskamendmentpending",
+    "07..09upgrades/newwave/newGoal notauthorized",
+    "Stratino localonly/productOPEN/automation4STOPPED"
+  ],
+  "ownerFacingDelivery": "Project10 is nowfinaldelivered/STOP; no source10runtime/metadata/watch rerun for04helperhandoff. Onlynew04methoddelta and11finiteclosure route continue."
+}

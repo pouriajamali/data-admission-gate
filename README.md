@@ -347,3 +347,8 @@ Content hash parser, closed config and finite static-response helpers do not
 admit packages. The method feasibility gate currently stops before SDK or
 network: complete current CRL coverage and scoped network denial are unbound.
 See docs/SDK11_SHARED_NORMAL_INPUT.md. Windows qualification remains HOLD.
+
+The local Linux curation method candidate now implements a finite OpenSSL3 CRL
+supplement, exact-own-unit network denial/witness and the adapted public10
+advisory patterns. Source preparation is not actual PKI/kernel/SDK acceptance.
+All runtime paths require one exact-source activation and current-input guards.

@@ -15,6 +15,18 @@ on:
         type: string
         required: false
         default: ''
+      linux_curation:
+        type: boolean
+        required: false
+        default: false
+      curation_handoff:
+        type: string
+        required: false
+        default: ''
+      curation_handoff_sha256:
+        type: string
+        required: false
+        default: ''
 permissions:
   contents: read
 env:
@@ -28,7 +40,7 @@ concurrency:
 
 jobs:
   ci_policy:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) }}
     name: Changed files and documentation policy
     runs-on: windows-2025
     timeout-minutes: 5
@@ -52,17 +64,18 @@ jobs:
         run: python .github/ci/policy.py lint
   verify:
     needs: ci_policy
-    if: ${{ !cancelled() && ((github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification' && needs.ci_policy.result == 'skipped') || (!(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && needs.ci_policy.result == 'success' && needs.ci_policy.outputs.native == 'true' && github.ref != 'refs/tags/tooling-actionlint-v1.7.12-go1.26.11-r1')) }}
+    if: ${{ !cancelled() && ((github.event_name == 'workflow_dispatch' && inputs.linux_curation && needs.ci_policy.result == 'skipped') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification' && needs.ci_policy.result == 'skipped') || (!(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) && needs.ci_policy.result == 'success' && needs.ci_policy.outputs.native == 'true' && github.ref != 'refs/tags/tooling-actionlint-v1.7.12-go1.26.11-r1')) }}
     strategy:
-      fail-fast: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+      fail-fast: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) }}
       max-parallel: 1
       matrix:
-        include: ${{ fromJSON((github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && '[{"os":"windows-2025","rid":"win-x64"}]' || '[{"os":"windows-2025","rid":"win-x64"},{"os":"ubuntu-24.04","rid":"linux-x64"}]') }}
+        include: ${{ fromJSON((github.event_name == 'workflow_dispatch' && inputs.linux_curation) && '[{"os":"ubuntu-24.04","rid":"linux-x64"}]' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && '[{"os":"windows-2025","rid":"win-x64"}]' || '[{"os":"windows-2025","rid":"win-x64"},{"os":"ubuntu-24.04","rid":"linux-x64"}]') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     env:
       QUALIFICATION_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification' }}
       EXPECTED_QUALIFICATION_COMMIT: ${{ inputs.expected_commit }}
+      CURATION_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.linux_curation }}
     steps:
       - name: Existing Windows Python and outer clock only
         if: runner.os == 'Windows'
@@ -105,55 +118,59 @@ jobs:
           exit $LASTEXITCODE
       - name: Fixed Ubuntu qualifier or own consumer04 controller
         if: runner.os == 'Linux'
+        env:
+          CURATION_INPUT_TOKEN: ${{ inputs.linux_curation && github.token || '' }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ "$QUALIFICATION_ONLY" = true ]; then
+          if [ "$CURATION_ONLY" = true ]; then
+            /usr/bin/python3 -I -S -B tools/consume_dotnet11_host_fact.py --expected-commit "$EXPECTED_QUALIFICATION_COMMIT" --curation-event-handoff
+          elif [ "$QUALIFICATION_ONLY" = true ]; then
             /usr/bin/python3 -I -S -B tools/qualify_dotnet11_linux.py --expected-commit "$EXPECTED_QUALIFICATION_COMMIT"
           else
             /usr/bin/python3 -I -S -B tools/consume_dotnet11_host_fact.py --expected-commit "$GITHUB_SHA"
           fi
       - name: Locked offline admission regressions
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) }}
         shell: pwsh
         run: |
           & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage locked-tests --expected-commit $env:GITHUB_SHA
           exit $LASTEXITCODE
       - name: Build clean exact-commit distributable
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) }}
         shell: pwsh
         run: |
           & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage package --expected-commit $env:GITHUB_SHA
           exit $LASTEXITCODE
       - name: Extract the actual archive
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) }}
         shell: pwsh
         run: |
           & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage extract --expected-commit $env:GITHUB_SHA
           exit $LASTEXITCODE
       - name: Execute own extracted apphost with synthetic bundles
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) }}
         shell: pwsh
         run: |
           & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage package-checks --expected-commit $env:GITHUB_SHA
           exit $LASTEXITCODE
       - name: Compare four frozen semantic and wire oracles
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) }}
         shell: pwsh
         run: |
           & $env:SDK11_QUALIFICATION_PYTHON -I -S -B tools/consume_dotnet11_host_fact.py --check-stage technology-checks --expected-commit $env:GITHUB_SHA
           exit $LASTEXITCODE
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') }}
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') }}
         with:
-          retention-days: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 7 || 3 }}
+          retention-days: ${{ env.CURATION_ONLY == 'true' && 3 || (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 7 || 3 }}
           name: tested-${{ matrix.rid }}
           path: artifacts/delivery/*
           if-no-files-found: error
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ always() && !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') }}
         with:
-          retention-days: ${{ (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 7 || 3 }}
+          retention-days: ${{ env.CURATION_ONLY == 'true' && 3 || (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch') && 7 || 3 }}
           name: proof-${{ matrix.rid }}
           path: |
             artifacts/tests/receipt.json
@@ -161,6 +178,7 @@ jobs:
             artifacts/package checks with spaces/receipt.json
             artifacts/technology checks with spaces/receipt.json
             artifacts/controlled-consumer04.json
+            artifacts/sdk11-curation-linux-x64/
             artifacts/sdk11-qualification-${{ matrix.rid }}/failure-summary.json
           if-no-files-found: error
       - name: Preserve bounded qualification failure when controller proof is unavailable
@@ -203,7 +221,7 @@ jobs:
           path: ${{ job.status == 'success' && format('artifacts/sdk11-qualification-{0}/host-fact.json', matrix.rid) || format('artifacts/sdk11-qualification-{0}/failure-summary.json', matrix.rid) }}
           if-no-files-found: error
   release:
-    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && startsWith(github.ref, 'refs/tags/v') }}
+    if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.mode == 'sdk11-ci-qualification') && !(github.event_name == 'workflow_dispatch' && inputs.linux_curation) && startsWith(github.ref, 'refs/tags/v') }}
     needs: verify
     runs-on: ubuntu-24.04
     timeout-minutes: 5

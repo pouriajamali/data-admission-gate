@@ -1,6 +1,6 @@
 {
-  "schema": "producer04-linux-input-curation-profile/v1",
-  "state": "SOURCE_CANDIDATE_METHOD_HOLD_NO_RUNTIME",
+  "schema": "sdk11-own-normal-input-profile/v1",
+  "state": "ADMITTED_SOURCE_PROFILE",
   "purpose": "PRODUCER04_LINUX_INPUT_CURATION",
   "projectId": "04",
   "repository": "pouriajamali/data-admission-gate",
@@ -25,11 +25,11 @@
   "linuxScratchMaxBytes": 2147483648,
   "retentionDays": 3,
   "newJobsEventsCachesWindowsRows": 0,
-  "methodFeasibility": "HOLD_BEFORE_TARGET_OR_NETWORK",
+  "methodFeasibility": "SOURCE_IMPLEMENTED_RUNTIME_GUARDS_REQUIRED",
   "SDKReady": false,
   "WindowsQualification": "HOLD_NO_RETRY",
-  "networkTransitionImplemented": false,
-  "PKIRevocationCoverageMethodBound": false,
+  "networkTransitionImplemented": true,
+  "PKIRevocationCoverageMethodBound": true,
   "productAdmission": false,
   "bundles": [
     {
@@ -43,5 +43,39 @@
       "sha256": "42188f73a3ddf2c10a24827def3a2ee004a4672851103c5a8fb3571e7e41760e"
     }
   ],
-  "NuGetPackagingSHA256": "d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b"
+  "NuGetPackagingSHA256": "d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b",
+  "runtimeActivation": "CANDIDATE_SOURCE_CONFIGURATION_ONLY_SEPARATE_EXACT_ROOT_GATE_REQUIRED",
+  "actualKernelOrCRLQualification": "UNEXECUTED",
+  "memoryMaxBytes": 4294967296,
+  "swapMaxBytes": 0,
+  "ownedUnitPrefix": "admission04-sdk11-ci-",
+  "methodAmendmentSHA256": "0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770",
+  "certificateRolesSHA256": "5ad49caddbd7fa5bc2ee47fed80280b28d32e5533b51ab919d45d067ec784a83",
+  "public10ProvenanceSHA256": "6f8af071686a1fca6502c00a96ae498e5060573ebbd70a71f4608329bfb08e79",
+  "OSOpenSSLCommandsMax": 3,
+  "OSOpenSSLVersionSeconds": 2,
+  "OSOpenSSLVerifySecondsEach": 10,
+  "OSOpenSSLReportBytesMax": 65536,
+  "ownedTransitionSystemctlCommandsMax": 2,
+  "ownedTransitionSystemctlSecondsEach": 5,
+  "witnessSecondsMax": 3,
+  "actualRuntimeReady": false,
+  "runtimeScratchAllocationsWithoutSDK": {
+    "sdkArchive": 211464192,
+    "inputCapsule": 60416000,
+    "rawDirectory": 60407808,
+    "packageCacheOriginalNupkgs": 60407808,
+    "packageCacheExpandedMembersAndDirectories": 153853952,
+    "metadataRawAndDecodedCombinedCeiling": 109051904,
+    "fourPrivateObjAndLocksBudget": 67108864,
+    "sevenBoundedCommandReports": 229376,
+    "adapterEventsBudget": 32768,
+    "durableProofBudget": 8388608,
+    "otherPrivateFilesAndFilesystemBudget": 67108864,
+    "OSOpenSSLReports": 65536,
+    "ownedParentTransitionReports": 32768,
+    "resolvedRuntimeInputs": 32768,
+    "additionalTypedMethodProof": 65536
+  },
+  "retainedProofReserveBeforeSDKBytes": 2097152
 }

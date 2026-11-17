@@ -1,0 +1,66 @@
+{
+  "schema": "producer04-adapted-public10-source-provenance/v1",
+  "state": "SOURCE_DATA_ADAPTATION_ONLY_NO_PRODUCER10_EXECUTION",
+  "handoffSHA256": "c49f46dde2e3e0b36e0cf8c50c882f60a8434d9f6ed8a0cb378dd7c6df2701ca",
+  "producerHEAD": "90ecf0d07b8486bd208ba2498ba6933d75fbcdbd",
+  "producerSourceSHA256": "c6ce2d1b42db025be50a4c106419344dc3c8a86044308a956cebebd5387a4bfe",
+  "excerptSHA256": "6c7b6a697a73f2b7ed45d51339866e58cbc992dbe2a66e49242b79ce764ad217",
+  "functions": [
+    {
+      "name": "advisory_index_urls",
+      "startLine": 542,
+      "endLine": 550,
+      "bytes": 651,
+      "sha256": "bd7ad25ef9719ad9c82c01e786720637fbecbe3517118884cdcf391f89cf4059"
+    },
+    {
+      "name": "admit_metadata_url",
+      "startLine": 532,
+      "endLine": 539,
+      "bytes": 429,
+      "sha256": "fe743299b7dd8b5e5554a87c7cf1b8baad22481d0cc46e617e24eeca09393d10"
+    },
+    {
+      "name": "bounded_json_get",
+      "startLine": 653,
+      "endLine": 700,
+      "bytes": 3017,
+      "sha256": "0c0fc5652a44bb9b66a5e8cfcd6d8485cb6c3b7cc53745e11e8ed3d170073550"
+    },
+    {
+      "name": "stable_compare",
+      "startLine": 756,
+      "endLine": 764,
+      "bytes": 550,
+      "sha256": "020473a33d6f3f7821b54af0e03babf0f24e095218552c98f8dac6a312e983c1"
+    },
+    {
+      "name": "in_range",
+      "startLine": 767,
+      "endLine": 778,
+      "bytes": 690,
+      "sha256": "360a485ff726ce5e0cbedab059edcc4ff6073da6ff89edb4c4737092eda59047"
+    },
+    {
+      "name": "vulnerability_page_entries",
+      "startLine": 781,
+      "endLine": 789,
+      "bytes": 577,
+      "sha256": "3a1e9391646e2af69a84c6312da0cdc9170799c050e363afeda8253952cfa1c6"
+    },
+    {
+      "name": "advisory_guard",
+      "startLine": 792,
+      "endLine": 818,
+      "bytes": 1883,
+      "sha256": "bc7b020a3a7a962fb63e2369ee6cd6aa1ad3eeadca2f70ccd90ad234f54dcd40"
+    }
+  ],
+  "adaptations": [
+    "Own04 explicit context/deadline/body/proof/canonical-origin accounting; no whole-module10 import or source10 changes.",
+    "Vulnerability URI tuple from actual retained service/index; no hardcoded incorrect /v3/vulnerabilities path.",
+    "Stable selected versions only; known prerelease-bound limitation retained; unrecognized inputs HOLD.",
+    "Complete original snapshot, strict JSON/gzip, per-request10s, no proxies/auth/redirects and no semantic clean placeholder."
+  ],
+  "actualSource10ImportOrRuntime": false
+}

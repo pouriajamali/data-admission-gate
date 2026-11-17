@@ -14,10 +14,11 @@ COMMON_CATALOG_SHA='686c6c778f7841e6015fa401f3892b853df80e3341fbb5d02b27c682887c
 COMMON_FACT_SHA='757abf2d3dde65d10cd895cfc97eaeccb7fc11e8685b94ad046e6a8ec8829007'
 STAGES=['locked-tests','package','extract','package-checks','technology-checks']
 CURATION_PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
+CURATION_ACTIVE=False
 def curation_module():
- return R.load_module('curate_dotnet11_linux_inputs','ddd6091f341b27d3dd4a978aaf263c37b61a29c6e50469522cee7ab56134db7a')
-def own04_common_context(spec,source,host,route):
- root=Path(spec['root']);profilePath=HERE/'dotnet11-consumer04-normal-profile.json';pinsPath=HERE/'dotnet11-consumer04-source-pins.json';profile=R.read(profilePath);pins=R.read(pinsPath)
+ return R.load_module('curate_dotnet11_linux_inputs','a988fa9bbdc5ef189d2e7072ad988a239e44b18c8fd3b942ef25161903f089f8')
+def own04_common_context(spec,source,host,route,curation=False):
+ root=Path(spec['root']);profilePath=HERE/('producer04-linux-curation.profile.json' if curation else 'dotnet11-consumer04-normal-profile.json');pinsPath=HERE/'dotnet11-consumer04-source-pins.json';profile=R.read(profilePath);pins=R.read(pinsPath)
  R.f.need(profile.get('state')=='ADMITTED_SOURCE_PROFILE' and pins.get('state')=='EXACT_SOURCE_REVIEWED','OWN04_SOURCE_PROFILE_NOT_ADMITTED')
  R.f.need(profile.get('projectId')==pins.get('projectId')=='04' and profile.get('repository')==pins.get('repository')=='pouriajamali/data-admission-gate','OWN04_SOURCE_PROFILE_IDENTITY')
  R.f.need(R.digest(Path(__file__))==route['controllerSha256'] and R.digest(profilePath)==route['profileSha256'],'OWN04_CURRENT_SOURCE_PROFILE_HASH')
@@ -66,13 +67,16 @@ def consumer_work(spec,backend):
  normal.inspect_sdk(rid,sdk,normalContext);R.write(root/'consumer-worker.json',{'state':'CONTROLLED_CONSUMER04_PRODUCT_COMPLETED','rid':rid,'source':source,'producerFactSha256':binding['factSha256'],'producerQualifiedOn':fact['qualifiedOn'],'currentExecution':{k:host[k] for k in ['hostClass','rid','runId','job','attempt','imageVersion','instanceId']},'caps':backend.caps(),'stages':records,'admissionSha256':R.digest(HERE/'dotnet11-consumer04-admission.lock.json'),'commonNormalModuleSha256':COMMON_NORMAL_SHA,'normalCatalogSha256':COMMON_CATALOG_SHA,'normalInputReceiptSha256':R.digest(root/'common-normal-input-receipt.json'),'scope':'Alloriginal109/17/4acceptance remains in originaltools; not automaticallypassed by SDKqualification.'})
  if os.name!='nt':signal.setitimer(signal.ITIMER_REAL,0)
 def finish_consumer(spec,terminal,peak):
- R.f.need(spec.get('purpose')!='PRODUCER04_LINUX_INPUT_CURATION','CURATION_METHOD_HOLD_NO_SUCCESS_RECEIPT')
+ if spec.get('purpose')==CURATION_PURPOSE:
+  return finish_curation(spec,terminal,peak)
  R.f.terminal(terminal);value=R.read(Path(spec['root'])/'consumer-worker.json');value['terminal']=terminal;value['caps']['peakMemoryBytes']=int(peak);R.f.need(R.clock()<spec['startTick']+900000,'CONSUMER900_DEADLINE');R.write(R.ROOT/'artifacts/controlled-consumer04.json',value)
 def check_stage(name,expected):
  R.f.need(name in STAGES,'FIXED_STAGE_REQUIRED');v=R.read(R.ROOT/'artifacts/controlled-consumer04.json');R.f.source(v['source']['commit'],expected);R.f.terminal(v['terminal']);R.f.need(any(x['stage']==name and x['exitCode']==0 for x in v['stages']),'CONTROLLED_STAGE_NOT_COMPLETED')
 def consumer_worker(path):
+ global CURATION_ACTIVE
  s=R.read(path);R.f.need(s['purpose'] in ('CONSUMER04_PRODUCT',CURATION_PURPOSE),'FIXED_CONSUMER_ROLE')
  if s['purpose']==CURATION_PURPOSE:
+  CURATION_ACTIVE=True
   R.f.need(os.name!='nt','CURATION_LINUX_ONLY');curation_module().parent_admission(s['curationAdmissionPath'],s['curationAdmissionSHA256'],s['expectedCommit'])
  if os.name=='nt':
   boot=R.read(s['bootstrap']);R.f.need(Path(sys.executable).resolve()==Path(boot['pythonExe']).resolve() and R.digest(sys.executable)==boot['pythonExeSha256'] and boot['pythonSignature']=='ValidPythonSoftwareFoundationWithTimestamp','PYTHON_BOOTSTRAP_IDENTITY');consumer_work(s,Q.Backend(s));return
@@ -80,11 +84,17 @@ def consumer_worker(path):
  if s['purpose']==CURATION_PURPOSE:curation_module().worker(s,Q.Backend(s),R,Q)
  else:consumer_work(s,Q.Backend(s))
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('--expected-commit');parser.add_argument('--worker',type=Path);parser.add_argument('--stop-post',type=Path);parser.add_argument('--check-stage',choices=STAGES);parser.add_argument('--curation-admission',type=Path);parser.add_argument('--curation-admission-sha256');args=parser.parse_args()
- R.f.need(bool(args.curation_admission)==bool(args.curation_admission_sha256),'CURATION_GATE_ARGUMENT_PAIR')
+ global CURATION_ACTIVE
+ parser=argparse.ArgumentParser();parser.add_argument('--expected-commit');parser.add_argument('--worker',type=Path);parser.add_argument('--stop-post',type=Path);parser.add_argument('--check-stage',choices=STAGES);parser.add_argument('--curation-admission',type=Path);parser.add_argument('--curation-admission-sha256');parser.add_argument('--curation-input-manifest',type=Path);parser.add_argument('--curation-event-handoff',action='store_true');args=parser.parse_args()
+ CURATION_ACTIVE=bool(args.curation_admission or args.curation_event_handoff or args.curation_input_manifest)
+ if args.curation_event_handoff:
+  R.f.need(not (args.worker or args.stop_post or args.check_stage or args.curation_admission) and os.name!='nt','CURATION_EVENT_EXCLUSIVE')
+  args.curation_admission,args.curation_admission_sha256,args.curation_input_manifest=curation_module().prepare_event_handoff(args.expected_commit)
+ R.f.need(bool(args.curation_admission)==bool(args.curation_admission_sha256)==bool(args.curation_input_manifest),'CURATION_GATE_ARGUMENT_PAIR')
  if args.curation_admission:
   R.f.need(not (args.worker or args.stop_post or args.check_stage) and os.name!='nt','CURATION_EXCLUSIVE_LINUX_PURPOSE')
-  curation_module().parent_admission(args.curation_admission,args.curation_admission_sha256,args.expected_commit)
+  gate=curation_module().parent_admission(args.curation_admission,args.curation_admission_sha256,args.expected_commit)
+  curation_module().load_json(args.curation_input_manifest,gate['inputManifestSHA256'])
  if args.check_stage:check_stage(args.check_stage,args.expected_commit);return
  if args.stop_post:R.f.need(os.name!='nt','FIXED_OBSERVER_HOST');Q.stop_post(args.stop_post);return
  if args.worker:consumer_worker(args.worker);return
@@ -105,15 +115,111 @@ def linux_parent(args):
  R.f.need(os.name!='nt' and os.getuid()>0 and os.environ.get('RUNNER_ENVIRONMENT')=='github-hosted' and os.environ.get('RUNNER_OS')=='Linux' and Path('/proc/1/comm').read_text().strip()=='systemd' and not Path('/.dockerenv').exists(),'NAMED_UBUNTU_HOST_REQUIRED');R.host('linux-x64');R.f.source(os.environ.get('GITHUB_SHA'),args.expected_commit)
  start=int(os.environ['SDK11_QUALIFICATION_START_TICK']);R.f.need(0<=R.clock()-start<60000,'STARTUP60_EXPIRED');temp=Path(os.environ['RUNNER_TEMP']).resolve();root=temp/('admission04-sdk11-linux-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);R.a.scoped(root,temp,absent=True);root.mkdir(mode=0o700);R.f.need(root.stat().st_uid==os.getuid() and root.stat().st_gid==os.getgid() and (root.stat().st_mode&0o777)==0o700,'FRESH_PRIVATE_RUNNER_ROOT')
  unit='admission04-sdk11-ci-'+uuid.uuid4().hex;private=root/'private-spec.json';s={'purpose':'CONSUMER04_PRODUCT','rid':'linux-x64','root':str(root),'unit':unit,'uid':os.getuid(),'gid':os.getgid(),'expectedCommit':args.expected_commit,'startTick':start,'supervisorPID':os.getpid(),'supervisorStartIdentity':'proc-start:'+Q.start_identity(os.getpid())}
- if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256})
+ if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256,'curationInputManifestPath':str(args.curation_input_manifest),'curationTokenPath':str(root/'curation-input-token')})
+ if args.curation_admission:
+  token=os.environ.pop('CURATION_INPUT_TOKEN',None);R.f.need(token and len(token)<=8192 and '\n' not in token and '\r' not in token,'EXISTING_CI_INPUT_ASSET_TOKEN_REQUIRED')
+  fd=os.open(root/'curation-input-token',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+  with os.fdopen(fd,'w') as out:out.write(token)
+  st=(root/'curation-input-token').stat();s['curationTokenIdentity']=[st.st_dev,st.st_ino]
+  token=''
  R.write(private,s);R.write(root/'stage-0.json',{'index':0,'startedTick':start,'deadlineTick':start+60000})
  for path in [str(HERE),str(root),sys.executable]:R.f.need(not any(c in path for c in ['\n','\r','%','$','"',"'"]),'SYSTEMD_FIXED_ARGV_PATH')
  envnames=['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_REF','GITHUB_EVENT_NAME','GITHUB_EVENT_PATH','GITHUB_JOB','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_NAME','ImageOS','ImageVersion','RUNNER_TEMP'];sets=['--setenv='+k+'='+os.environ[k] for k in envnames if k in os.environ];remaining=max(1,(start+840000-R.clock())//1000);observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private])
  argv=['/usr/bin/sudo','-n','/usr/bin/systemd-run','--wait','--collect','--pipe','--unit='+unit,'--uid='+str(s['uid']),'--gid='+str(s['gid']),'--property=Description='+unit,'--property=MemoryMax=4294967296','--property=MemorySwapMax=0','--property=TasksMax=64','--property=CPUQuota=200%','--property=CPUQuotaPeriodSec=100ms','--property=RuntimeMaxSec='+str(remaining),'--property=TimeoutStopSec=5','--property=KillMode=control-group','--property=WorkingDirectory='+str(R.ROOT),'--property=ExecStopPost='+observer,'--setenv=PYTHONDONTWRITEBYTECODE=1',*sets,sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--worker',str(private)]
  R.write(root/'root-starter.json',{'argv':argv,'boundary':'ExistingtrustedrootOSstarter only; fixednonrootUser/Group. Allworker/acquisition/extraction/targets/observer insideactualcgroup; norootSDK/arbitraryrootcommand/install/config.'})
- terminal,stop=Q.run_owned_linux(s,argv);finish_consumer(s,terminal,stop['actualCaps']['memoryPeak'])
+ primary=None
+ try:
+  terminal,stop=(run_curation_linux(s,argv) if s['purpose']==CURATION_PURPOSE else Q.run_owned_linux(s,argv));finish_consumer(s,terminal,stop['actualCaps']['memoryPeak'])
+ except BaseException as exc:primary=exc;raise
+ finally:
+  if s['purpose']==CURATION_PURPOSE and (root/'curation-input-token').exists():
+   try:
+    path=root/'curation-input-token';st=path.lstat();R.f.need(not path.is_symlink() and [st.st_dev,st.st_ino]==s['curationTokenIdentity'],'CURATION_TOKEN_CLEANUP_IDENTITY');path.unlink()
+   except BaseException:
+    if primary is None:raise
+
+def run_curation_linux(s,argv):
+ root=Path(s['root']);proc=None;pidfd=None;error=None;stop=None;terminal=None;transitioned=False;L=curation_module();M,_=L.method_modules()
+ try:
+  prior,code=Q.own_unit_show(s['unit'],min(s['startTick']+60000,R.clock()+2000));R.f.need(prior.get('LoadState')=='not-found','OWN_UNIT_MUST_BE_ABSENT')
+  with (root/'launcher-stdout.log').open('xb') as out,(root/'launcher-stderr.log').open('xb') as err:
+   proc=subprocess.Popen(argv,stdout=out,stderr=err,env=Q.OS_ENV);deadline=min(s['startTick']+60000,R.clock()+20000)
+   while not (root/'stopped-worker.json.ready').exists():
+    R.f.need(proc.poll() is None and R.clock()<deadline,'STOPPED_WORKER_STARTUP_HOLD');time.sleep(.05)
+   held=R.read(root/'stopped-worker.json');pid=held['pid'];R.f.need(held['uid']==s['uid'] and held['gid']==s['gid'] and Q.start_identity(pid)==held['start'],'STOPPED_WORKER_IDENTITY');pidfd=os.pidfd_open(pid);snap=M.pid_snapshot(pid,s['unit'])
+   while snap['state'] not in ('T','t'):
+    R.f.need(R.clock()<deadline and proc.poll() is None,'WORKER_NOT_STOPPED');time.sleep(.01);snap=M.pid_snapshot(pid,s['unit'])
+   R.f.need(snap['start']==held['start'] and snap['limits']==held['cap']['kernelLimits'],'WORKER_KERNEL_READBACK');R.write(root/'held-worker-before-continue.json',{'pid':pid,'start':held['start'],'kernelLimits':snap['limits'],'pidfdRetained':True,'state':snap['state'],'cgroup':snap['cgroup']});signal.pidfd_send_signal(pidfd,signal.SIGCONT)
+   while proc.poll() is None:
+    R.f.need(R.clock()<s['startTick']+840000,'OWNED_WORKER840_DEADLINE');R.f.need(out.tell()+err.tell()<=1048576,'OWNED_LAUNCHER_LOG_CAP')
+    requestPath=root/'network-transition-request.json'
+    if not transitioned and requestPath.with_name(requestPath.name+'.ready').is_file():
+     R.f.need(R.clock()<s['startTick']+540000,'OWNED_NETWORK_STAGE540');body=requestPath.read_bytes();request=json.loads(body);R.f.need(request['worker']['pid']==pid and request['worker']['start']==held['start'] and request['unit']==s['unit'] and request['sourceHEAD']==s['expectedCommit'] and request['originalStartMonotonicNs']==s['startTick']*1000000,'NETWORK_EXACT_HELD_GENERATION')
+     while M.pid_snapshot(pid,s['unit'])['state'] not in ('T','t'):
+      R.f.need(R.clock()<s['startTick']+540000,'NETWORK_STOPPED_HANDSHAKE');time.sleep(.001)
+     R.f.need(R.digest(M.__file__)==L.METHOD_SOURCE_PINS['curation_linux_method'],'PRIVILEGED_METHOD_SOURCE_PIN')
+     call=subprocess.run(['/usr/bin/sudo','-n',sys.executable,'-I','-S','-B',M.__file__,'--deny-parent',str(requestPath),'--sha256',hashlib.sha256(body).hexdigest()],capture_output=True,env=Q.OS_ENV,timeout=max(.001,min(12,(s['startTick']+540000-R.clock())/1000)))
+     R.f.need(len(call.stdout)+len(call.stderr)<=16384 and not call.stderr,'OWNED_DENY_PARENT_FAILED');policy=json.loads(call.stdout)
+     if call.returncode!=0:
+      code=policy.get('code','OWNED_DENY_PARENT_FAILED');R.f.need(re.fullmatch('[A-Z][A-Z0-9_]{0,95}',code),'OWNED_DENY_TYPED_FAILURE');raise R.f.Denied(code)
+     R.f.need(call.returncode==0,'OWNED_DENY_PARENT_FAILED');R.f.need(policy['requestSHA256']==request['requestSHA256'] and policy['worker']['pid']==pid and policy['worker']['start']==held['start'],'OWNED_DENY_PARENT_RESULT');R.write(root/'network-policy-applied.json',policy);transitioned=True;signal.pidfd_send_signal(pidfd,signal.SIGCONT)
+    time.sleep(.02)
+   R.f.need(proc.returncode==0 and transitioned,'OWNED_CURATION_NONZERO_OR_NO_TRANSITION')
+ except BaseException as exc:error=exc
+ finally:terminal,stop=Q.cleanup_owned_linux(s,proc,pidfd,error is not None)
+ if error is not None or terminal['cleanupResult']!='OWNED_TERMINAL_OBSERVED' or stop is None or stop.get('serviceResult')!='success' or stop.get('exitCode')!='exited' or stop.get('exitStatus')!='0' or stop.get('remainingPopulationExcludingObserver')!=0:
+  R.failure_summary(s,R.failure_code(error) if error is not None else {'exceptionType':'Denied','code':'TYPED_CURATION_TERMINAL_REQUIRED'},terminal,stop)
+  if error is not None:raise error
+  raise R.f.Denied('TYPED_CURATION_TERMINAL_REQUIRED')
+ return {'workerExitCode':0,'ownedPopulation':0,'supervisorObservedTerminal':True,'typedStopResult':'success','terminalEvidenceSha256':terminal['evidenceSha256']},stop
+
+def finish_curation(spec,terminal,peak):
+ R.f.terminal(terminal);root=Path(spec['root']);value=R.read(root/'curation-worker.json');R.f.need(value['state']=='LINUX_CURATED_INPUT_GRAPH_CANDIDATE_NOT_PRODUCT_ADMITTED' and len(value['commands'])==7 and len(value['locks'])==4 and value['network']['state']=='OWN_CURRENT_KERNEL_DENY_AND_LOOPBACK_WITNESSED','CURATION_INPUT_GRAPH_RESULTS_REQUIRED');R.f.need(R.clock()<spec['startTick']+900000,'CURATION900_DEADLINE');value.update(terminal=terminal,peakMemoryBytes=peak)
+ # Existing proof artifact only. Originals plus redacted reports stay within8MiB.
+ dest=R.ROOT/'artifacts/sdk11-curation-linux-x64';R.f.need(not dest.exists(),'CURATION_PROOF_EXISTS');dest.mkdir(parents=True,mode=0o700);total=0;files=[]
+ for path in [*root.glob('*.json'),*(root/'curation/metadata').glob('*'),*(root/'curation/original-data').glob('*'),*(root/'curation').glob('*/process.json'),*(root/'curation').glob('*/stdout.log'),*(root/'curation').glob('*/stderr.log')]:
+  if not path.is_file():continue
+  body=path.read_bytes();relative=path.relative_to(root).as_posix()
+  originalSHA256=hashlib.sha256(body).hexdigest()
+  if path.suffix=='.log':
+   R.f.need(len(body)<=32768,'CURATION_REPORT_BOUND');text=body.decode('utf-8',errors='strict').replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}');body=text.encode()
+  if path.suffix in ('.json','.log') and 'metadata' not in path.parts:
+   body=body.decode('utf-8',errors='strict').replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}').replace(os.environ['RUNNER_TEMP'],'${RUNNER_TEMP}').encode()
+  total+=len(body);R.f.need(total<=8388608,'CURATION_PROOF8M_OVERFLOW');target=dest/relative;target.parent.mkdir(parents=True,exist_ok=True)
+  with target.open('xb') as out:out.write(body)
+  files.append({'path':relative,'bytes':len(body),'sha256':hashlib.sha256(body).hexdigest(),'originalSHA256':originalSHA256})
+ summary={'schema':'producer04-linux-curation-terminal-candidate/v1','state':value['state'],'source':value['source'],'terminal':terminal,'proofFiles':files,'proofBytes':total,'SDK_READY':False,'productAdmission':False,'WindowsQualification':False};body=(json.dumps(summary,indent=2)+'\n').encode();R.f.need(total+len(body)<=8388608,'CURATION_PROOF8M_OVERFLOW')
+ with (dest/'FINAL-CANDIDATE.json').open('xb') as out:out.write(body)
+
+def publish_curation_failure_data(code):
+ root=Path(os.environ['RUNNER_TEMP'])/('admission04-sdk11-linux-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);terminalPath=root/'cleanup-terminal.json'
+ if not terminalPath.is_file() or R.read(terminalPath).get('cleanupResult')!='OWNED_TERMINAL_OBSERVED':return
+ dest=R.ROOT/'artifacts/sdk11-curation-linux-x64'
+ if dest.exists():return
+ candidates=[*root.glob('*.json'),*(root/'curation/metadata').glob('*'),*(root/'curation/original-data').glob('*'),*(root/'curation').glob('*/process.json'),*(root/'curation').glob('*/stdout.log'),*(root/'curation').glob('*/stderr.log')];bodies=[];total=0
+ for path in candidates:
+  if not path.is_file():continue
+  R.f.need(not path.is_symlink(),'CURATION_FAILURE_PROOF_LINK');size=path.stat().st_size;total+=size
+  if total>8388608-65536:break
+  body=path.read_bytes();original=hashlib.sha256(body).hexdigest()
+  if path.suffix in ('.json','.log') and 'metadata' not in path.parts:body=body.decode('utf-8',errors='strict').replace(str(root),'${OWN_PRIVATE_ROOT}').replace(str(R.ROOT),'${CHECKOUT}').replace(os.environ['RUNNER_TEMP'],'${RUNNER_TEMP}').encode()
+  bodies.append((path.relative_to(root),body,original))
+ dest.mkdir(parents=True,mode=0o700)
+ if total>8388608-65536:
+  R.write(dest/'HOLD.json',{'state':'HOLD_ORIGINALS_AND_PROOF_OVERFLOW_NO_ORIGINALS_PUBLISHED','primaryCode':code,'observedBytesAtLeast':total,'budgetBytes':8388608,'extraArtifactPermissionInferred':False});return
+ for relative,body,original in bodies:
+  target=dest/relative;target.parent.mkdir(parents=True,exist_ok=True)
+  with target.open('xb') as out:out.write(body)
+ R.write(dest/'HOLD.json',{'state':'HOLD_DATA_ONLY_OWNED_TERMINAL_OBSERVED','primaryCode':code,'originalsRetained':True,'proofBytes':sum(len(b) for _,b,_ in bodies),'originalFileHashes':{p.as_posix():h for p,_,h in bodies},'SDK_READY':False,'productAdmission':False})
 
 if __name__=='__main__':
  try:main()
  except BaseException as exc:
+  if CURATION_ACTIVE:
+   code=str(exc) if type(exc).__name__ in ('Hold','Denied','CapError') and re.fullmatch('[A-Z][A-Z0-9_]{0,95}',str(exc)) else 'CURATION_BOUNDED_PRIMARY_FAILURE'
+   converted=R.f.Denied(code);converted.__traceback__=exc.__traceback__;R.capture_entry_failure(converted)
+   if '--worker' not in sys.argv and '--stop-post' not in sys.argv:
+    try:publish_curation_failure_data(code)
+    except BaseException:pass # a secondary proof failure must preserve the original cause
+   raise converted from None
   R.capture_entry_failure(exc);raise

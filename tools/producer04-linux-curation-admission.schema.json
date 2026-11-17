@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Own04 curation-only future execution admission; profile method HOLD is not overridable",
+  "title": "Own04 exact Linux curation runtime admission after final signed-source activation",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -14,7 +14,9 @@
     "inputManifestSHA256",
     "runId",
     "attempt",
-    "leaseAdmissionSHA256"
+    "leaseAdmissionSHA256",
+    "amendmentSHA256",
+    "dispatchNonce"
   ],
   "properties": {
     "schema": {
@@ -38,7 +40,7 @@
       "const": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
     },
     "profileSHA256": {
-      "const": "67d3f67a15f946e89d46c660fd71aa3d3a845dc574db255ce65e5a8db6c24afa"
+      "const": "95546b3c9c0692c5a4039308efb4b3cb1bcc235ee5d45b9a5a0087180c330b99"
     },
     "inputManifestSHA256": {
       "type": "string",
@@ -55,6 +57,13 @@
     "leaseAdmissionSHA256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "amendmentSHA256": {
+      "const": "0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770"
+    },
+    "dispatchNonce": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
     }
   }
 }

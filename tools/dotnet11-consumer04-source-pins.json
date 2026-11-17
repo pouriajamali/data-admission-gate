@@ -1,6 +1,6 @@
 {
   "schema": "sdk11-own-source-pins/v1",
-  "state": "PENDING_CONSOLIDATED_SOURCE_REVIEW",
+  "state": "EXACT_SOURCE_REVIEWED",
   "projectId": "04",
   "repository": "pouriajamali/data-admission-gate",
   "sourcePins": [
@@ -22,7 +22,7 @@
     {
       "path": ".github/workflows/verify.yml",
       "mode": "100644",
-      "gitBlob": "8ef78ea9b9223bd8554b291fc6b2f66228cd7922"
+      "gitBlob": "69479d3acc25d4b8eeec6e9b31fe82e8525adb76"
     },
     {
       "path": ".gitignore",
@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "70abec6fb3a58b2ed6c6093f48598c03500b2b08"
+      "gitBlob": "f8874084379af289d002c6f1de204547feebd8d9"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -102,12 +102,12 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "3172ae9547496fe400c4ed99fc2652c20d90b30f"
+      "gitBlob": "f0ba84924e2e60f4478f32551ad0abf4947afeda"
     },
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "5afc6cf667f86214233c68016d26fc1ae7b98ad6"
+      "gitBlob": "c58e921f4df8f2b9f344bbc2e8d982b8c6ada003"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -227,7 +227,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "6b5157e17b1850fc11af702c47ed16ad815b9649"
+      "gitBlob": "4a37407a188c140a76bd502d010a5c0d3ce0d98b"
     },
     {
       "path": "tools/curate_dotnet11_inputs.py",
@@ -237,12 +237,22 @@
     {
       "path": "tools/curate_dotnet11_linux_inputs.py",
       "mode": "100644",
-      "gitBlob": "89161986ebba5f9a1c81c720df3ff3debb79e9aa"
+      "gitBlob": "ca1cce286ecc49c56f122a6a5943181b82391f19"
+    },
+    {
+      "path": "tools/curation_advisory_source04.py",
+      "mode": "100644",
+      "gitBlob": "cdf95fb680dd00d1657d3e60989aa0994b5be555"
     },
     {
       "path": "tools/curation_data_inspector.py",
       "mode": "100644",
       "gitBlob": "9759bc7880d14d3a52543f30b21268e6834f947c"
+    },
+    {
+      "path": "tools/curation_linux_method.py",
+      "mode": "100644",
+      "gitBlob": "80cd1e96d1b0703af256bc7b0d6fbf423d2a0a0c"
     },
     {
       "path": "tools/curation_range_candidate.py",
@@ -252,7 +262,7 @@
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
-      "gitBlob": "69c74cabe00bd81d970c02df694be972cc0f5bf9"
+      "gitBlob": "cd1acd71318fd7fc9d79215d44602c065f147010"
     },
     {
       "path": "tools/dotnet11-consumer04-normal-profile.json",
@@ -312,7 +322,17 @@
     {
       "path": "tools/producer04-linux-curation-admission.schema.json",
       "mode": "100644",
-      "gitBlob": "b1717b7566b0bf4a59e4775105df6192429e1ea0"
+      "gitBlob": "1959b9d11b02691b224d8e563fe15669b9ea3eba"
+    },
+    {
+      "path": "tools/producer04-linux-curation-cert-roles.json",
+      "mode": "100644",
+      "gitBlob": "73838fcbe5d0837b3a2475606b89018c5f79b91a"
+    },
+    {
+      "path": "tools/producer04-linux-curation-method-amendment.json",
+      "mode": "100644",
+      "gitBlob": "34dce527e4d2eb6907014fb141d0a08318ea39b0"
     },
     {
       "path": "tools/producer04-linux-curation.contract.json",
@@ -322,7 +342,12 @@
     {
       "path": "tools/producer04-linux-curation.profile.json",
       "mode": "100644",
-      "gitBlob": "3fad0adbd086109b7de99e6214eb37329b45b277"
+      "gitBlob": "a88a0108950eace9e24c50f98a758a70aaab413d"
+    },
+    {
+      "path": "tools/producer04-public10-source-provenance.json",
+      "mode": "100644",
+      "gitBlob": "1f90b7af50012db1da01dda8560db019915951ca"
     },
     {
       "path": "tools/producer04-runtime-range-contract.json",
@@ -400,6 +425,11 @@
       "gitBlob": "51ecfd5798fe9382a0cd7a2b2f372c274f43d960"
     },
     {
+      "path": "tools/test_curation_method_delta.py",
+      "mode": "100644",
+      "gitBlob": "ae758df561549c385abab7f3f54c6065a83c78cd"
+    },
+    {
       "path": "tools/test_curation_range.py",
       "mode": "100644",
       "gitBlob": "e9fb16aa77aca092c62c577a3849577765d06db8"
@@ -459,5 +489,6 @@
       "mode": "100644",
       "gitBlob": "2b8de1b4caa87797e78c56e45a764d14f632961d"
     }
-  ]
+  ],
+  "sourceReviewBoundary": "Producer source self-review/static delta mocks only. Common-compatible operational state becomes executable only with separate exact root HEAD/tree/profile/amendment/run/nonce/lease/input activation. No runtime input or product admission."
 }

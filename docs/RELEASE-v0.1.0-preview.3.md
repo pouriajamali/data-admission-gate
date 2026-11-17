@@ -117,3 +117,8 @@ is authorized or executed by this source candidate; Windows remains HOLD.
   Content hash/config/finite-response/ledger/graph-identity helpers. Runtime
   remains blocked by explicit method feasibility gaps; no product release,
   SDK/network execution, new lock evidence or Windows qualification is claimed.
+
+- Source-only method amendment: three bounded OpenSSL operations supplement the
+  same seven NuGet/graph vectors; exact owned network transition and new delta
+  mocks replace the prototype unconditional METHOD_HOLD. Runtime is unexecuted
+  and requires final exact-source activation; no public release or Windows retry.
