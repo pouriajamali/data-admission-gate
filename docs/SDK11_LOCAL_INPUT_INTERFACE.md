@@ -127,3 +127,23 @@ setting was changed and no second diagnostic/healthy qualification was run.
 Windows SDK/native/product admission remains blocked on identifying and
 resolving this extra own-Job member while preserving the singleton rule.
 Linux139 remains a separate unresolved fault with no native/denial success.
+
+A separate fixed local launcher variant is available in
+`tools/windows_qualification_job_local.py`; the immutable0959 helper is unchanged.
+Its default remains CREATE_SUSPENDED|CREATE_UNICODE_ENVIRONMENT|CREATE_NO_WINDOW.
+Only DETACHED_LOCAL_CONSOLE_FREE_V1 selects0x40c (SUSPENDED|UNICODE|DETACHED);
+arbitrary modes/flags, hosted use and an unheld/nested main launch are denied.
+It changes no NUL/stdout/stderr redirection, suspended-before-assignment,
+retained creation handles, kill-on-close/no-breakaway Job caps or cleanup.
+Microsoft documents DETACHED_PROCESS as not inheriting a console and permitting
+a later AllocConsole; no absence of conhost is inferred from documentation:
+https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
+and https://learn.microsoft.com/en-us/windows/console/creation-of-a-console .
+The sole new-mode validation uses tracked current controller/helper/profile
+bytes and complete own source pins; worker SDK/Git/network0, whole30seconds
+(work8/reserve22),4GiB/CPU2/64, actual parent-outside-Job and strict singleton
+readback, actual terminal/population0. If singleton fails, its same live PID/
+start/image telemetry is retained and the row is HOLD; no second attempt.
+This step does not switch an existing consumer to the new mode, invoke facade/
+qualification/native/product stages, or resolve Linux139/nativeCoreHost. Six
+mode/guard/AST delta tests preserve the entire original default helper behavior.

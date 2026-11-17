@@ -453,3 +453,11 @@ The extra member identity is UNKNOWN; existing Security process-creation log
 access was denied. No lifecycle/conhost cause, guard relaxation or product
 readiness is claimed. Corrected06 P3 scope/dependency manifests are source/data
 delivery only; native Windows acceptance and the product remain blocked.
+
+An additive fixed local detached-console launcher retains the historical0959
+helper/default and every original Job/ownership/deadline guard. Its only
+optional mode is DETACHED_LOCAL_CONSOLE_FREE_V1 (mask0x40c), with six bounded
+mode/AST guard tests. The one30-second SDK-zero singleton validation records
+actual Job members/parent/terminal; its receipt is launch evidence only. No
+existing consumer is automatically switched, no singleton exception is added,
+and Linux139/native package/product delivery remain separate unresolved gates.

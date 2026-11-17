@@ -1,0 +1,19 @@
+{
+  "schema": "producer04-fixed-local-detached-singleton/v1",
+  "projectId": "04",
+  "purpose": "DETACHED_LOCAL_SINGLETON_VALIDATION_SDK_ZERO",
+  "wholeSecondsMax": 30,
+  "workSecondsMax": 8,
+  "terminalReserveSeconds": 22,
+  "memoryMaxBytes": 4294967296,
+  "CPU": 2,
+  "tasksMax": 64,
+  "SDK": 0,
+  "GitInWorker": 0,
+  "networkInWorker": 0,
+  "localMode": "DETACHED_LOCAL_CONSOLE_FREE_V1",
+  "creationFlags": 1036,
+  "historicalDefaultFlags": 134218756,
+  "singletonPredicateUnchanged": true,
+  "SDKOrProductAdmission": false
+}

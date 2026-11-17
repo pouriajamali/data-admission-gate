@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "3d979030d73a11ef3d407e6f3571ad9ffedfff45"
+      "gitBlob": "23dc76724fbac2ecff2ec330375eea27b194bbd8"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
       "mode": "100644",
-      "gitBlob": "d5539353e7ed2a0f64c7f2461b46925c42cad5a3"
+      "gitBlob": "42e84aeb1fd6c351556044d8ad9209694cc3e95f"
     },
     {
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
@@ -368,6 +368,11 @@
       "path": "tools/producer04-curation.profile.json",
       "mode": "100644",
       "gitBlob": "811971005515255e51f16f4671de21a2e5bff0d5"
+    },
+    {
+      "path": "tools/producer04-detached-local-singleton.profile.json",
+      "mode": "100644",
+      "gitBlob": "f8788697595fcfa9e1ab0a392a83d15b4dd464d3"
     },
     {
       "path": "tools/producer04-linux-advisory-namespace-amendment.json",
@@ -860,6 +865,16 @@
       "gitBlob": "439767b0d97dd963ab00a8ad9e780cc2f79ff63d"
     },
     {
+      "path": "tools/test_windows_qualification_job_local.py",
+      "mode": "100644",
+      "gitBlob": "df710548c801a81be66e63666bf019fc5012d4bc"
+    },
+    {
+      "path": "tools/validate_detached_windows_singleton.py",
+      "mode": "100644",
+      "gitBlob": "3e94a2500498190e90e523c26c906dc56820fdb4"
+    },
+    {
       "path": "tools/validate_local_windows_input.py",
       "mode": "100644",
       "gitBlob": "3568144210f078beeab06506b31290b523ffaa04"
@@ -873,6 +888,11 @@
       "path": "tools/windows_qualification_job.py",
       "mode": "100644",
       "gitBlob": "1960289b88d27994a12685d574958c8b7a787d54"
+    },
+    {
+      "path": "tools/windows_qualification_job_local.py",
+      "mode": "100644",
+      "gitBlob": "1f96f743a771a848420bf00b668af8b76ee15b3f"
     },
     {
       "path": "vendor/PUBLIC-PATH-GUARDS-LICENSE",
