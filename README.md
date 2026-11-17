@@ -402,3 +402,8 @@ Shared SDK11 input evidence and the single Linux/Windows source API are describe
 Local non-Actions qualification source and exact limits are described in
 [the local qualification delta](docs/SDK11_LOCAL_QUALIFICATION.md). Its local
 receipt is separate from historical CI and does not admit product inputs.
+
+The local Ubuntu24.04/WSL2 SDK11 qualification has now completed eight commands
+with the documented original caps. A separately owner-approved Windows04
+qualification is experimental on26H2/build26300.9974; formal .NET11 support is
+not confirmed. Neither fact alone establishes preview.3 product delivery.

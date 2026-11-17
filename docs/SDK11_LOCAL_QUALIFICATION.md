@@ -50,3 +50,24 @@ pointer is now translated into explicit Linux `--git-dir` and `--work-tree`
 arguments, with `GIT_OPTIONAL_LOCKS=0`. No `.git` file/config/index is rewritten;
 other pointers are rejected. Nine bounded source tests cover both host and
 worktree boundaries. Actual SDK qualification is still pending.
+
+## Observed Linux completion and scoped Windows04 input
+
+Linux signed source d3d0c91 completed eight fixed qualification SDK commands
+on actual Ubuntu24.04.5/WSL2, nonroot uid/gid1000. The whole local operator took
+87.828s, peak cgroup memory975106048B,4GiB/64/CPU2/swap0; held MainPID/start,
+pidfd terminal and population0 are recorded. Seventy-three exported proof files
+retain all eight command process hashes. This is local qualification only; the
+immutable common62 and CI schema bytes remain unchanged.
+
+The human separately authorized one experimental Windows04 qualification on
+26H2/build26300.9974 (call_82e9689938c64cbdb74f7e75b4bef33c). Only04 is in scope.
+`qualify_dotnet11_local_windows04.py` reuses the existing Windows Job helper,
+PSF-signed Python bootstrap, full5480 member verification, CPUID, Microsoft
+Authenticode with timestamps, retained critical image handles and the eight
+fixed SDK commands under4GiB/64/CPU2,900/840 whole/work and480s SDK aggregate.
+The existing SDK tree is reused; no download/extraction, CI environment, schema,
+key, security setting or global environment change is made. Private empty
+ProgramFiles directories reuse the existing NuGet workaround. Six new boundary
+cases pass. Windows execution remains pending and formal .NET11 support for
+this exact Windows build is NOT_CONFIRMED. Product acceptance remains separate.

@@ -181,3 +181,9 @@ The capped direct worker then stopped before SDK at Git exit128 because this
 Windows worktree uses an absolute E: gitdir pointer. The causal local adapter
 translates only that exact owned pointer into explicit read-only Linux Git
 arguments. Nine boundary tests pass; no SDK or product PASS is implied.
+
+Eight local Ubuntu24.04/WSL2 qualification commands completed successfully on
+signed source d3d0c91. Product tests/package remain pending. The owner separately
+authorized bounded experimental qualification for Windows04 only on26H2/
+build26300.9974; official .NET11 support is not confirmed and no Windows result
+is claimed before its receipt. Actions are not run by owner instruction.
