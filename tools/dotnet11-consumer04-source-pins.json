@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "b5db43fa2ed5b48bb0b3d97d0927a4e49f1a3f12"
+      "gitBlob": "5b477521922daf4a26335c7fec33da29a2dfdca6"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -227,7 +227,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "8fddda5dae6dbb65fb65728645dc83df23d59f83"
+      "gitBlob": "2f8382dad3f46b81b72990acbaa827aa4f5613e7"
     },
     {
       "path": "tools/curate_dotnet11_inputs.py",
@@ -237,7 +237,7 @@
     {
       "path": "tools/curate_dotnet11_linux_inputs.py",
       "mode": "100644",
-      "gitBlob": "77d23e660611f9d77a2a6f6b543c3405bbf69da5"
+      "gitBlob": "5dc48b20c56ee6430b2b816e4c4ef039df6de000"
     },
     {
       "path": "tools/curation_advisory_source04.py",
@@ -252,7 +252,7 @@
     {
       "path": "tools/curation_linux_method.py",
       "mode": "100644",
-      "gitBlob": "80cd1e96d1b0703af256bc7b0d6fbf423d2a0a0c"
+      "gitBlob": "e3fd320877f091ca7572f5bc2dff7cc430cc2472"
     },
     {
       "path": "tools/curation_public_input04.py",
@@ -267,12 +267,12 @@
     {
       "path": "tools/curation_safe_cause04.py",
       "mode": "100644",
-      "gitBlob": "acfc999ada516dbdfa293ff088652a74df5f99ae"
+      "gitBlob": "dd0069187ed77e8e746007311aef7ecbca104b21"
     },
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
-      "gitBlob": "ddd4ebd10b22ceb57e91341b9ea7318e29835d5a"
+      "gitBlob": "71c91459f2d0373c0db814281ddbf9c60f4a9a57"
     },
     {
       "path": "tools/dotnet11-consumer04-normal-profile.json",
@@ -337,7 +337,7 @@
     {
       "path": "tools/producer04-linux-curation-admission.schema.json",
       "mode": "100644",
-      "gitBlob": "046321674d3ed967532eca744fb402d0776e0f21"
+      "gitBlob": "a34ca8aec19c05189893211c18a8f35236b5abcc"
     },
     {
       "path": "tools/producer04-linux-curation-cert-roles.json",
@@ -362,7 +362,7 @@
     {
       "path": "tools/producer04-linux-curation.profile.json",
       "mode": "100644",
-      "gitBlob": "c05dc191930fe907235f413354b412674e3213f9"
+      "gitBlob": "9c819b291cb26738f338e3c32184b111bc51ec59"
     },
     {
       "path": "tools/producer04-metadata-framing-diagnostic.profile.json",

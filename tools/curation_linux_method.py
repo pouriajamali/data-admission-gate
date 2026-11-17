@@ -65,6 +65,15 @@ def printed_name(text):
   if v.startswith('"'):need(v.endswith('"'),'OPENSSL_DN_FRAME');v=v[1:-1]
   v=re.sub(r'\\([,+=<>;"\\])',lambda m:m[1],v);need('\\' not in v and v,'OPENSSL_DN_ESCAPE');out.append((key.strip(),v))
  return out
+def scope_fullnames(data,node):
+ # RFC5280 6.3.3(b)(2): support only direct, all-reason fullName URI scope.
+ # Any extra IDP flag/reasons/indirect form remains unsupported, not ignored.
+ fields=children(data,node);need(len(fields)==1 and fields[0][0]==160,'CRL_INDIRECT_DELTA_OR_SCOPE_UNSUPPORTED');names=children(data,fields[0]);need(len(names)==1 and names[0][0]==160,'CRL_INDIRECT_DELTA_OR_SCOPE_UNSUPPORTED');items=children(data,names[0]);need(1<=len(items)<=8 and all(n[0]==134 for n in items),'CRL_INDIRECT_DELTA_OR_SCOPE_UNSUPPORTED');uris=[value(data,n) for n in items];need(len(set(uris))==len(uris) and all(0<len(u)<=1024 and all(32<c<127 for c in u) for u in uris),'CRL_SCOPE_URI');return uris
+def cert_dp_uris(ext):
+ if '2.5.29.31' not in ext:return []
+ data=ext['2.5.29.31'];root=tlv(data);need(root[0]==48 and root[3]==len(data),'CERT_DP_FRAME');points=children(data,root);need(1<=len(points)<=8,'CERT_DP_BOUND');out=[]
+ for point in points:need(point[0]==48,'CERT_DP_FRAME');out.extend(scope_fullnames(data,point))
+ return out
 def certificate(data):
  need(len(data)<=32768,'CERTIFICATE_BOUND');n=tlv(data);need(n[0]==48 and n[3]==len(data),'CERTIFICATE_FRAME');f=children(data,n);need(len(f)==3,'CERTIFICATE_FRAME');t=children(data,f[0]);off=1 if t[0][0]==160 else 0;need(len(t)>=off+6,'CERTIFICATE_TBS');serial=t[off];issuer=t[off+2];valid=children(data,t[off+3]);subject=t[off+4]
  need(serial[0]==2 and len(valid)==2,'CERTIFICATE_SERIAL_VALIDITY');ext={}
@@ -77,7 +86,7 @@ def certificate(data):
   b=ext['2.5.29.35'];ids=[value(b,x).hex() for x in children(b,tlv(b)) if x[0]==128];need(len(ids)<=1,'CERTIFICATE_AKI');aki=ids[0] if ids else None
  try:parts=name_parts(data,subject)
  except Hold:parts=None
- return {'sha256':sha(data),'der':data,'serialDER':raw(data,serial),'issuerDER':raw(data,issuer),'subjectDER':raw(data,subject),'subjectParts':parts,'notBefore':der_time(data,valid[0]),'notAfter':der_time(data,valid[1]),'SKI':ski,'AKI':aki}
+ return {'sha256':sha(data),'der':data,'serialDER':raw(data,serial),'issuerDER':raw(data,issuer),'subjectDER':raw(data,subject),'subjectParts':parts,'crlDistributionURIs':cert_dp_uris(ext),'notBefore':der_time(data,valid[0]),'notAfter':der_time(data,valid[1]),'SKI':ski,'AKI':aki}
 def pem(label,data):return ('-----BEGIN '+label+'-----\n').encode()+b'\n'.join(base64.b64encode(data)[i:i+64] for i in range(0,len(base64.b64encode(data)),64))+('\n-----END '+label+'-----\n').encode()
 def bundle_certificates(blob):
  need(len(blob)<=2097152,'ROOT_BUNDLE_BOUND');blocks=re.findall(rb'-----BEGIN CERTIFICATE-----\s*([A-Za-z0-9+/=\s]+?)\s*-----END CERTIFICATE-----',blob);need(1<=len(blocks)<=1024,'ROOT_BUNDLE_FRAME');out={}
@@ -129,8 +138,11 @@ def crl_data(data,fixed_time):
  for n in f[off+4:]:
   if n[0]==160:
    seq=children(data,n);need(len(seq)==1,'CRL_EXTENSIONS');ext=extensions(data,seq[0])
- need(not any(x in ext for x in ('2.5.29.27','2.5.29.28')),'CRL_INDIRECT_DELTA_OR_SCOPE_UNSUPPORTED');need('2.5.29.35' in ext,'CRL_AKI_REQUIRED');b=ext['2.5.29.35'];ids=[value(b,n).hex() for n in children(b,tlv(b)) if n[0]==128];need(len(ids)==1,'CRL_AKI_REQUIRED');start=der_time(data,this);end=der_time(data,nxt);need(start<=fixed_time+300 and end>fixed_time and start<end,'CRL_NOT_CURRENT')
- return {'der':data,'sha256':sha(data),'issuerDER':raw(data,issuer),'AKI':ids[0],'thisUpdate':start,'nextUpdate':end,'signatureStatus':'UNVERIFIED_UNTIL_NATIVE_VERIFY'}
+ need('2.5.29.27' not in ext,'CRL_INDIRECT_DELTA_OR_SCOPE_UNSUPPORTED');scope=[]
+ if '2.5.29.28' in ext:
+  data_idp=ext['2.5.29.28'];node_idp=tlv(data_idp);need(node_idp[0]==48 and node_idp[3]==len(data_idp),'CRL_IDP_FRAME');scope=scope_fullnames(data_idp,node_idp)
+ need('2.5.29.35' in ext,'CRL_AKI_REQUIRED');b=ext['2.5.29.35'];ids=[value(b,n).hex() for n in children(b,tlv(b)) if n[0]==128];need(len(ids)==1,'CRL_AKI_REQUIRED');start=der_time(data,this);end=der_time(data,nxt);need(start<=fixed_time+300 and end>fixed_time and start<end,'CRL_NOT_CURRENT')
+ return {'der':data,'sha256':sha(data),'issuerDER':raw(data,issuer),'AKI':ids[0],'thisUpdate':start,'nextUpdate':end,'scopeURIs':scope,'signatureStatus':'UNVERIFIED_UNTIL_NATIVE_VERIFY'}
 def coverage(certs,anchors,crls,leaves,fixed_time):
  groups={}
  for r in crls:groups.setdefault((r['issuerDER'],r['AKI']),set()).add(r['sha256'])
@@ -142,7 +154,7 @@ def coverage(certs,anchors,crls,leaves,fixed_time):
    need(current['sha256'] not in seen and len(chain)<8,'CHAIN_LOOP_OR_BOUND');seen.add(current['sha256']);chain.append(current['sha256']);need(current['notBefore']<=fixed_time<=current['notAfter'],'CURRENT_CERTIFICATE_VALIDITY')
    if current['sha256'] in anchors:break
    parents=[c for c in pool.values() if c['subjectDER']==current['issuerDER'] and current['AKI'] is not None and c['SKI']==current['AKI']];need(len(parents)==1,'CHAIN_ISSUER_AMBIGUOUS_OR_MISSING');parent=parents[0]
-   matches=[r for r in crls if r['issuerDER']==parent['subjectDER'] and r['AKI']==parent['SKI']];need(matches,'CRL_CHAIN_COVERAGE_MISSING');need(len({r['sha256'] for r in matches})==1,'CRL_DUPLICATE_ISSUER_DISAGREES');used[current['sha256']]=matches[0]['sha256'];current=parent
+   matches=[r for r in crls if r['issuerDER']==parent['subjectDER'] and r['AKI']==parent['SKI']];need(matches,'CRL_CHAIN_COVERAGE_MISSING');need(len({r['sha256'] for r in matches})==1,'CRL_DUPLICATE_ISSUER_DISAGREES');need(not matches[0].get('scopeURIs') or bool(set(matches[0]['scopeURIs'])&set(current.get('crlDistributionURIs',[]))),'CRL_SCOPE_DOES_NOT_COVER_CERTIFICATE');used[current['sha256']]=matches[0]['sha256'];current=parent
   chains[leaf]=chain
  return {'chains':chains,'certificateToCRLSHA256':used,'state':'STRUCTURAL_CURRENT_COVERAGE_NATIVE_SIGNATURES_REQUIRED'}
 def openssl_vectors(paths,fixed_time):
