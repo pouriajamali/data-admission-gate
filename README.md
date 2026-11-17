@@ -445,3 +445,11 @@ Windows diagnostic records exact own Job IDs/counts and child Git handle-close
 boundaries while preserving the frozen singleton/ownership/deadline controls.
 It does not turn the earlier860e missing counters or Linux139 into a known
 cause, native package/network-denial PASS or product admission.
+
+The actual49c77c0 diagnostic observed two Job members before Git existed:
+Assigned=Listed=2, active2, main9820 plus26740. It stopped at the preserved
+singleton guard, before Git/SDK/network; terminal population0 in0.234seconds.
+The extra member identity is UNKNOWN; existing Security process-creation log
+access was denied. No lifecycle/conhost cause, guard relaxation or product
+readiness is claimed. Corrected06 P3 scope/dependency manifests are source/data
+delivery only; native Windows acceptance and the product remain blocked.

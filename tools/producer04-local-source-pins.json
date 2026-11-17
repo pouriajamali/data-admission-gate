@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "8f95dc60a7062299b32bc370408fb5e81abdfde0"
+      "gitBlob": "3d979030d73a11ef3d407e6f3571ad9ffedfff45"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
       "mode": "100644",
-      "gitBlob": "20654081958496a4bfcbb8aaab7b35cd49209cff"
+      "gitBlob": "d5539353e7ed2a0f64c7f2461b46925c42cad5a3"
     },
     {
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",

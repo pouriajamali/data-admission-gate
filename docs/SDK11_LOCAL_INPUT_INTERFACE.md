@@ -114,3 +114,16 @@ It never opens a child process handle for observation. Prior860e ID counts
 were absent; no lifecycle race/conhost/count semantics cause is asserted.
 Neither a diagnostic result nor a read-only facade check proves native package
 crypto, network denial or product acceptance. Linux139 remains UNKNOWN.
+
+Actual diagnostic49c77c0 stopped before creating Git: exact own outer Job
+Assigned=2, Listed=2, IDs=[9820,26740], accountingActive=2/Total=2; main9820
+startFILETIME134394174806271516. The unchanged singleton predicate was false,
+so Git creation/retained-handle close boundaries did not execute. No Git
+lifecycle/count-semantics/conhost cause is inferred. The original aggregate
+Job4GiB/CPU2/64 ended with actual population0 in0.234seconds, SDK0/network0.
+The identity of26740 was not recorded while alive; a subsequent exact-PID
+query of existing Security4688 records was denied by the OS. No log/ACL/audit
+setting was changed and no second diagnostic/healthy qualification was run.
+Windows SDK/native/product admission remains blocked on identifying and
+resolving this extra own-Job member while preserving the singleton rule.
+Linux139 remains a separate unresolved fault with no native/denial success.
