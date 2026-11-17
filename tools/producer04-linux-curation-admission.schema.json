@@ -131,7 +131,7 @@
           "const": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
         },
         "profileSHA256": {
-          "const": "24eabb0a4b088e471b329f9c4a68f4eb90637a8431786e23c78035175f239c0f"
+          "const": "534c20918e2e28592ddcf0da3f94ccee7c25d7fc80ec9115344169da5c17d1ab"
         },
         "inputManifestSHA256": {
           "type": "string",

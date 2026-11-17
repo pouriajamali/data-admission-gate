@@ -89,7 +89,7 @@
   "inputTransport": "PUBLIC_ORIGINALS_V1",
   "publicInputTransportAmendmentSHA256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484",
   "publicInputHelperSHA256": "658448fc0e981c9b1bac9efab8ed18623d4980054cb7d2358c35efac88112bb0",
-  "safeCauseHelperSHA256": "e4737b4137482a727b903e919cdd422ccb7f73b0dcb72f57147b6936e461eade",
+  "safeCauseHelperSHA256": "67708e4d0e2bb2b085224d1f086620b59e90ad2307571dc51f1b9b51dac42617",
   "publicBodyGETsMax": 3,
   "publicOriginalBodyBytes": 60404733,
   "publicOriginalsPerRequestSeconds": 45,

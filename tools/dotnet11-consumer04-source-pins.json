@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "f3fdb4a65fca0def49cbc2dc792fc9ea5e4b2cd8"
+      "gitBlob": "d2e9f1f8ef6db39cd5afebf026429d096201213b"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -227,7 +227,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "4d0384d40c934ce9b12242dd6c92e57d61eea136"
+      "gitBlob": "cbf8fa8a12f4500fbb67c3bb3b9db4c322cdfb4e"
     },
     {
       "path": "tools/curate_dotnet11_inputs.py",
@@ -237,7 +237,7 @@
     {
       "path": "tools/curate_dotnet11_linux_inputs.py",
       "mode": "100644",
-      "gitBlob": "268d68913612315989f32f9e1d597618f0503443"
+      "gitBlob": "31c5ee47035d8cf0a3dec54bca5a38887560b639"
     },
     {
       "path": "tools/curation_advisory_source04.py",
@@ -267,12 +267,12 @@
     {
       "path": "tools/curation_safe_cause04.py",
       "mode": "100644",
-      "gitBlob": "0e936fec1b30ba6da9d9d1b83d70af846db8a3c4"
+      "gitBlob": "ddf2687db28e5144497dfde619d17a2756c6b888"
     },
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
-      "gitBlob": "918155457c922cc1e2904e8e047aba0642b9440a"
+      "gitBlob": "8f552c3bb270c2111412cdf739e263f7852d9f52"
     },
     {
       "path": "tools/dotnet11-consumer04-normal-profile.json",
@@ -337,7 +337,7 @@
     {
       "path": "tools/producer04-linux-curation-admission.schema.json",
       "mode": "100644",
-      "gitBlob": "a144656382d9a6a76e1b289f53af65121de10c58"
+      "gitBlob": "15d4bd11d92a34e3bc341e38943bbf6e87de02bb"
     },
     {
       "path": "tools/producer04-linux-curation-cert-roles.json",
@@ -362,7 +362,7 @@
     {
       "path": "tools/producer04-linux-curation.profile.json",
       "mode": "100644",
-      "gitBlob": "0ad3bc90d5a84d4b23c47e5e3eebe3eff490b3fe"
+      "gitBlob": "fe7e8ca60df2ddcd5c05b3755eceba4c1ca0394e"
     },
     {
       "path": "tools/producer04-metadata-framing-diagnostic.profile.json",
