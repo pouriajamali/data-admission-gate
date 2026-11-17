@@ -176,3 +176,8 @@ The initial local starter failed before SDK execution because passwordless sudo
 was unavailable. The causal source delta reuses the existing local direct cgroup
 OS starter, drops to nonroot before the held worker, and preserves every cap.
 No password, daemon or ancestor-controller setting is changed.
+
+The capped direct worker then stopped before SDK at Git exit128 because this
+Windows worktree uses an absolute E: gitdir pointer. The causal local adapter
+translates only that exact owned pointer into explicit read-only Linux Git
+arguments. Nine boundary tests pass; no SDK or product PASS is implied.

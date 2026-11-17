@@ -22,6 +22,11 @@ def host():
  release=dict(x.split('=',1) for x in Path('/etc/os-release').read_text().splitlines() if '=' in x)
  return local_host(release,platform.machine(),platform.release(),Path('/proc/1/comm').read_text().strip(),os.getuid(),os.getgid(),any(os.environ.get(k) for k in ['GITHUB_ACTIONS','GITHUB_RUN_ID','RUNNER_ENVIRONMENT']))
 
+def local_git_arguments(pointer):
+ expected='gitdir: E:/Codex WorkSpace/Git Projects/data-admission-gate/repo/.git/worktrees/repo3'
+ R.f.need(pointer.strip()==expected,'EXACT_WINDOWS_WORKTREE_POINTER_REQUIRED')
+ return ['/usr/bin/git','--git-dir=/mnt/e/Codex WorkSpace/Git Projects/data-admission-gate/repo/.git/worktrees/repo3','--work-tree='+str(R.ROOT),'-c','safe.directory='+str(R.ROOT)]
+
 def worker(path):
  s=R.read(path);R.f.need(s['purpose']==PURPOSE and s['controllerSha256']==R.digest(__file__),'LOCAL_PURPOSE_SOURCE');j.bind(s);cap=j.linux_caps();root=Path(s['root'])
  R.write(root/'stopped-worker.json',{'pid':os.getpid(),'start':Q.start_identity(os.getpid()),'cap':cap,'uid':os.getuid(),'gid':os.getgid()});os.kill(os.getpid(),signal.SIGSTOP)
@@ -29,8 +34,9 @@ def worker(path):
  backend=Q.Backend(s);budget=R.Budget(s);env=R.job_environment(root);actual=host();cpu=R.linux_cpu(root);R.f.cpu(cpu);current=backend.caps();R.f.caps(current,'linux-x64')
  R.f.need(R.digest(HERE/'dotnet11-linux-qualification-inputs.lock.json')==CATALOG_SHA,'CATALOG_IDENTITY');catalog=R.read(HERE/'dotnet11-linux-qualification-inputs.lock.json');R.f.catalog(catalog,'linux-x64')
  R.f.need(SDK.is_dir() and not SDK.is_symlink(),'EXISTING_EXACT_SDK_REQUIRED');lm=R.load_module('materialize_qualification_linux',R.PINS['linuxMaterializerSha256']);lm.verify_physical(SDK,catalog['members'])
- rec,raw=R.output(backend.run,['/usr/bin/git','-c','safe.directory='+str(R.ROOT),'-C',R.ROOT,'rev-parse','HEAD','HEAD^{tree}'],R.ROOT,env,budget.deadline(10),root/'source-git');source=raw.decode().splitlines();R.f.need(len(source)==2 and source[0]==s['expectedCommit'],'EXACT_SOURCE_COMMIT')
- rec,raw=R.output(backend.run,['/usr/bin/git','-c','safe.directory='+str(R.ROOT),'-C',R.ROOT,'status','--porcelain','--untracked-files=no'],R.ROOT,env,budget.deadline(10),root/'source-clean');R.f.need(not raw.strip(),'TRACKED_SOURCE_MUST_BE_CLEAN')
+ gitargs=local_git_arguments((R.ROOT/'.git').read_text(encoding='utf-8'));env['GIT_OPTIONAL_LOCKS']='0'
+ rec,raw=R.output(backend.run,[*gitargs,'rev-parse','HEAD','HEAD^{tree}'],R.ROOT,env,budget.deadline(10),root/'source-git');source=raw.decode().splitlines();R.f.need(len(source)==2 and source[0]==s['expectedCommit'],'EXACT_SOURCE_COMMIT')
+ rec,raw=R.output(backend.run,[*gitargs,'status','--porcelain','--untracked-files=no'],R.ROOT,env,budget.deadline(10),root/'source-clean');R.f.need(not raw.strip(),'TRACKED_SOURCE_MUST_BE_CLEAN')
  bootstrap=R.bootstrap_identity();bootstrap['boundary']='EXISTING_LOCAL_OS_BOOTSTRAP_NO_INSTALL';
  for tool in bootstrap['nativeTools']:tool['provenance']='Existing local OS tool; measured binary identity, no independent publisher verification or CI attribution.'
  R.f.need(R.clock()<budget.current,'LOCAL_BOOTSTRAP60_EXPIRED');budget.stage(3,480)
@@ -56,7 +62,7 @@ def worker(path):
   R.f.need(sum(p.stat().st_size for p in root.rglob('*') if p.is_file() and p.suffix in ('.json','.log'))<=8388608,'LOCAL_PROOF8MIB')
   results.append({'name':name,'exitCode':rec['exitCode'],'pid':rec['pid'],'startIdentity':rec['childBeforeExec']['processStartIdentity'],'seconds':rec['seconds'],'processReceiptSha256':R.digest(root/('sdk-'+name+'/process.json')),'stdoutSha256':hashlib.sha256(raw).hexdigest()})
  lm.verify_physical(SDK,catalog['members']);R.f.need(R.clock()<budget.current,'SDK_AGGREGATE480_EXPIRED')
- R.write(root/'local-worker-fact.json',{'schema':'sdk11-local-ubuntu24-qualification/v1','purpose':PURPOSE,'outcome':'LOCAL_NATIVE_HOST_QUALIFICATION_OBSERVED','qualifiedOn':actual,'source':{'commit':source[0],'tree':source[1],'controllerSha256':R.digest(__file__),'existingSupervisorSha256':R.digest(Q.__file__),'runtimeSha256':R.digest(R.__file__),'jobSha256':R.digest(j.__file__)},'bootstrap':bootstrap,'cpu':cpu,'caps':current,'SDKPath':str(SDK),'archiveSHA512FromReviewedCatalog':catalog['sha512'],'memberManifestSha256':catalog['memberManifestSha256'],'fullPhysicalVerificationBeforeAndAfter':True,'physicalFiles':sum(x['type']=='file' for x in catalog['members']),'commands':results,'nativePrerequisites':native,'historicalCIQualificationReusedForInputBytesOnly':True,'freshArchiveGETs':0,'denialSuiteReplays':0,'Actions':0,'SDK_READY':False,'productAdmission':False,'frozenSchemaChanged':False})
+ R.write(root/'local-worker-fact.json',{'schema':'sdk11-local-ubuntu24-qualification/v1','purpose':PURPOSE,'outcome':'LOCAL_NATIVE_HOST_QUALIFICATION_OBSERVED','qualifiedOn':actual,'source':{'commit':source[0],'tree':source[1],'controllerSha256':R.digest(__file__),'existingSupervisorSha256':R.digest(Q.__file__),'runtimeSha256':R.digest(R.__file__),'jobSha256':R.digest(j.__file__),'worktreePointerSha256':R.digest(R.ROOT/'.git')},'bootstrap':bootstrap,'cpu':cpu,'caps':current,'SDKPath':str(SDK),'archiveSHA512FromReviewedCatalog':catalog['sha512'],'memberManifestSha256':catalog['memberManifestSha256'],'fullPhysicalVerificationBeforeAndAfter':True,'physicalFiles':sum(x['type']=='file' for x in catalog['members']),'commands':results,'nativePrerequisites':native,'historicalCIQualificationReusedForInputBytesOnly':True,'freshArchiveGETs':0,'denialSuiteReplays':0,'Actions':0,'SDK_READY':False,'productAdmission':False,'frozenSchemaChanged':False})
  signal.setitimer(signal.ITIMER_REAL,0)
 
 def main():

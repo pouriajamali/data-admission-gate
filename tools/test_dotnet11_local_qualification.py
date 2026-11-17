@@ -17,4 +17,11 @@ class HostBoundary(unittest.TestCase):
   with self.assertRaises(m.R.f.Denied):self.call(machine='aarch64')
  def test_missing_systemd_rejected(self):
   with self.assertRaises(m.R.f.Denied):self.call(pid1='init')
+class WorktreePointer(unittest.TestCase):
+ def test_only_exact_owned_pointer_translated(self):
+  args=m.local_git_arguments('gitdir: E:/Codex WorkSpace/Git Projects/data-admission-gate/repo/.git/worktrees/repo3\r\n');self.assertIn('--git-dir=/mnt/e/Codex WorkSpace/Git Projects/data-admission-gate/repo/.git/worktrees/repo3',args)
+ def test_other_drive_rejected(self):
+  with self.assertRaises(m.R.f.Denied):m.local_git_arguments('gitdir: C:/unrelated/.git')
+ def test_relative_or_escaped_pointer_rejected(self):
+  with self.assertRaises(m.R.f.Denied):m.local_git_arguments('gitdir: E:/Codex WorkSpace/Git Projects/data-admission-gate/repo/.git/worktrees/repo3/../other')
 if __name__=='__main__':unittest.main()

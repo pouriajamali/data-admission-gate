@@ -42,3 +42,11 @@ control, entering the new capped group and dropping all supplementary groups,
 GID/UID to 1000 before Python worker execution. All SDK/native work remains
 nonroot. Existing enabled controllers are required; none are enabled by this
 delta. The 6 local host boundary tests passed; execution remains pending.
+
+The direct starter proved nonroot4GiB/64/CPU2/swap0 and complete Popen/pidfd/zero-
+population teardown. Its first worker stopped before SDK at Git exit128: the
+Windows-created worktree `.git` points to `E:/.../worktrees/repo3`. The exact own
+pointer is now translated into explicit Linux `--git-dir` and `--work-tree`
+arguments, with `GIT_OPTIONAL_LOCKS=0`. No `.git` file/config/index is rewritten;
+other pointers are rejected. Nine bounded source tests cover both host and
+worktree boundaries. Actual SDK qualification is still pending.
