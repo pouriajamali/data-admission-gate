@@ -71,3 +71,10 @@ key, security setting or global environment change is made. Private empty
 ProgramFiles directories reuse the existing NuGet workaround. Six new boundary
 cases pass. Windows execution remains pending and formal .NET11 support for
 this exact Windows build is NOT_CONFIRMED. Product acceptance remains separate.
+
+The Windows bootstrap on0b04d73 stopped before lease/worker/SDK: inherited
+PSModulePath prevented native Windows PowerShell5 from loading its security
+module. A sanitized subprocess using only the existing system module path
+returned PSF signature Valid/exit0. Only this bootstrap environment is corrected;
+no machine/user environment or security setting changes. Eight SDK commands
+remain unconsumed by that preflight failure.
