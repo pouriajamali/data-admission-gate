@@ -100,5 +100,27 @@
     "offlineDefect": "Completed zero chunk closes response stream/transport before returning final nonempty payload. Old outer loop sets timeout on that already-closed transport on its next iteration; closure-aware synthetic HTTPResponse reproduces OSError errno9 after1262bytes and the same UNKNOWN child result. Break only after explicit validated zero termination/closed response/exact declared byte count.",
     "binding": "Actual source-verified module object is bound to safeTrace immediately after execution, preserving its exact Hold identity across later module reloads; same-name foreign classes remain unknown.",
     "privacy": "Exact trusted type + finite errno/operation category only. No exception message/args/raw header/body excerpt. Original all trust/deadline/body/proof/caps remain unchanged."
+  },
+  "private04ServicingOrderDelta": {
+    "state": "ONLY_CORRECT_LATER_SECURITY_VERSION_ORDER",
+    "baselineSourceHEAD": "ce10032a8b77a05de70b096df0f41595645ad441",
+    "retainedActualServicing": {
+      "path": "E:\\Codex WorkSpace\\Git Projects\\portfolio-management\\development-management-20261110\\wave4-state\\project04-ce-body-terminal-full-input-once-20261117\\proof-linux-x64\\sdk11-curation-linux-x64\\curation\\metadata\\servicing.json",
+      "bytes": 594221,
+      "sha256": "5c40c300da0264784179b299169e8c15cb02f8a1e0363dede2a4f5046de1fcc0",
+      "wirePath": "E:\\Codex WorkSpace\\Git Projects\\portfolio-management\\development-management-20261110\\wave4-state\\project04-ce-body-terminal-full-input-once-20261117\\proof-linux-x64\\sdk11-curation-linux-x64\\curation\\metadata\\servicing.json.wire",
+      "wireBytes": 111610,
+      "wireSHA256": "894599ee4bcbe2766da9403a35f6b8af10931f8a190eac2a9c9b40709b20cccd",
+      "encoding": "gzip",
+      "combinedMetadataBudgetBytes": 4194304,
+      "sourceInputAccounting": "Serialized compressed fixture bytes111610; exact decoded original594221 separately bounded by unchanged4MiB metadata limit. Not claimed raw+decoded<=512KiB."
+    },
+    "cause": "The exact latest pointers are SDK11.0.100/runtime11.0.0; security=true historical RC1/RC2/RC3 are lower than stable11.0.0. Inequality was not a later-version test.",
+    "rule": "Reviewed stable-vs-bound comparison plus bounded canonical SemVer/required metadata shape. Later security runtime/SDK versions and malformed/missing/inconsistent selected release or pointers remain Hold. No pointer/toolchain/freshness/CMS/advisory/cap waiver.",
+    "finiteFailureClassification": {
+      "previousHelperSHA256": "1c64551868c4d608de22249e888d010f3ce5450e9e619bfb991be9f6d0884ae4",
+      "currentHelperSHA256": "1e6c0de6defcd72f948bad758b587566610cee5eb1ab3272e0a44b5415074d86",
+      "scope": "Exact trusted HTTP/URL/TLS/protocol types, numeric status/errno/verify code and fixed operation only. Avoid unknown for available safe details; no raw exception reason/header/body/URL dump."
+    }
   }
 }

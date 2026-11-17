@@ -131,7 +131,7 @@
           "const": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
         },
         "profileSHA256": {
-          "const": "84fb4f06c807d29d8639b08bb2e524d70dbe1b32c7e4bfb381266e44c67a9bb6"
+          "const": "beb46666b779b30e103fe6a7fe10bcd7e065e07e7786c1211ca9da8f7f1b8100"
         },
         "inputManifestSHA256": {
           "type": "string",
@@ -169,7 +169,7 @@
           "const": "FULL_PRODUCER_CURATION"
         },
         "diagnosticProfileSHA256": {
-          "const": "e7269ee65f507d19cc5266131df63754f13ba4252eecebc36e69c8985f03d22d"
+          "const": "e0f0da30fc575a6f1b1cb9224109e1595ac9914397f93a10c517960f171b659a"
         },
         "metadataFramingMode": {
           "const": "STRICT_SINGLE_CHUNKED_V1"
@@ -220,7 +220,7 @@
           "const": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
         },
         "profileSHA256": {
-          "const": "e7269ee65f507d19cc5266131df63754f13ba4252eecebc36e69c8985f03d22d"
+          "const": "e0f0da30fc575a6f1b1cb9224109e1595ac9914397f93a10c517960f171b659a"
         },
         "inputManifestSHA256": {
           "type": "string",
@@ -254,7 +254,7 @@
           "const": "METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY"
         },
         "diagnosticProfileSHA256": {
-          "const": "e7269ee65f507d19cc5266131df63754f13ba4252eecebc36e69c8985f03d22d"
+          "const": "e0f0da30fc575a6f1b1cb9224109e1595ac9914397f93a10c517960f171b659a"
         }
       }
     },
@@ -546,6 +546,8 @@
             "FRAMING_GUARD",
             "GZIP",
             "HOLD",
+            "HTTP_ERROR",
+            "HTTP_PROTOCOL_ERROR",
             "IDENTITY",
             "INCOMPLETE_BODY",
             "INVALID",
@@ -578,7 +580,9 @@
             "METADATA_GZIP_EOF",
             "METADATA_GZIP_PROGRESS",
             "METADATA_HTTP_DATE",
+            "METADATA_HTTP_ERROR",
             "METADATA_HTTP_FRAMING",
+            "METADATA_HTTP_PROTOCOL",
             "METADATA_HTTP_STATUS_OR_URL",
             "METADATA_INCOMPLETE_BODY",
             "METADATA_JSON_INVALID",
@@ -602,10 +606,12 @@
             "METADATA_REQUEST_SOURCE",
             "METADATA_REQUEST_SPEC_BOUND",
             "METADATA_SOCKET_IO",
+            "METADATA_TLS_IO",
             "METADATA_TRANSPORT_FAILURE",
             "METADATA_TRANSPORT_TIMEOUT",
             "METADATA_URL",
             "METADATA_URL_ALLOWLIST",
+            "METADATA_URL_IO",
             "METADATA_URL_NOT_IN_INDEX",
             "MULTIPLE",
             "NONE",
@@ -630,9 +636,11 @@
             "STATUS_GUARD",
             "STRICT_SINGLE_CHUNKED_V1",
             "TIMEOUT",
+            "TLS_ERROR",
             "UNKNOWN",
             "UNKNOWN_OR_REDACTED",
             "UNSUPPORTED_ADVISORY_VERSION",
+            "URL_ERROR",
             "VULNERABILITY_INDEX_AMBIGUOUS",
             "VULNERABILITY_INDEX_NOT_ALLOWLISTED",
             "VULNERABILITY_INDEX_NOT_DECLARED",
@@ -713,6 +721,8 @@
             "FRAMING_GUARD",
             "GZIP",
             "HOLD",
+            "HTTP_ERROR",
+            "HTTP_PROTOCOL_ERROR",
             "IDENTITY",
             "INCOMPLETE_BODY",
             "INVALID",
@@ -745,7 +755,9 @@
             "METADATA_GZIP_EOF",
             "METADATA_GZIP_PROGRESS",
             "METADATA_HTTP_DATE",
+            "METADATA_HTTP_ERROR",
             "METADATA_HTTP_FRAMING",
+            "METADATA_HTTP_PROTOCOL",
             "METADATA_HTTP_STATUS_OR_URL",
             "METADATA_INCOMPLETE_BODY",
             "METADATA_JSON_INVALID",
@@ -769,10 +781,12 @@
             "METADATA_REQUEST_SOURCE",
             "METADATA_REQUEST_SPEC_BOUND",
             "METADATA_SOCKET_IO",
+            "METADATA_TLS_IO",
             "METADATA_TRANSPORT_FAILURE",
             "METADATA_TRANSPORT_TIMEOUT",
             "METADATA_URL",
             "METADATA_URL_ALLOWLIST",
+            "METADATA_URL_IO",
             "METADATA_URL_NOT_IN_INDEX",
             "MULTIPLE",
             "NONE",
@@ -797,9 +811,11 @@
             "STATUS_GUARD",
             "STRICT_SINGLE_CHUNKED_V1",
             "TIMEOUT",
+            "TLS_ERROR",
             "UNKNOWN",
             "UNKNOWN_OR_REDACTED",
             "UNSUPPORTED_ADVISORY_VERSION",
+            "URL_ERROR",
             "VULNERABILITY_INDEX_AMBIGUOUS",
             "VULNERABILITY_INDEX_NOT_ALLOWLISTED",
             "VULNERABILITY_INDEX_NOT_DECLARED",
@@ -1069,6 +1085,8 @@
                 "FRAMING_GUARD",
                 "GZIP",
                 "HOLD",
+                "HTTP_ERROR",
+                "HTTP_PROTOCOL_ERROR",
                 "IDENTITY",
                 "INCOMPLETE_BODY",
                 "INVALID",
@@ -1101,7 +1119,9 @@
                 "METADATA_GZIP_EOF",
                 "METADATA_GZIP_PROGRESS",
                 "METADATA_HTTP_DATE",
+                "METADATA_HTTP_ERROR",
                 "METADATA_HTTP_FRAMING",
+                "METADATA_HTTP_PROTOCOL",
                 "METADATA_HTTP_STATUS_OR_URL",
                 "METADATA_INCOMPLETE_BODY",
                 "METADATA_JSON_INVALID",
@@ -1125,10 +1145,12 @@
                 "METADATA_REQUEST_SOURCE",
                 "METADATA_REQUEST_SPEC_BOUND",
                 "METADATA_SOCKET_IO",
+                "METADATA_TLS_IO",
                 "METADATA_TRANSPORT_FAILURE",
                 "METADATA_TRANSPORT_TIMEOUT",
                 "METADATA_URL",
                 "METADATA_URL_ALLOWLIST",
+                "METADATA_URL_IO",
                 "METADATA_URL_NOT_IN_INDEX",
                 "MULTIPLE",
                 "NONE",
@@ -1153,9 +1175,11 @@
                 "STATUS_GUARD",
                 "STRICT_SINGLE_CHUNKED_V1",
                 "TIMEOUT",
+                "TLS_ERROR",
                 "UNKNOWN",
                 "UNKNOWN_OR_REDACTED",
                 "UNSUPPORTED_ADVISORY_VERSION",
+                "URL_ERROR",
                 "VULNERABILITY_INDEX_AMBIGUOUS",
                 "VULNERABILITY_INDEX_NOT_ALLOWLISTED",
                 "VULNERABILITY_INDEX_NOT_DECLARED",

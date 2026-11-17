@@ -11,13 +11,13 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='84fb4f06c807d29d8639b08bb2e524d70dbe1b32c7e4bfb381266e44c67a9bb6'
+PROFILE_SHA='beb46666b779b30e103fe6a7fe10bcd7e065e07e7786c1211ca9da8f7f1b8100'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
 PACKAGING_SHA='d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b'
 IDS=('Microsoft.AspNetCore.App.Runtime.linux-x64','Microsoft.NETCore.App.Host.linux-x64','Microsoft.NETCore.App.Runtime.linux-x64')
-METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'1c64551868c4d608de22249e888d010f3ce5450e9e619bfb991be9f6d0884ae4'}
+METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'1e6c0de6defcd72f948bad758b587566610cee5eb1ab3272e0a44b5415074d86'}
 AMENDMENT_SHA='0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770'
 class Hold(RuntimeError): pass
 def need(value,code):
@@ -242,7 +242,7 @@ def validate_lock(lock,admitted,local_source,metadata):
 METADATA_FRAMING_MODE='STRICT_SINGLE_CHUNKED_V1'
 FULL_EXECUTION_MODE='FULL_PRODUCER_CURATION'
 DIAGNOSTIC_MODE='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY'
-DIAGNOSTIC_PROFILE_SHA='e7269ee65f507d19cc5266131df63754f13ba4252eecebc36e69c8985f03d22d'
+DIAGNOSTIC_PROFILE_SHA='e0f0da30fc575a6f1b1cb9224109e1595ac9914397f93a10c517960f171b659a'
 DIAGNOSTIC_URL='https://api.nuget.org/v3/index.json'
 LEASE_PROTOCOL_SHA='9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b'
 
@@ -505,10 +505,37 @@ def _capsule(spec,manifest,contract,total,phase):
    p.chmod(0o400);need(size==row['bytes'] and h256.hexdigest()==row['sha256'] and h512.hexdigest()==row['sha512'],'CAPSULE_ENTRY_HASH');observed.append(dict(row,path=str(p)))
  return observed
 
+def servicing_version(value):
+ """Bounded SemVer shape; ordering reuses the reviewed stable-vs-bound helper."""
+ need(type(value) is str and 0<len(value)<=128,'SERVICING_VERSION_FORMAT');number=r'(?:0|[1-9][0-9]{0,8})';identifier=r'[0-9A-Za-z-]{1,32}';need(re.fullmatch(number+r'\.'+number+r'\.'+number+r'(?:-'+identifier+r'(?:\.'+identifier+r'){0,15})?(?:\+'+identifier+r'(?:\.'+identifier+r'){0,15})?',value) is not None,'SERVICING_VERSION_FORMAT')
+ pre=value.split('+',1)[0].partition('-')[2]
+ need(not pre or all(not p.isdigit() or p=='0' or not p.startswith('0') for p in pre.split('.')),'SERVICING_VERSION_FORMAT');return value
+
+def validate_servicing(servicing,A):
+ need(type(servicing) is dict,'SERVICING_METADATA_SHAPE');need(servicing.get('channel-version')=='11.0' and servicing.get('support-phase') in ('active','maintenance'),'SERVICING_CHANNEL_NOT_SUPPORTED')
+ for key,expected in (('latest-runtime','11.0.0'),('latest-sdk','11.0.100'),('latest-release','11.0.0')):
+  servicing_version(servicing.get(key));need(servicing[key]==expected,'LATER_SERVICING_REQUIRES_POLICY_HOLD')
+ def release_date(value):
+  need(type(value) is str and re.fullmatch('[0-9]{4}-[0-9]{2}-[0-9]{2}',value) is not None,'SERVICING_METADATA_SHAPE')
+  try:return A.datetime.date.fromisoformat(value)
+  except ValueError:raise Hold('SERVICING_METADATA_SHAPE') from None
+ latest_date=release_date(servicing.get('latest-release-date'));releases=servicing.get('releases');need(type(releases) is list and 1<=len(releases)<=256,'SERVICING_RELEASES');current=[];historical_security=0
+ for row in releases:
+  need(type(row) is dict and type(row.get('security')) is bool and type(row.get('runtime')) is dict,'SERVICING_METADATA_SHAPE');version=servicing_version(row['runtime'].get('version'));label=servicing_version(row.get('release-version'));date=release_date(row.get('release-date'));sdks=row.get('sdks');need(type(sdks) is list and 1<=len(sdks)<=64 and all(type(s) is dict for s in sdks),'SERVICING_METADATA_SHAPE')
+  for sdk in sdks:servicing_version(sdk.get('version'))
+  need(version.startswith('11.0.') and label.startswith('11.0.') and all(s['version'].startswith('11.0.') for s in sdks),'SERVICING_METADATA_INCONSISTENT')
+  need(label.split('-',1)[0].split('+',1)[0]==version.split('-',1)[0].split('+',1)[0] and ('-' in label.split('+',1)[0])==('-' in version.split('+',1)[0]),'SERVICING_METADATA_INCONSISTENT')
+  if version=='11.0.0' and any(s['version']=='11.0.100' for s in sdks):current.append((label,date))
+  if row['security']:
+   order=A.stable_compare('11.0.0',version);need(order>=0 and all(A.stable_compare('11.0.100',s['version'])>=0 for s in sdks),'LATER_SERVICING_REQUIRES_POLICY_HOLD');need(date<=latest_date,'SERVICING_METADATA_INCONSISTENT');historical_security+=order>0
+ need(len(current)==1,'EXACT_SDK_RUNTIME_SERVICING_MISSING');need(current[0]==('11.0.0',latest_date),'SERVICING_METADATA_INCONSISTENT')
+ return {'state':'EXACT_SUPPORTED_SELECTED_RELEASE_NO_LATER_SECURITY','runtime':'11.0.0','sdk':'11.0.100','releaseCount':len(releases),'historicalSecurityReleases':historical_security}
+
+
 def _metadata(spec,phase,contract,A,total,job):
  import email.utils
  root=phase/'metadata';root.mkdir(mode=0o700);fixed=contract['finiteMetadataAcquisition']['sdkMetadataOnly'];pki=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];requestroot=root/'owned-http';requestroot.mkdir(mode=0o700);ctx={'ownedJob':job,'requestWorkRoot':str(requestroot),'requestCwd':str(phase),'requestEnvironment':{'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','HOME':str(Path(spec['root'])/'home'),'TMPDIR':str(Path(spec['root'])/'tmp'),'PYTHONDONTWRITEBYTECODE':'1'},'metadataFramingMode':METADATA_FRAMING_MODE,'deadlineMonotonicNs':spec['startTick']*1000000+420000000000,'utcNow':time.time(),'utcAnchorMonotonicNs':time.monotonic_ns(),'requested':set(),'records':[],'allowedURLs':{x['url'] for x in fixed}|set(pki)}
- _,service=A.bounded_json_get(ctx,fixed[0]['url'],root/'service.json',2097152,total,'service-index');resources=service.get('resources');need(type(resources) is list,'SERVICE_RESOURCES');ctx['advisoryServiceResources']=resources
+ _,service=A.bounded_json_get(ctx,fixed[0]['url'],root/'service.json',2097152,total,'service-index');need(type(service) is dict,'SERVICE_RESOURCES');resources=service.get('resources');need(type(resources) is list,'SERVICE_RESOURCES');ctx['advisoryServiceResources']=resources
  def resource(prefix):
   rows=[r for r in resources if type(r) is dict and type(r.get('@type')) is str and r['@type'].startswith(prefix)];need(rows,'OFFICIAL_RESOURCE_MISSING');versions={}
   for r in rows:
@@ -525,9 +552,8 @@ def _metadata(spec,phase,contract,A,total,job):
  for i,u in enumerate(urls):
   A.admit_metadata_url(u,urls);rec,data=A.bounded_json_get(ctx,u,root/('vulnerability-page-'+str(i)+'.json'),33554432-used,total,'vulnerability-page-'+str(i),urls);used+=rec['rawBytes']+rec['decodedBytes'];pages[u]=data
  _,servicing=A.bounded_json_get(ctx,fixed[1]['url'],root/'servicing.json',4194304,total,'servicing')
- certificates=repository.get('signingCertificates');need(type(certificates) is list and any(str(c.get('fingerprints',{}).get('2.16.840.1.101.3.4.2.1','')).lower()==REPOSITORY.lower() for c in certificates if type(c) is dict),'CURRENT_REPOSITORY_SIGNER_MISSING')
- need(servicing.get('channel-version')=='11.0' and servicing.get('support-phase') in ('active','maintenance'),'SERVICING_CHANNEL_NOT_SUPPORTED');releases=servicing.get('releases');need(type(releases) is list and releases,'SERVICING_RELEASES')
- current=[r for r in releases if r.get('runtime',{}).get('version')=='11.0.0' and any(s.get('version')=='11.0.100' for s in r.get('sdks',[]))];need(current,'EXACT_SDK_RUNTIME_SERVICING_MISSING');need(servicing.get('latest-runtime')=='11.0.0' and servicing.get('latest-sdk')=='11.0.100' and not any(r.get('security') is True and r.get('runtime',{}).get('version')!='11.0.0' for r in releases),'LATER_SERVICING_REQUIRES_POLICY_HOLD')
+ need(type(repository) is dict,'CURRENT_REPOSITORY_SIGNER_MISSING');certificates=repository.get('signingCertificates');need(type(certificates) is list and any(str(c.get('fingerprints',{}).get('2.16.840.1.101.3.4.2.1','')).lower()==REPOSITORY.lower() for c in certificates if type(c) is dict),'CURRENT_REPOSITORY_SIGNER_MISSING')
+ ctx['servicingAdmission']=validate_servicing(servicing,A)
  aia=[];crls=[];responses={}
  for i,u in enumerate(pki):
   rec,wire=A.bounded_get(ctx,u,root/('pki-'+str(i)+'.der'),16777216 if u.endswith('.crl') else 2097152,total,(u,));need(sum(r['rawBytes'] for r in ctx['records'] if r['url'] in pki)<=67108864,'PKI_AGGREGATE_BOUND');responses[u]=wire;(crls if u.endswith('.crl') else aia).append(wire)

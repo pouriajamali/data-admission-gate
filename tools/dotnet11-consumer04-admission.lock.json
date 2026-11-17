@@ -6,7 +6,7 @@
   "productInputState": "PENDING_ORIGINAL_PRODUCT_GATES",
   "commonNormalModuleSha256": "d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d",
   "normalCatalogSha256": "686c6c778f7841e6015fa401f3892b853df80e3341fbb5d02b27c682887c1c78",
-  "controllerSha256": "1497d711b89ec5e2b7975642ee911846d5d605f4c1bf486e939e5b086ce3cfb4",
+  "controllerSha256": "d6735a333f3aa07a2139660ed52eaceb569cde6d3f294f328f29efbca43219d9",
   "profileSha256": "cfd22549f1c60671d7c4b2bb8a8be3d1609b551bcada21c20f1653adfd675f91",
   "profileFile": "dotnet11-consumer04-normal-profile.json",
   "sourcePinsFile": "dotnet11-consumer04-source-pins.json",
@@ -23,10 +23,10 @@
   "sourceBindingStrategy": "EXACT_EVENT_COMMIT_AND_SOURCE_PINS",
   "sourceAllowlistAndProductAcceptance": "Existing04 product109/17/4/contracts/versions/locks/notices/advisories/signatures preserved; missingactualinputs remainHOLD. Exactfuturegate must bindacceptedproducerfact and owncurrenthost/controller/profile before targets.",
   "nextGateRequired": "Exact own source/profile/current context and closed product locks/rawpacks/signatures/notices/advisories/oracle/public gate. No source state/owncaps/admission fact fabricated.",
-  "curationProfileSha256": "84fb4f06c807d29d8639b08bb2e524d70dbe1b32c7e4bfb381266e44c67a9bb6",
-  "curationAdmissionSchemaSha256": "690932657e4c15248a4dd60ead71e4d90b3aff200c985a151365c1afccd705e2",
+  "curationProfileSha256": "beb46666b779b30e103fe6a7fe10bcd7e065e07e7786c1211ca9da8f7f1b8100",
+  "curationAdmissionSchemaSha256": "ceb1a7728742f46d9e209826d27bb29e6d738e0ef567653e0e40fba6ea8ef609",
   "publicInputTransportAmendmentSha256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484",
   "advisoryNamespaceAmendmentSha256": "c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614",
-  "metadataDiagnosticProfileSha256": "e7269ee65f507d19cc5266131df63754f13ba4252eecebc36e69c8985f03d22d",
+  "metadataDiagnosticProfileSha256": "e0f0da30fc575a6f1b1cb9224109e1595ac9914397f93a10c517960f171b659a",
   "curationDefaultExecutionMode": "FULL_PRODUCER_CURATION"
 }
