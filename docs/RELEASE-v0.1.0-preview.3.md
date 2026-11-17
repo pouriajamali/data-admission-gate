@@ -171,3 +171,8 @@ The owner authorizes existing bounded qualification on the actual local host.
 [Local qualification](SDK11_LOCAL_QUALIFICATION.md) preserves the existing Linux
 supervisor/caps and reuses verified SDK bytes. The new local envelope is distinct
 from the immutable CI schema; no local execution or product PASS is claimed here.
+
+The initial local starter failed before SDK execution because passwordless sudo
+was unavailable. The causal source delta reuses the existing local direct cgroup
+OS starter, drops to nonroot before the held worker, and preserves every cap.
+No password, daemon or ancestor-controller setting is changed.

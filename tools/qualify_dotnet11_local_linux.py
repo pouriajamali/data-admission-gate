@@ -2,7 +2,7 @@
 No CI environment impersonation, SDK acquisition, installation or schema mutation.
 """
 from __future__ import annotations
-import argparse,hashlib,importlib.util,json,os,platform,re,shlex,signal,sys,time,uuid
+import argparse,hashlib,importlib.util,json,os,platform,re,select,shlex,signal,subprocess,sys,time,uuid
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 p=HERE/'qualify_dotnet11_linux.py'
@@ -60,19 +60,51 @@ def worker(path):
  signal.setitimer(signal.ITIMER_REAL,0)
 
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('--expected-commit');parser.add_argument('--worker',type=Path);parser.add_argument('--stop-post',type=Path);args=parser.parse_args()
- if args.stop_post:Q.stop_post(args.stop_post);return
- if args.worker:worker(args.worker);return
- actual=host();R.f.need(args.expected_commit is not None,'EXPECTED_SOURCE_REQUIRED');start=R.clock();root=Path('/home/ubuntu')/('.admission04-local-'+uuid.uuid4().hex);root.mkdir(mode=0o700)
- unit='admission04-sdk11-ci-'+uuid.uuid4().hex;s={'purpose':PURPOSE,'rid':'linux-x64','root':str(root),'unit':unit,'uid':os.getuid(),'gid':os.getgid(),'expectedCommit':args.expected_commit,'startTick':start,'controllerSha256':R.digest(__file__),'supervisorPID':os.getpid(),'supervisorStart':Q.start_identity(os.getpid())};private=root/'private-spec.json';R.write(private,s)
- print(json.dumps({'state':'STARTED_LOCAL_QUALIFICATION','root':str(root),'unit':unit}),flush=True)
- observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private]);remaining=max(1,(start+840000-R.clock())//1000)
- argv=['/usr/bin/sudo','-n','/usr/bin/systemd-run','--wait','--collect','--pipe','--unit='+unit,'--uid='+str(s['uid']),'--gid='+str(s['gid']),'--property=Description='+unit,'--property=MemoryMax=4294967296','--property=MemorySwapMax=0','--property=TasksMax=64','--property=CPUQuota=200%','--property=CPUQuotaPeriodSec=100ms','--property=RuntimeMaxSec='+str(remaining),'--property=TimeoutStopSec=5','--property=KillMode=control-group','--property=WorkingDirectory='+str(R.ROOT),'--property=ExecStopPost='+observer,'--setenv=PYTHONDONTWRITEBYTECODE=1',sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--worker',str(private)]
- R.write(root/'root-starter.json',{'argv':argv,'boundary':'Existing fixed OS starter; User/Group nonroot, all SDK/native work inside retained original cgroup, no installation/configuration.'})
- try:
-  terminal,stop=Q.run_owned_linux(s,argv);fact=R.read(root/'local-worker-fact.json');R.f.need([x['name'] for x in fact['commands']]==['version','info','list-sdks','list-runtimes','compiler','restore','build','hello'] and all(x['exitCode']==0 for x in fact['commands']) and R.clock()<start+900000,'EIGHT_LOCAL_COMMANDS_AND_WHOLE900')
-  fact['terminal']=terminal;fact['caps']['peakMemoryBytes']=stop['actualCaps']['memoryPeak'];R.write(root/'LOCAL-HOST-FACT.json',fact);print(json.dumps({'state':'LOCAL_QUALIFICATION_COMPLETE','root':str(root),'factSha256':R.digest(root/'LOCAL-HOST-FACT.json'),'terminal':terminal}),flush=True)
- except BaseException as exc:
-  print(json.dumps({'state':'HOLD','root':str(root),'errorType':type(exc).__name__,'code':str(exc)[:180]}),flush=True);raise
+ parser=argparse.ArgumentParser();parser.add_argument('--worker',type=Path,required=True);args=parser.parse_args();worker(args.worker)
 
-if __name__=='__main__':main()
+def direct_root_starter():
+ # Existing local-frl-delivery direct cgroup method; no daemon/password change.
+ parser=argparse.ArgumentParser();parser.add_argument('--local-root-starter',action='store_true');parser.add_argument('--expected-commit',required=True);args=parser.parse_args()
+ R.f.need(os.getuid()==0 and Path('/proc/1/comm').read_text().strip()=='systemd','FIXED_LOCAL_OS_STARTER_REQUIRED');R.f.source(args.expected_commit,args.expected_commit)
+ start=R.clock();unit='admission04-sdk11-ci-'+uuid.uuid4().hex;group=Path('/sys/fs/cgroup')/(unit+'.service');root=Path('/home/ubuntu')/('.admission04-local-'+uuid.uuid4().hex)
+ R.f.need({'cpu','memory','pids'}<=set(Path('/sys/fs/cgroup/cgroup.subtree_control').read_text().split()),'EXISTING_CGROUP_CONTROLLERS_REQUIRED_NO_CONFIGURATION_CHANGE')
+ group.mkdir();limits={'memory.max':'4294967296','memory.swap.max':'0','pids.max':'64','cpu.max':'200000 100000'}
+ for name,value in limits.items():(group/name).write_text(value)
+ R.f.need({name:(group/name).read_text().strip() for name in limits}==limits,'ACTUAL_OWN_GROUP_LIMITS');root.mkdir(mode=0o700);os.chown(root,1000,1000)
+ s={'purpose':PURPOSE,'rid':'linux-x64','root':str(root),'unit':unit,'uid':1000,'gid':1000,'expectedCommit':args.expected_commit,'startTick':start,'controllerSha256':R.digest(__file__),'supervisorPID':os.getpid(),'supervisorStart':Q.start_identity(os.getpid()),'rootStarterMethod':'EXISTING_LOCAL_DIRECT_CGROUP_METHOD_NO_SYSTEMD_BUS_OR_SUDO'};private=root/'private-spec.json';R.write(private,s)
+ print(json.dumps({'state':'STARTED_LOCAL_QUALIFICATION','root':str(root),'unit':unit}),flush=True);proc=None;pidfd=None;error=None;terminal=None
+ def confined_nonroot():
+  (group/'cgroup.procs').write_text(str(os.getpid()));os.setgroups([]);os.setgid(1000);os.setuid(1000)
+ try:
+  with (root/'launcher-stdout.log').open('xb') as out,(root/'launcher-stderr.log').open('xb') as err:
+   proc=subprocess.Popen(['/usr/bin/python3','-I','-S','-B',str(Path(__file__).resolve()),'--worker',str(private)],cwd=R.ROOT,env={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','PYTHONDONTWRITEBYTECODE':'1'},preexec_fn=confined_nonroot,stdin=subprocess.DEVNULL,stdout=out,stderr=err);pidfd=os.pidfd_open(proc.pid)
+   while not (root/'stopped-worker.json.ready').exists():
+    R.f.need(proc.poll() is None and R.clock()<start+60000,'LOCAL_HELD_WORKER_STARTUP60');time.sleep(.05)
+   held=R.read(root/'stopped-worker.json');pid=held['pid'];R.f.need(pid==proc.pid and held['uid']==held['gid']==1000 and Q.start_identity(pid)==held['start'],'ORIGINAL_NONROOT_WORKER_START');raw=Path('/proc',str(pid),'stat').read_text()
+   while raw[raw.rfind(')')+2:].split()[0] not in ('T','t'):
+    R.f.need(proc.poll() is None and R.clock()<start+60000,'LOCAL_WORKER_MUST_STOP');time.sleep(.01);raw=Path('/proc',str(pid),'stat').read_text()
+   R.f.need(Q.start_identity(pid)==held['start'] and held['cap']['cgroup']=='/'+group.name and ('0::/'+group.name) in Path('/proc',str(pid),'cgroup').read_text().splitlines() and held['cap']['kernelLimits']==limits and {n:(group/n).read_text().strip() for n in limits}==limits,'HELD_ORIGINAL_CGROUP_LIMITS')
+   R.write(root/'held-worker-before-continue.json',{'pid':pid,'start':held['start'],'kernelLimits':limits,'pidfdRetained':True,'state':'T','cgroup':'/'+group.name});signal.pidfd_send_signal(pidfd,signal.SIGCONT)
+   while proc.poll() is None:
+    R.f.need(R.clock()<start+840000,'ORIGINAL_WORK840_DEADLINE');R.f.need(out.tell()+err.tell()<=1048576,'LAUNCHER_LOG1MIB');time.sleep(.05)
+   R.f.need(proc.returncode==0,'LOCAL_WORKER_NONZERO')
+ except BaseException as exc:error=exc
+ finally:
+  end=min(start+890000,R.clock()+50000)
+  if 'populated 0' not in (group/'cgroup.events').read_text():(group/'cgroup.kill').write_text('1')
+  if proc is not None:
+   try:proc.wait(timeout=max(.01,min(10,(end-R.clock())/1000)))
+   except subprocess.TimeoutExpired:pass
+  while 'populated 0' not in (group/'cgroup.events').read_text() and R.clock()<end:time.sleep(.05)
+  population=0 if 'populated 0' in (group/'cgroup.events').read_text() else 'UNKNOWN';pidfdTerminal=bool(pidfd is not None and select.select([pidfd],[],[],0)[0]);launcherTerminal=bool(proc is not None and proc.poll() is not None);peak=int((group/'memory.peak').read_text());terminal={'schema':'owned-local-linux-direct-cleanup/v1','launcherTerminal':launcherTerminal,'workerPidfdTerminal':pidfdTerminal,'ownedPopulation':population,'workerExitCode':proc.returncode if launcherTerminal else 'UNKNOWN','cleanupResult':'OWNED_TERMINAL_OBSERVED' if launcherTerminal and pidfdTerminal and population==0 else 'TERMINAL_UNKNOWN_HOLD','actualKernelLimits':limits,'cgroup':'/'+group.name,'peakMemoryBytes':peak,'rootSDKExecutions':0,'existingDirectMethodReused':True};R.write(root/'cleanup-terminal.json',terminal)
+  if pidfd is not None:os.close(pidfd)
+  if terminal['cleanupResult']=='OWNED_TERMINAL_OBSERVED':group.rmdir()
+ if error is not None or terminal['cleanupResult']!='OWNED_TERMINAL_OBSERVED':
+  print(json.dumps({'state':'HOLD','root':str(root),'code':str(error)[:180] if error else 'TERMINAL_UNKNOWN_HOLD'}),flush=True)
+  if error is not None:raise error
+  raise R.f.Denied('TERMINAL_UNKNOWN_HOLD')
+ fact=R.read(root/'local-worker-fact.json');R.f.need(len(fact['commands'])==8 and all(x['exitCode']==0 for x in fact['commands']) and R.clock()<start+900000,'EIGHT_LOCAL_COMMANDS_AND_WHOLE900');fact['terminal']=terminal;fact['caps']['peakMemoryBytes']=peak;fact['rootStarterMethod']=s['rootStarterMethod'];R.write(root/'LOCAL-HOST-FACT.json',fact);print(json.dumps({'state':'LOCAL_QUALIFICATION_COMPLETE','root':str(root),'factSha256':R.digest(root/'LOCAL-HOST-FACT.json'),'terminal':terminal}),flush=True)
+
+if __name__=='__main__':
+ if '--local-root-starter' in sys.argv:direct_root_starter()
+ else:main()
