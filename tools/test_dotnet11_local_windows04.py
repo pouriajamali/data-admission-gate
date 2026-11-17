@@ -17,4 +17,14 @@ class ExperimentalBoundary(unittest.TestCase):
   with self.assertRaises(m.R.f.Denied):self.call(machine='ARM64')
  def test_server_identity_denied(self):
   with self.assertRaises(m.R.f.Denied):self.call(product=3)
+class NumericalContinuation(unittest.TestCase):
+ def value(self,**delta):
+  v=dict(projectId='04',approved=True,maxTotalSDKAttempts=9,newSDKCommandsMax=3,wholeSecondsMax=300,workSecondsMax=240,SDKStageSecondsMax=180);v.update(delta);return v
+ def test_exact_numerical_plan(self):self.assertEqual(m.continuation_authority(self.value())['newSDKCommandsMax'],3)
+ def test_old_eight_attempt_permission_insufficient(self):
+  with self.assertRaises(m.R.f.Denied):m.continuation_authority(self.value(maxTotalSDKAttempts=8))
+ def test_other_project_permission_denied(self):
+  with self.assertRaises(m.R.f.Denied):m.continuation_authority(self.value(projectId='02'))
+ def test_missing_human_approval_denied(self):
+  with self.assertRaises(m.R.f.Denied):m.continuation_authority(self.value(approved=False))
 if __name__=='__main__':unittest.main()

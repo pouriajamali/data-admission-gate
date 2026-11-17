@@ -187,3 +187,9 @@ signed source d3d0c91. Product tests/package remain pending. The owner separatel
 authorized bounded experimental qualification for Windows04 only on26H2/
 build26300.9974; official .NET11 support is not confirmed and no Windows result
 is claimed before its receipt. Actions are not run by owner instruction.
+
+Windows ec5cd55 passed5 SDK commands and failed restore; Job teardown population0
+was observed. Six attempts are counted. The local correction reuses the existing
+five-private-root NuGet environment. A prepared3-command continuation requires
+new explicit total9-attempt/300s authority and reuses the five healthy results;
+it has not run. This is not preview.3 delivery.

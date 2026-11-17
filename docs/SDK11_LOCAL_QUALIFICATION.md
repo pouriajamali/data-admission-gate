@@ -78,3 +78,26 @@ module. A sanitized subprocess using only the existing system module path
 returned PSF signature Valid/exit0. Only this bootstrap environment is corrected;
 no machine/user environment or security setting changes. Eight SDK commands
 remain unconsumed by that preflight failure.
+
+## Concrete Windows continuation proposal (not yet authorized)
+
+Source ec5cd55 completed the first five SDK commands. Restore failed at
+NuGet.targets with null path1. Its4GiB/64/CPU2 Job ended in7.547s,95,019,008B peak,
+with population0 and exact lease release. Six SDK attempts are consumed.
+
+The existing successful Windows environment repair supplies five private empty
+roots: PROGRAMFILES(X86), PROGRAMFILES, PROGRAMDATA, APPDATA, LOCALAPPDATA. The
+local wrapper had supplied only the first two. It now supplies the remaining
+three per process; no host/user config is inherited or altered.
+
+The prepared `--resume-three` path requires a NEW explicit numerical approval
+file and hash; it cannot execute with the old8-attempt grant. It reuses the exact
+five healthy process/output hashes and previous native Microsoft publisher
+report, rechecking SDK full physical identity and current source/host/CPUID/Job.
+Only restore/build/hello run. The proposal is3 new SDK commands,9 total attempts
+(including the failed restore), new bounded300s row/240s work/180s SDK aggregate/
+60s terminal reserve and unchanged4GiB/64/CPU2. The prior7.547s execution is
+retained, so combined executed row time is at most307.547s. The new row and
+composite source/command history are explicit, never presented as one successful
+original8-attempt run. No healthy five-command replay, download or new SDK is
+allowed. Ten host/numerical boundary tests pass. No continuation has run.

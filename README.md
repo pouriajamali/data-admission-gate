@@ -407,3 +407,8 @@ The local Ubuntu24.04/WSL2 SDK11 qualification has now completed eight commands
 with the documented original caps. A separately owner-approved Windows04
 qualification is experimental on26H2/build26300.9974; formal .NET11 support is
 not confirmed. Neither fact alone establishes preview.3 product delivery.
+
+Windows04 local qualification passed five SDK commands and stopped at restore
+(null NuGet path1). Six attempts were consumed; build/hello did not run. The
+[prepared three-command continuation](docs/SDK11_LOCAL_QUALIFICATION.md) needs a
+new explicit9-attempt numerical grant. No Windows/product success is claimed.
