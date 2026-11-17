@@ -1,4 +1,4 @@
-# v0.1.0-preview.3 — unreleased technology candidate
+# v0.1.0-preview.3 â€” unreleased technology candidate
 
 Proposed source pins: SDK11.0.100, net11.0, runtime11.0.0 and stable C#15.
 This is technology maintenance of the accepted offline M1: no behavior, feature,
@@ -126,3 +126,5 @@ is authorized or executed by this source candidate; Windows remains HOLD.
 - Source-only R1/R2 correction: durable original graph/config evidence and
   absolute supervised metadata deadlines. Existing proof/caps/clocks and seven
   SDK operations remain unchanged; no runtime, CI or public release performed.
+
+Own04 causal Linux SOURCE correction (048f, no runtime retry): forward only the actual parent GITHUB_WORKSPACE after exact presence/equality with current resolved checkout, unchanged. Preserve original source-bound AdmissionError/finite literal codes, at most3 cause/context nodes and10 mapped frames in a <=16KiB typed record through early transport and cleanup; no message/path/env/header/content text. Existing8MiB proof and original caps/clocks unchanged. Frozen d9c CTX_KEYS actually contains15 names (the allowance prose says16); record its exact observed keys/types/presence/digests without changing that interface. Explicit stage entry is not HTTP start or completed bytes; absent results stay UNKNOWN. Existing immutable private capsule from071a may be consumed by a separately gated later HEAD only with exact release448158592/asset757707680/name/size/SHA256/producer/receipts/three-raw provenance. No new capsule, trust, SDK/CI or product/Windows admission. Historical run44021304386 cause remains UNKNOWN; the workspace omission is a source finding only.

@@ -81,5 +81,12 @@
   "durableGraphProofReserveBytes": 671744,
   "metadataRequestAbsoluteSecondsMax": 10,
   "metadataRequestTerminalReserveWithin10Ms": 200,
-  "metadataRequestExecution": "Existing same-cgroup held child and absolute parent alarm; restore only original remaining stage clock"
+  "metadataRequestExecution": "Existing same-cgroup held child and absolute parent alarm; restore only original remaining stage clock",
+  "safeOriginalCauseBytesMax": 16384,
+  "safeCauseNodesMax": 3,
+  "safeMappedFramesMax": 10,
+  "sourceAllowanceSHA256": "048fca50999d8f3fae2bfb60665147d1c85ef61e848223d2cdbea372a86bb644",
+  "frozenCommonContextKeysObserved": 15,
+  "retainedInputProducedSourceHEAD": "071a5f477ef77def9c638cb982bc2c4157325e06",
+  "retainedInputCapsuleSHA256": "167906c5a1740e3ded7a15c2cb6c1323247d9ad4549253fcc19f405d56794eae"
 }

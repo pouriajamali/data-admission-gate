@@ -11,7 +11,7 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='d05c6d89e45c1b5c63f74664e2e60b008f90210a0ef4e3a5a4cb079933d2a9a4'
+PROFILE_SHA='256101ae7714d4452ea660b52ebe32c097e5fe4e0e1246eb733021bab6575dbd'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
@@ -236,12 +236,22 @@ def parent_admission(path,sha,expected_head):
  # A runtime JSON cannot override this source-bound feasibility decision.
  require_method()
  return gate
+def diagnostics():
+ import sys
+ return sys.modules['__main__'].safe_cause_module().STATE
+
 def worker(spec,backend,runtime,qualifier):
- need(spec.get('purpose')==PURPOSE and spec.get('rid')=='linux-x64','CURATION_FIXED_PURPOSE')
- cap=backend.caps();runtime.f.caps(cap,'linux-x64')
- need(spec.get('parentHeldWorkerBeforeExec') is True,'CURATION_ACTUAL_HELD_WORKER')
- deadline_tick(spec['startTick'],runtime.clock(),60,1);require_method()
- return run_curation_worker(spec,backend,runtime,qualifier)
+ D=diagnostics();D.mark('bootstrap',spec=spec,now=runtime.clock())
+ try:
+  need(spec.get('purpose')==PURPOSE and spec.get('rid')=='linux-x64','CURATION_FIXED_PURPOSE')
+  cap=backend.caps();runtime.f.caps(cap,'linux-x64');D.mark('bootstrap',caps=cap)
+  need(spec.get('parentHeldWorkerBeforeExec') is True,'CURATION_ACTUAL_HELD_WORKER')
+  deadline_tick(spec['startTick'],runtime.clock(),60,1);require_method()
+  return run_curation_worker(spec,backend,runtime,qualifier)
+ except BaseException as exc:
+  import os
+  D.bind_loaded(HERE);D.capture(exc);D.emit(Path(spec['root']),os.environ,runtime.ROOT);raise
+
 def preserve_primary(primary,cleanup):
  try: cleanup()
  except BaseException:
@@ -256,9 +266,17 @@ def _private_write(path,body):
 def render_event_handoff(payload,expected_head,run_id,attempt,private_root):
  """Only declared server-assigned run/path substitutions; no policy weakening."""
  need(type(payload) is dict and set(payload)=={'gate','inputManifest'},'CURATION_EVENT_HANDOFF_SCHEMA');gate=dict(payload['gate']);manifest=dict(payload['inputManifest']);need(gate['runId']=='CURRENT_SINGLE_DISPATCH' and gate['attempt']==attempt=='1' and gate['inputManifestSHA256']==gate['leaseAdmissionSHA256']=='DERIVED_FROM_SAME_HANDOFF','CURATION_SINGLE_EVENT_INTENT');need(gate['sourceHEAD']==manifest['sourceHEAD']==expected_head,'CURATION_INTENT_SOURCE');lease=dict(manifest.pop('leaseAdmission'));need(lease.get('dispatchNonce')==gate['dispatchNonce'] and lease.get('sourceHEAD')==expected_head and lease.get('runId')=='CURRENT_SINGLE_DISPATCH' and lease.get('attempt')=='1' and lease.get('protocolSHA256')=='9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b','CURATION_EVENT_LEASE_INTENT');lease['runId']=run_id;leasebody=(json.dumps(lease,sort_keys=True,separators=(',',':'))+'\n').encode();manifest['leaseAdmissionPath']=str(Path(private_root)/'lease-admission.json');validate_input_manifest(manifest,expected_head);manifestbody=(json.dumps(manifest,sort_keys=True,separators=(',',':'))+'\n').encode();gate.update(runId=run_id,inputManifestSHA256=digest(manifestbody),leaseAdmissionSHA256=digest(leasebody));validate_admission(gate,expected_head,PROFILE_SHA);return gate,manifestbody,leasebody
+RETAINED_CAPSULE={'releaseID': 448158592, 'assetID': 757707680, 'name': 'producer04-linux-native11-inputs-071a5f477ef77def9c638cb982bc2c4157325e06.tar', 'bytes': 60416000, 'sha256': '167906c5a1740e3ded7a15c2cb6c1323247d9ad4549253fcc19f405d56794eae', 'draft': True, 'producedSourceHEAD': '071a5f477ef77def9c638cb982bc2c4157325e06', 'capsuleReceiptSHA256': 'a27bb882342f452f576c3c5197cce9f7d6e5829c5f023b347310393202b851a3', 'uploadReceiptSHA256': '6f391c4104e4df6c38ec39f8a3dda6e77c303638efb7521979b844d0ffc31470', 'threeRawProvenanceSHA256': 'c29be905b8b1a7d7e31c2615d631f028a75b091b487c25ea1f5b2e275495cba4'}
+
+def validate_capsule_descriptor(desc,expected_head):
+ need(type(expected_head) is str and re.fullmatch('[0-9a-f]{40}',expected_head) is not None,'CAPSULE_CONSUMER_SOURCE')
+ if type(desc) is dict and 'producedSourceHEAD' in desc:
+  need(set(desc)==set(RETAINED_CAPSULE) and all(type(desc[k]) is type(v) and desc[k]==v for k,v in RETAINED_CAPSULE.items()),'CAPSULE_RETAINED_LINEAGE');return desc
+ need(type(desc) is dict and set(desc)=={'assetID','releaseID','name','bytes','sha256','draft'} and desc['draft'] is True and all(type(desc[k]) is int and desc[k]>0 for k in ['assetID','releaseID']) and desc['bytes']==60416000 and re.fullmatch('[0-9a-f]{64}',desc.get('sha256','')) and desc['name']=='producer04-linux-native11-inputs-'+expected_head+'.tar','CAPSULE_IDENTITY');return desc
+
 def validate_input_manifest(manifest,expected_head):
  need(type(manifest) is dict and set(manifest)=={'schema','sourceHEAD','capsule','ownerScratchLimitBytes','leaseAdmissionPath'} and manifest['schema']=='producer04-linux-curation-input-manifest/v1' and manifest['sourceHEAD']==expected_head,'CURATION_INPUT_MANIFEST')
- desc=manifest['capsule'];need(type(desc) is dict and set(desc)=={'assetID','releaseID','name','bytes','sha256','draft'} and desc['draft'] is True and all(type(desc[k]) is int and desc[k]>0 for k in ['assetID','releaseID']) and desc['bytes']==60416000 and re.fullmatch('[0-9a-f]{64}',desc.get('sha256','')) and desc['name']=='producer04-linux-native11-inputs-'+expected_head+'.tar','CAPSULE_IDENTITY')
+ validate_capsule_descriptor(manifest['capsule'],expected_head)
  need(type(manifest['ownerScratchLimitBytes']) is int and 0<manifest['ownerScratchLimitBytes']<=2147483648 and Path(manifest['leaseAdmissionPath']).is_absolute(),'CURATION_OWNER_OR_LEASE_INPUT');return manifest
 def prepare_event_handoff(expected_head):
  import os
@@ -266,7 +284,7 @@ def prepare_event_handoff(expected_head):
 def _capsule(spec,manifest,contract,total,phase):
  """One exact private draft asset transfer; never NuGet body re-acquisition."""
  import os,tarfile,urllib.request,urllib.error
- desc=manifest['capsule'];need(desc['draft'] is True and type(desc['assetID']) is int and desc['assetID']>0 and type(desc['releaseID']) is int and desc['releaseID']>0 and desc['bytes']==60416000 and re.fullmatch('[0-9a-f]{64}',desc['sha256']),'CAPSULE_IDENTITY')
+ desc=validate_capsule_descriptor(manifest['capsule'],spec['expectedCommit'])
  url='https://api.github.com/repos/pouriajamali/data-admission-gate/releases/assets/'+str(desc['assetID']);tokenpath=Path(spec['curationTokenPath']);need(tokenpath.parent==Path(spec['root']) and tokenpath.name=='curation-input-token','CAPSULE_OWN_TOKEN_SCOPE');need(not tokenpath.is_symlink() and tokenpath.stat().st_uid==os.getuid() and tokenpath.stat().st_mode&0o777==0o600,'CAPSULE_TOKEN_FILE');tokenstat=tokenpath.stat();token_identity=(tokenstat.st_dev,tokenstat.st_ino);need(list(token_identity)==spec['curationTokenIdentity'],'CAPSULE_TOKEN_INODE_BINDING');token=tokenpath.read_text().strip();need(token and '\n' not in token and '\r' not in token,'CAPSULE_TOKEN_FORMAT')
  class NoRedirect(urllib.request.HTTPRedirectHandler):
   def redirect_request(self,*a,**k):return None
@@ -396,10 +414,12 @@ def run_curation_worker(spec,backend,R,Q):
  import os,sys,signal,zipfile,hashlib,shutil,contextlib
  M,A=method_modules();contract,profile=policies();gate=parent_admission(spec['curationAdmissionPath'],spec['curationAdmissionSHA256'],spec['expectedCommit']);manifest=validate_input_manifest(load_json(spec['curationInputManifestPath'],gate['inputManifestSHA256']),spec['expectedCommit']);root=Path(spec['root']);need(os.environ.get('GITHUB_RUN_ID')==gate['runId'] and os.environ.get('GITHUB_RUN_ATTEMPT')==gate['attempt'],'CURATION_EXACT_RUN')
  lease=load_json(manifest['leaseAdmissionPath'],gate['leaseAdmissionSHA256']);need(lease.get('sourceHEAD')==gate['sourceHEAD'] and lease.get('runId')==gate['runId'] and lease.get('attempt')==gate['attempt'] and lease.get('state')=='OWN_CANONICAL_LEASE_BOUND_TO_THIS_RUN','CURATION_CURRENT_LEASE_BRIDGE');ownerLimit=manifest['ownerScratchLimitBytes'];need(type(ownerLimit) is int and 0<ownerLimit<=2147483648,'CURATION_OWNER_SCRATCH_LIMIT')
- budget=R.Budget(spec);env=R.job_environment(root);(root/'home').mkdir(mode=0o700);env['HOME']=str(root/'home');R.bootstrap_identity();cpu=R.linux_cpu(root);R.f.cpu(cpu);host=R.host('linux-x64',root);source=R.source_context(spec['expectedCommit'],backend.run,env,budget,root,qualification=False);need(source['tree']==gate['sourceTree'],'CURATION_SOURCE_TREE');main=sys.modules['__main__'];need(Path(main.__file__).resolve()==R.ROOT/'tools/consume_dotnet11_host_fact.py','CURATION_FIXED_CALLER');context=main.own04_common_context(spec,source,host,{'controllerSha256':R.digest(main.__file__),'profileSha256':PROFILE_SHA,'producerFactsByRid':{'linux-x64':{'factSha256':'757abf2d3dde65d10cd895cfc97eaeccb7fc11e8685b94ad046e6a8ec8829007'}}},curation=True)
+ D=diagnostics();D.mark('bootstrap',spec=spec,identities={'sourceHEAD':gate['sourceHEAD'],'sourceTree':gate['sourceTree'],'profileSHA256':PROFILE_SHA,'commonSHA256':'d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d','schemaSHA256':R.PINS['schemaSha256'],'runId':gate['runId'],'attempt':gate['attempt']},now=R.clock())
+ budget=R.Budget(spec);env=R.job_environment(root);(root/'home').mkdir(mode=0o700);env['HOME']=str(root/'home');R.bootstrap_identity();cpu=R.linux_cpu(root);R.f.cpu(cpu);D.mark('host',now=R.clock());host=R.host('linux-x64',root);D.mark('source',now=R.clock());source=R.source_context(spec['expectedCommit'],backend.run,env,budget,root,qualification=False);need(source['tree']==gate['sourceTree'],'CURATION_SOURCE_TREE');main=sys.modules['__main__'];need(Path(main.__file__).resolve()==R.ROOT/'tools/consume_dotnet11_host_fact.py','CURATION_FIXED_CALLER');D.mark('caller-context',now=R.clock());context=main.own04_common_context(spec,source,host,{'controllerSha256':R.digest(main.__file__),'profileSha256':PROFILE_SHA,'producerFactsByRid':{'linux-x64':{'factSha256':'757abf2d3dde65d10cd895cfc97eaeccb7fc11e8685b94ad046e6a8ec8829007'}}},curation=True)
+ D.mark('disk-ledger',context=context,now=R.clock())
  inv=R.read(HERE/'sdk11-normal-inputs.lock.json')['rids']['linux-x64']['input'];allocationUnit=os.statvfs(root).f_frsize;need(allocationUnit>0,'ACTUAL_ALLOCATION_UNIT');sdkNeed=sum(((r['bytes']+allocationUnit-1)//allocationUnit)*allocationUnit if r['type']=='file' else allocationUnit for r in inv['members']);need(allocationUnit==4096,'UNSUPPORTED_SCRATCH_ALLOCATION_MODEL');required=sdkNeed+sum(profile['runtimeScratchAllocationsWithoutSDK'].values());need(os.statvfs(root).f_favail>=12000,'ACTUAL_SCRATCH_INODES');free=shutil.disk_usage(root).free;need(required<=min(ownerLimit,free),'ACTUAL_PRIVATE_SCRATCH_LEDGER');R.write(root/'curation-space-before-acquisition.json',{'allocationUnit':allocationUnit,'requiredBytes':required,'freeBytes':free,'applicableCap':ownerLimit})
- phase=root/'curation';phase.mkdir(mode=0o700);total={'bodyBytes':211463422};budget.stage(1,min(300,max(1,(spec['startTick']+360000-R.clock())//1000)));normal=R.load_module('check_dotnet11','d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d');sdkDirectory=Path(os.environ['RUNNER_TEMP'])/('sdk11-normal-04-'+host['runId']+'-'+host['attempt']+'-curation');sdk,receipt=normal.transport('linux-x64',sdkDirectory,context);need(Path(sdk).is_relative_to(sdkDirectory),'OWN_SDK_ALLOCATION_SCOPE');R.write(root/'curation-sdk-input-receipt.json',receipt);need(R.digest(sdk/'sdk/11.0.100/NuGet.Packaging.dll')==PACKAGING_SHA,'CURATION_NUGET_PACKAGING_BINARY')
- budget.stage(2,max(1,(spec['startTick']+420000-R.clock())//1000));raw=_capsule(spec,manifest,contract,total,phase);roles=load_json(HERE/'producer04-linux-curation-cert-roles.json',profile['certificateRolesSHA256']);cms=[]
+ phase=root/'curation';phase.mkdir(mode=0o700);total={'bodyBytes':211463422};budget.stage(1,min(300,max(1,(spec['startTick']+360000-R.clock())//1000)));normal=R.load_module('check_dotnet11','d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d');sdkDirectory=Path(os.environ['RUNNER_TEMP'])/('sdk11-normal-04-'+host['runId']+'-'+host['attempt']+'-curation');main.safe_cause_module().require_workspace(os.environ,R.ROOT);D.mark('commontransport-enter',context=context,now=R.clock());sdk,receipt=normal.transport('linux-x64',sdkDirectory,context);D.mark('commontransport-return',now=R.clock());need(Path(sdk).is_relative_to(sdkDirectory),'OWN_SDK_ALLOCATION_SCOPE');R.write(root/'curation-sdk-input-receipt.json',receipt);D.mark('inputreceipt-write',now=R.clock());need(R.digest(sdk/'sdk/11.0.100/NuGet.Packaging.dll')==PACKAGING_SHA,'CURATION_NUGET_PACKAGING_BINARY')
+ budget.stage(2,max(1,(spec['startTick']+420000-R.clock())//1000));D.mark('capsule',now=R.clock());raw=_capsule(spec,manifest,contract,total,phase);roles=load_json(HERE/'producer04-linux-curation-cert-roles.json',profile['certificateRolesSHA256']);cms=[]
  for row in sorted(raw,key=lambda r:r['index']):
   with zipfile.ZipFile(row['path']) as z:
    item=z.getinfo('.signature.p7s');need(item.file_size<=2097152,'CURRENT_CMS_BOUND');b=z.read(item);need(digest(b)==roles['packageCMS'][row['index']]['sha256'],'CURRENT_CMS_BYTES');cms.append(b)
@@ -411,18 +431,20 @@ def run_curation_worker(spec,backend,R,Q):
  native=M.NativeCalls(spec,Q.j,phase);server=thread=None;primary=None;durable={}
  try:
   with native:
-   version=native.version();ctx,aia,crls,responses=_metadata(spec,phase,contract,A,total,Q.j);need(R.clock()<spec['startTick']+420000,'ORIGINAL_METADATA420');budget.stage(3,max(1,(spec['startTick']+630000-R.clock())//1000));fixed=int(time.time());need(abs((fixed-ctx['utcNow'])-(time.monotonic_ns()-ctx['utcAnchorMonotonicNs'])/1e9)<=300,'CURRENT_UTC_MONOTONIC_ANCHOR');dates=[__import__('email.utils',fromlist=['parsedate_to_datetime']).parsedate_to_datetime(r['date']).timestamp() for r in ctx['records'] if r['url'].startswith('https://api.nuget.org/')];need(any(abs(fixed-d)<=300 for d in dates),'FIXED_TIME_FRESH_HTTPS_BINDING');paths,chains,certs,chainproof=M.prepare_chain_files(phase/'chain',cms,roles['certificatePoolSHA256'],codepath.read_bytes(),tsapath.read_bytes(),aia,crls,fixed)
-   original=sum(p.stat().st_size for p in (phase/'metadata').rglob('*') if p.is_file());derived=sum(p.stat().st_size for p in (phase/'chain').rglob('*') if p.is_file());need(profile['durableGraphProofReserveBytes']==durable_proof_reserve() and profile['retainedProofReserveBeforeSDKBytes']==2097152+durable_proof_reserve(),'DURABLE_PROOF_RESERVE_IDENTITY');need(retention_ledger([original,derived],profile['retainedProofReserveBeforeSDKBytes'])['fits'],'ORIGINAL_METADATA_AND_PROOF8M_OVERFLOW');server,thread,dispatcher,port=_start_adapter(responses,ctx['advisoryIndex'],ctx['advisoryPages']);_private_write(phase/'nuget.audit.sources.config',config_bytes(str(phase),port));capture_durable(root,'curation/nuget.audit.sources.config',durable);M.close_external_sockets();snapshot=M.pid_snapshot(os.getpid(),spec['unit']);request={'purpose':PURPOSE,'unit':spec['unit'],'worker':snapshot,'uid':os.getuid(),'originalStartMonotonicNs':spec['startTick']*1000000,'sourceHEAD':gate['sourceHEAD'],'leaseAdmissionSHA256':gate['leaseAdmissionSHA256']};request['requestSHA256']=digest(json.dumps(request,sort_keys=True,separators=(',',':')).encode());R.write(root/'network-transition-request.json',request);os.kill(os.getpid(),signal.SIGSTOP);policy=R.read(root/'network-policy-applied.json');need(policy['requestSHA256']==request['requestSHA256'] and policy['sourceHEAD']==gate['sourceHEAD'] and policy['leaseAdmissionSHA256']==gate['leaseAdmissionSHA256'],'DENY_RESPONSE_IDENTITY');witness=M.network_witness(port,ctx['boundOfficialPeer'],snapshot,spec['unit'],policy);R.write(root/'curation-current-network-deny.json',witness);need(R.clock()<spec['startTick']+540000,'ORIGINAL_DENY540');supplement=native.verify(paths,fixed,chains,certs,witness)
+   D.mark('native',now=R.clock());version=native.version();D.mark('metadata',now=R.clock());ctx,aia,crls,responses=_metadata(spec,phase,contract,A,total,Q.j);need(R.clock()<spec['startTick']+420000,'ORIGINAL_METADATA420');budget.stage(3,max(1,(spec['startTick']+630000-R.clock())//1000));fixed=int(time.time());need(abs((fixed-ctx['utcNow'])-(time.monotonic_ns()-ctx['utcAnchorMonotonicNs'])/1e9)<=300,'CURRENT_UTC_MONOTONIC_ANCHOR');dates=[__import__('email.utils',fromlist=['parsedate_to_datetime']).parsedate_to_datetime(r['date']).timestamp() for r in ctx['records'] if r['url'].startswith('https://api.nuget.org/')];need(any(abs(fixed-d)<=300 for d in dates),'FIXED_TIME_FRESH_HTTPS_BINDING');paths,chains,certs,chainproof=M.prepare_chain_files(phase/'chain',cms,roles['certificatePoolSHA256'],codepath.read_bytes(),tsapath.read_bytes(),aia,crls,fixed)
+   original=sum(p.stat().st_size for p in (phase/'metadata').rglob('*') if p.is_file());derived=sum(p.stat().st_size for p in (phase/'chain').rglob('*') if p.is_file());need(profile['durableGraphProofReserveBytes']==durable_proof_reserve() and profile['retainedProofReserveBeforeSDKBytes']==2097152+durable_proof_reserve(),'DURABLE_PROOF_RESERVE_IDENTITY');need(retention_ledger([original,derived],profile['retainedProofReserveBeforeSDKBytes'])['fits'],'ORIGINAL_METADATA_AND_PROOF8M_OVERFLOW');server,thread,dispatcher,port=_start_adapter(responses,ctx['advisoryIndex'],ctx['advisoryPages']);_private_write(phase/'nuget.audit.sources.config',config_bytes(str(phase),port));capture_durable(root,'curation/nuget.audit.sources.config',durable);D.mark('deny',now=R.clock());M.close_external_sockets();snapshot=M.pid_snapshot(os.getpid(),spec['unit']);request={'purpose':PURPOSE,'unit':spec['unit'],'worker':snapshot,'uid':os.getuid(),'originalStartMonotonicNs':spec['startTick']*1000000,'sourceHEAD':gate['sourceHEAD'],'leaseAdmissionSHA256':gate['leaseAdmissionSHA256']};request['requestSHA256']=digest(json.dumps(request,sort_keys=True,separators=(',',':')).encode());R.write(root/'network-transition-request.json',request);os.kill(os.getpid(),signal.SIGSTOP);policy=R.read(root/'network-policy-applied.json');need(policy['requestSHA256']==request['requestSHA256'] and policy['sourceHEAD']==gate['sourceHEAD'] and policy['leaseAdmissionSHA256']==gate['leaseAdmissionSHA256'],'DENY_RESPONSE_IDENTITY');witness=M.network_witness(port,ctx['boundOfficialPeer'],snapshot,spec['unit'],policy);R.write(root/'curation-current-network-deny.json',witness);need(R.clock()<spec['startTick']+540000,'ORIGINAL_DENY540');supplement=native.verify(paths,fixed,chains,certs,witness)
    env.update({'DOTNET_ROOT':str(sdk),'DOTNET_ROOT_X64':str(sdk),'DOTNET_HOST_PATH':str(sdk/'dotnet'),'PATH':str(sdk)+os.pathsep+env['PATH'],'DOTNET_CLI_UI_LANGUAGE':'en-US','LANG':'C','LC_ALL':'C','DOTNET_NUGET_SIGNATURE_VERIFICATION':'true','NUGET_CERT_REVOCATION_MODE':'online','HTTP_PROXY':f'http://127.0.0.1:{port}','HTTPS_PROXY':f'http://127.0.0.1:{port}','NO_PROXY':'127.0.0.1,localhost','NUGET_PACKAGES':str(phase/'packages'),'NUGET_HTTP_CACHE_PATH':str(phase/'http-cache'),'NUGET_FALLBACK_PACKAGES':'','HOME':str(root/'home')});records=[];admitted={};mapping={'${SDK}':str(sdk),'${PHASE_ROOT}':str(phase),'${CHECKOUT}':str(R.ROOT)};vectors=command_plan(contract)
    def command(vector,stage):
     normal.inspect_sdk('linux-x64',sdk,context);argv=vector['argv']
     for key,val in mapping.items():argv=[str(x).replace(key,val) for x in argv]
     rec,out=_sdk_target(spec,Q,argv,R.ROOT,env,deadline_tick(spec['startTick'],R.clock(),stage,vector['secondsMax']),phase/vector['id'],[root,sdkDirectory],ownerLimit);need(not dispatcher.poisoned,'STATIC_ADAPTER_UNEXPECTED_REQUEST');stderr=(phase/vector['id']/'stderr.log').read_bytes();need(not stderr and len(out)<=32768,'SDK_STDERR_OR_REPORT_UNKNOWN');need(re.search(rb'\b(?:warning|error)\b|\bNU[0-9]{4}\b',out,re.I) is None,'SDK_WARNING_OR_AUDIT_ERROR');need(not any((R.ROOT/f).exists() for f in ['src/Admission/obj','tests/Admission.Tests/obj','src/Admission/bin','tests/Admission.Tests/bin']),'GRAPH_CHECKOUT_OUTPUT_FORBIDDEN');records.append({'id':vector['id'],'exitCode':rec['exitCode'],'processReceiptSHA256':R.digest(phase/vector['id']/'process.json'),'argvSHA256':digest(json.dumps(argv).encode())});return out
+   D.mark('signature',now=R.clock())
    for i,vector in enumerate(vectors[:3]):
     out=command(vector,630);row=contract['baseline']['rawInputs'][i];result=content_hash(out,row['id'],'11.0.0',0,row);admitted[row['id'].lower()]=result['normalizedNuGetContentHash'];records[-1]['normalized']=result
    advisory=A.advisory_guard(ctx,contract['baseline']['rawInputs'],total);need(R.clock()<spec['startTick']+630000,'ORIGINAL_SIGNATURE630');budget.stage(4,max(1,(spec['startTick']+810000-R.clock())//1000));(phase/'locks').mkdir(mode=0o700);(phase/'config').mkdir(mode=0o700)
    for flavor in ('net11','linux-x64'):_private_write(phase/'config'/('curation.'+flavor+'.props'),private_graph_props(str(R.ROOT),str(phase),flavor));capture_durable(root,'curation/config/curation.'+flavor+'.props',durable)
    lockproof=[];directPkgCount=0
+   D.mark('graph',now=R.clock())
    for vector in vectors[3:]:
     command(vector,810);lp=Path(vector['produces'].replace('${PHASE_ROOT}',str(phase)));lock=capture_durable(root,lp.relative_to(root).as_posix(),durable,json_data=True);metadata={};directPkgCount+=sum(1 for d in lock['dependencies'].values() for v in d.values() if v.get('type')=='Direct')
     for package,content in admitted.items():
@@ -432,13 +454,17 @@ def run_curation_worker(spec,backend,R,Q):
    need(R.clock()<spec['startTick']+810000 and len(records)==7,'ORIGINAL_GRAPH810');budget.stage(5,max(1,(spec['startTick']+840000-R.clock())//1000));auditRoutes={'/vuln/index.json',*['/vuln/page/'+str(i)+'.json' for i in range(len(ctx['advisoryIndex']))]};served={e['routeSHA256'] for e in dispatcher.events if e['status']==200};auditComplete=all(digest(p.encode()) in served for p in auditRoutes);packageRefs=sum(1 for f in [R.ROOT/'Directory.Build.props',R.ROOT/'src/Admission/Admission.csproj',R.ROOT/'tests/Admission.Tests/Admission.Tests.csproj'] for n in ET.fromstring(f.read_bytes()).iter() if n.tag.split('}')[-1]=='PackageReference');need(auditComplete or (packageRefs==0 and directPkgCount==0),'SDK_AUDIT_CONSUMPTION_NOT_PROVEN');auditConsumption='CONSUMED_COMPLETE_OWN_STATIC_SNAPSHOT' if auditComplete else 'NOT_APPLICABLE_NO_PACKAGE_REFERENCE';proof={'state':'LINUX_CURATED_INPUT_GRAPH_CANDIDATE_NOT_PRODUCT_ADMITTED','source':source,'SDKInputReceiptSHA256':R.digest(root/'curation-sdk-input-receipt.json'),'version':version,'currentCRLSupplement':supplement,'chainInputProof':chainproof,'network':witness,'commands':records,'locks':lockproof,'durableInputs':durable,'nativeAdvisory':advisory,'SDKAuditConsumption':auditConsumption,'metadata':ctx['records'],'adapter':dispatcher.events,'SDK_READY':False,'WindowsQualification':False,'productAdmission':False};
   R.write(root/'curation-worker.json',proof)
  except BaseException as exc:
-  primary=exc
+  primary=exc;D.bind_loaded(HERE);D.capture(exc);D.emit(root,os.environ,R.ROOT)
   try:
-   R.write(root/'curation-method-failure.json',{'state':'HOLD_NOT_INPUT_ADMITTED','durableInputs':durable,'causeCode':str(exc) if re.fullmatch('[A-Z][A-Z0-9_]{0,95}',str(exc)) else 'CURATION_PRIMARY_REDACTED','metadataRecords':ctx['records'] if 'ctx' in locals() else 'UNKNOWN_NOT_COMPLETED','SDK_READY':False})
+   R.write(root/'curation-method-failure.json',{'state':'HOLD_NOT_INPUT_ADMITTED','durableInputs':durable,'causeCode':D.nodes[0]['code'] if D.nodes else 'UNKNOWN_OR_REDACTED','metadataRecords':ctx['records'] if 'ctx' in locals() else 'UNKNOWN_NOT_COMPLETED','SDK_READY':False})
   except BaseException:pass
  finally:
   def stop_adapter():
    if server is not None:server.shutdown();server.server_close();thread.join(timeout=2);need(not thread.is_alive(),'STATIC_ADAPTER_TERMINAL_UNKNOWN')
-  if primary is not None:preserve_primary(primary,stop_adapter)
-  else:stop_adapter()
+  try:stop_adapter()
+  except BaseException as cleanup:
+   D.capture(cleanup,secondary=primary is not None);D.emit(root,os.environ,R.ROOT)
+   if primary is None:raise
+  if primary is not None:raise primary
+ D.mark('terminal',spec=spec,now=R.clock());D.emit(root,os.environ,R.ROOT)
  need(R.clock()<spec['startTick']+840000,'ORIGINAL_DURABLE840');signal.setitimer(signal.ITIMER_REAL,0)

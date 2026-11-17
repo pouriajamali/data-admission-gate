@@ -15,8 +15,24 @@ COMMON_FACT_SHA='757abf2d3dde65d10cd895cfc97eaeccb7fc11e8685b94ad046e6a8ec882900
 STAGES=['locked-tests','package','extract','package-checks','technology-checks']
 CURATION_PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 CURATION_ACTIVE=False
+CURATION_DIAGNOSTICS=None
+CURATION_SAFE_ROOT=None
+def safe_cause_module():
+ global CURATION_DIAGNOSTICS
+ if CURATION_DIAGNOSTICS is None:
+  CURATION_DIAGNOSTICS=R.load_module('curation_safe_cause04','fee4b215b7c287e3e8aa3df1217674040343fa8e553dd693a3447e0b352db207')
+  D=CURATION_DIAGNOSTICS.STATE;D.bind(CURATION_DIAGNOSTICS,R.digest(CURATION_DIAGNOSTICS.__file__),'safe-cause');D.bind(sys.modules[__name__],R.read(HERE/'dotnet11-consumer04-admission.lock.json')['controllerSha256'],'caller');D.bind_loaded(HERE)
+ return CURATION_DIAGNOSTICS
+
 def curation_module():
- return R.load_module('curate_dotnet11_linux_inputs','391910a4913a6ec1717eae87add1b5c8de47d6c8c256e2a2fe8caa224e040b96')
+ m=R.load_module('curate_dotnet11_linux_inputs','a1a98b01282441cb36cfdfd35c9c34ae0759e34451bc612d1e7c305efeebfab9');safe_cause_module().STATE.bind(m,'a1a98b01282441cb36cfdfd35c9c34ae0759e34451bc612d1e7c305efeebfab9','curation');return m
+
+def capture_curation_cause(exc,secondary=False):
+ try:
+  D=safe_cause_module().STATE;D.bind_loaded(HERE);D.capture(exc,secondary);D.emit(CURATION_SAFE_ROOT,os.environ,R.ROOT,sys.stderr.buffer);return D.nodes[0]['code'] if D.nodes else 'UNKNOWN_OR_REDACTED'
+ except BaseException:
+  sys.stderr.buffer.write(b'{"schema":"producer04-safe-original-cause/v1","state":"HOLD_SAFE_DIAGNOSTICS_UNAVAILABLE","code":"UNKNOWN_OR_REDACTED","SDK_READY":false}\n');return 'UNKNOWN_OR_REDACTED'
+
 def own04_common_context(spec,source,host,route,curation=False):
  root=Path(spec['root']);profilePath=HERE/('producer04-linux-curation.profile.json' if curation else 'dotnet11-consumer04-normal-profile.json');pinsPath=HERE/'dotnet11-consumer04-source-pins.json';profile=R.read(profilePath);pins=R.read(pinsPath)
  R.f.need(profile.get('state')=='ADMITTED_SOURCE_PROFILE' and pins.get('state')=='EXACT_SOURCE_REVIEWED','OWN04_SOURCE_PROFILE_NOT_ADMITTED')
@@ -73,10 +89,10 @@ def finish_consumer(spec,terminal,peak):
 def check_stage(name,expected):
  R.f.need(name in STAGES,'FIXED_STAGE_REQUIRED');v=R.read(R.ROOT/'artifacts/controlled-consumer04.json');R.f.source(v['source']['commit'],expected);R.f.terminal(v['terminal']);R.f.need(any(x['stage']==name and x['exitCode']==0 for x in v['stages']),'CONTROLLED_STAGE_NOT_COMPLETED')
 def consumer_worker(path):
- global CURATION_ACTIVE
+ global CURATION_ACTIVE,CURATION_SAFE_ROOT
  s=R.read(path);R.f.need(s['purpose'] in ('CONSUMER04_PRODUCT',CURATION_PURPOSE),'FIXED_CONSUMER_ROLE')
  if s['purpose']==CURATION_PURPOSE:
-  CURATION_ACTIVE=True
+  CURATION_ACTIVE=True;CURATION_SAFE_ROOT=Path(s['root']);safe_cause_module().require_workspace(os.environ,R.ROOT);safe_cause_module().STATE.mark('bootstrap',spec=s,now=R.clock())
   R.f.need(os.name!='nt','CURATION_LINUX_ONLY');curation_module().parent_admission(s['curationAdmissionPath'],s['curationAdmissionSHA256'],s['expectedCommit'])
  if os.name=='nt':
   boot=R.read(s['bootstrap']);R.f.need(Path(sys.executable).resolve()==Path(boot['pythonExe']).resolve() and R.digest(sys.executable)==boot['pythonExeSha256'] and boot['pythonSignature']=='ValidPythonSoftwareFoundationWithTimestamp','PYTHON_BOOTSTRAP_IDENTITY');consumer_work(s,Q.Backend(s));return
@@ -112,8 +128,12 @@ def win_parent(args):
  R.f.need(record['actualCap']['activeProcessesAtTeardown']==0 and record['exitCode']==0,'OWNED_AGGREGATE_TERMINAL');terminal={'workerExitCode':0,'ownedPopulation':0,'supervisorObservedTerminal':True,'typedStopResult':'success','terminalEvidenceSha256':R.digest(root/'outer-job/process.json')};finish_consumer(value,terminal,record['actualCap']['peakJobMemory'])
 
 def linux_parent(args):
+ global CURATION_SAFE_ROOT
+ if args.curation_admission:
+  safe_cause_module().STATE.mark('bootstrap',now=R.clock());safe_cause_module().require_workspace(os.environ,R.ROOT)
  R.f.need(os.name!='nt' and os.getuid()>0 and os.environ.get('RUNNER_ENVIRONMENT')=='github-hosted' and os.environ.get('RUNNER_OS')=='Linux' and Path('/proc/1/comm').read_text().strip()=='systemd' and not Path('/.dockerenv').exists(),'NAMED_UBUNTU_HOST_REQUIRED');R.host('linux-x64');R.f.source(os.environ.get('GITHUB_SHA'),args.expected_commit)
  start=int(os.environ['SDK11_QUALIFICATION_START_TICK']);R.f.need(0<=R.clock()-start<60000,'STARTUP60_EXPIRED');temp=Path(os.environ['RUNNER_TEMP']).resolve();root=temp/('admission04-sdk11-linux-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);R.a.scoped(root,temp,absent=True);root.mkdir(mode=0o700);R.f.need(root.stat().st_uid==os.getuid() and root.stat().st_gid==os.getgid() and (root.stat().st_mode&0o777)==0o700,'FRESH_PRIVATE_RUNNER_ROOT')
+ if args.curation_admission:CURATION_SAFE_ROOT=root
  unit='admission04-sdk11-ci-'+uuid.uuid4().hex;private=root/'private-spec.json';s={'purpose':'CONSUMER04_PRODUCT','rid':'linux-x64','root':str(root),'unit':unit,'uid':os.getuid(),'gid':os.getgid(),'expectedCommit':args.expected_commit,'startTick':start,'supervisorPID':os.getpid(),'supervisorStartIdentity':'proc-start:'+Q.start_identity(os.getpid())}
  if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256,'curationInputManifestPath':str(args.curation_input_manifest),'curationTokenPath':str(root/'curation-input-token')})
  if args.curation_admission:
@@ -124,7 +144,7 @@ def linux_parent(args):
   token=''
  R.write(private,s);R.write(root/'stage-0.json',{'index':0,'startedTick':start,'deadlineTick':start+60000})
  for path in [str(HERE),str(root),sys.executable]:R.f.need(not any(c in path for c in ['\n','\r','%','$','"',"'"]),'SYSTEMD_FIXED_ARGV_PATH')
- envnames=['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_REF','GITHUB_EVENT_NAME','GITHUB_EVENT_PATH','GITHUB_JOB','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_NAME','ImageOS','ImageVersion','RUNNER_TEMP'];sets=['--setenv='+k+'='+os.environ[k] for k in envnames if k in os.environ];remaining=max(1,(start+840000-R.clock())//1000);observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private])
+ envnames=['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_REF','GITHUB_EVENT_NAME','GITHUB_EVENT_PATH','GITHUB_JOB','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_NAME','ImageOS','ImageVersion','RUNNER_TEMP'];sets=safe_cause_module().forward_environment(os.environ,R.ROOT) if args.curation_admission else ['--setenv='+k+'='+os.environ[k] for k in envnames if k in os.environ];remaining=max(1,(start+840000-R.clock())//1000);observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private])
  argv=['/usr/bin/sudo','-n','/usr/bin/systemd-run','--wait','--collect','--pipe','--unit='+unit,'--uid='+str(s['uid']),'--gid='+str(s['gid']),'--property=Description='+unit,'--property=MemoryMax=4294967296','--property=MemorySwapMax=0','--property=TasksMax=64','--property=CPUQuota=200%','--property=CPUQuotaPeriodSec=100ms','--property=RuntimeMaxSec='+str(remaining),'--property=TimeoutStopSec=5','--property=KillMode=control-group','--property=WorkingDirectory='+str(R.ROOT),'--property=ExecStopPost='+observer,'--setenv=PYTHONDONTWRITEBYTECODE=1',*sets,sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--worker',str(private)]
  R.write(root/'root-starter.json',{'argv':argv,'boundary':'ExistingtrustedrootOSstarter only; fixednonrootUser/Group. Allworker/acquisition/extraction/targets/observer insideactualcgroup; norootSDK/arbitraryrootcommand/install/config.'})
  primary=None
@@ -165,8 +185,14 @@ def run_curation_linux(s,argv):
      R.f.need(call.returncode==0,'OWNED_DENY_PARENT_FAILED');R.f.need(policy['requestSHA256']==request['requestSHA256'] and policy['worker']['pid']==pid and policy['worker']['start']==held['start'],'OWNED_DENY_PARENT_RESULT');R.write(root/'network-policy-applied.json',policy);transitioned=True;signal.pidfd_send_signal(pidfd,signal.SIGCONT)
     time.sleep(.02)
    R.f.need(proc.returncode==0 and transitioned,'OWNED_CURATION_NONZERO_OR_NO_TRANSITION')
- except BaseException as exc:error=exc
- finally:terminal,stop=Q.cleanup_owned_linux(s,proc,pidfd,error is not None)
+ except BaseException as exc:error=exc;capture_curation_cause(exc)
+ finally:
+  safe_cause_module().STATE.mark('terminal',spec=s,now=R.clock())
+  try:terminal,stop=Q.cleanup_owned_linux(s,proc,pidfd,error is not None)
+  except BaseException as cleanup:
+   capture_curation_cause(cleanup,secondary=error is not None)
+   if error is None:error=cleanup
+  if terminal is None:terminal={'cleanupResult':'UNKNOWN','ownedPopulation':'UNKNOWN','workerExitCode':'UNKNOWN'}
  if error is not None or terminal['cleanupResult']!='OWNED_TERMINAL_OBSERVED' or stop is None or stop.get('serviceResult')!='success' or stop.get('exitCode')!='exited' or stop.get('exitStatus')!='0' or stop.get('remainingPopulationExcludingObserver')!=0:
   R.failure_summary(s,R.failure_code(error) if error is not None else {'exceptionType':'Denied','code':'TYPED_CURATION_TERMINAL_REQUIRED'},terminal,stop)
   if error is not None:raise error
@@ -227,10 +253,12 @@ if __name__=='__main__':
  try:main()
  except BaseException as exc:
   if CURATION_ACTIVE:
-   code=str(exc) if type(exc).__name__ in ('Hold','Denied','CapError') and re.fullmatch('[A-Z][A-Z0-9_]{0,95}',str(exc)) else 'CURATION_BOUNDED_PRIMARY_FAILURE'
-   converted=R.f.Denied(code);converted.__traceback__=exc.__traceback__;R.capture_entry_failure(converted)
+   code=capture_curation_cause(exc)
+   converted=R.f.Denied(code);converted.__traceback__=exc.__traceback__
+   try:R.capture_entry_failure(converted)
+   except BaseException as secondary:capture_curation_cause(secondary,secondary=True)
    if '--worker' not in sys.argv and '--stop-post' not in sys.argv:
     try:publish_curation_failure_data(code)
-    except BaseException:pass # a secondary proof failure must preserve the original cause
-   raise converted from None
+    except BaseException as secondary:capture_curation_cause(secondary,secondary=True)
+   raise SystemExit(1) from None
   R.capture_entry_failure(exc);raise
