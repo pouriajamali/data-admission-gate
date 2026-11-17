@@ -77,7 +77,7 @@ def certificate(data):
   b=ext['2.5.29.35'];ids=[value(b,x).hex() for x in children(b,tlv(b)) if x[0]==128];need(len(ids)<=1,'CERTIFICATE_AKI');aki=ids[0] if ids else None
  try:parts=name_parts(data,subject)
  except Hold:parts=None
- return {'sha256':sha(data),'der':data,'serialDER':raw(data,serial),'issuerDER':raw(data,issuer),'subjectDER':raw(data,subject),'subjectParts':parts,'notBefore':der_time(data,valid[0]),'notAfter':der_time(data,valid[1]),'SKI':ski,'AKI':aki}
+ return {'sha256':sha(data),'der':data,'serialDER':raw(data,serial),'issuerDER':raw(data,issuer),'subjectDER':raw(data,subject),'subjectParts':parts,'notBefore':der_time(data,valid[0]),'notAfter':der_time(data,valid[1]),'SKI':ski,'AKI':aki,'crlDistributionPointsDER':ext.get('2.5.29.31'),'SPKISHA256':sha(raw(data,t[off+5]))}
 def pem(label,data):return ('-----BEGIN '+label+'-----\n').encode()+b'\n'.join(base64.b64encode(data)[i:i+64] for i in range(0,len(base64.b64encode(data)),64))+('\n-----END '+label+'-----\n').encode()
 def bundle_certificates(blob):
  need(len(blob)<=2097152,'ROOT_BUNDLE_BOUND');blocks=re.findall(rb'-----BEGIN CERTIFICATE-----\s*([A-Za-z0-9+/=\s]+?)\s*-----END CERTIFICATE-----',blob);need(1<=len(blocks)<=1024,'ROOT_BUNDLE_FRAME');out={}
@@ -124,13 +124,48 @@ def cms_roles(blobs,approved_pool):
    matches=[c['sha256'] for c in certs.values() if (c['SKI']==item['SKI'] if 'SKI' in item else c['issuerDER']==item['issuerDER'] and c['serialDER']==item['serialDER'])];need(len(matches)==1,'CMS_SID_AMBIGUOUS_OR_MISSING');roles[item['role']].add(matches[0])
   need(roles['author']=={AUTHOR} and roles['repository']=={REPOSITORY} and 1<=len(roles['timestamp'])<=2,'CMS_ROLE_IDENTITY');tsa.update(roles['timestamp']);result.append({k:sorted(v) for k,v in roles.items()})
  need(1<=len(tsa)<=2,'TSA_ROLE_BOUND');return certs,result
+def full_name_uris(data,node):
+ need(node[0]==160,'CRL_DISTRIBUTION_POINT_KIND');names=children(data,node)
+ need(len(names)==1 and names[0][0]==160,'CRL_FULL_NAME_REQUIRED');values=children(data,names[0]);need(1<=len(values)<=4,'CRL_DISTRIBUTION_POINT_BOUND');uris=[]
+ for item in values:
+  need(item[0]==134,'CRL_URI_NAME_REQUIRED')
+  try:uri=value(data,item).decode('ascii')
+  except UnicodeError:raise Hold('CRL_URI_ENCODING') from None
+  need(len(uri)<=2048 and re.fullmatch(r'https?://[A-Za-z0-9.-]+/[A-Za-z0-9._~/-]+',uri) is not None,'CRL_URI_SHAPE');uris.append(uri)
+ need(len(set(uris))==len(uris),'CRL_DISTRIBUTION_POINT_DUPLICATE');return uris
+
+def direct_complete_crl_scope(ext):
+ # An IDP name alone is not an indirect or delta CRL (RFC5280 5.2.5).
+ # Admit only a fullName URI scope, with NO user/CA/reason/indirect/attribute
+ # restrictions. Native OpenSSL still verifies every actual chain and CRL.
+ need('2.5.29.27' not in ext,'CRL_DELTA_UNSUPPORTED')
+ if '2.5.29.28' not in ext:return []
+ data=ext['2.5.29.28'];root=tlv(data);need(root[0]==48 and root[3]==len(data),'CRL_IDP_FRAME');fields=children(data,root)
+ need(len(fields)==1 and fields[0][0]==160,'CRL_PARTIAL_INDIRECT_OR_ATTRIBUTE_SCOPE_UNSUPPORTED');return full_name_uris(data,fields[0])
+
+def certificate_crl_uris(data):
+ need(data is not None,'CRL_CERTIFICATE_DISTRIBUTION_POINT_REQUIRED');root=tlv(data);need(root[0]==48 and root[3]==len(data),'CERTIFICATE_CDP_FRAME');points=children(data,root);need(1<=len(points)<=8,'CERTIFICATE_CDP_BOUND');uris=[]
+ for point in points:
+  need(point[0]==48,'CERTIFICATE_CDP_FRAME');fields=children(data,point);need(len(fields)==1 and fields[0][0]==160,'CERTIFICATE_DIRECT_COMPLETE_CDP_REQUIRED');uris.extend(full_name_uris(data,fields[0]))
+ return uris
+
 def crl_data(data,fixed_time):
  need(len(data)<=16777216,'CRL_BOUND');root=tlv(data);need(root[0]==48 and root[3]==len(data),'CRL_FRAME');outer=children(data,root);need(len(outer)==3,'CRL_FRAME');f=children(data,outer[0]);off=1 if f[0][0]==2 else 0;need(len(f)>=off+4,'CRL_TBS');issuer=f[off+1];this=f[off+2];nxt=f[off+3];need(nxt[0] in (23,24),'CRL_NEXT_UPDATE_REQUIRED');ext={}
  for n in f[off+4:]:
   if n[0]==160:
    seq=children(data,n);need(len(seq)==1,'CRL_EXTENSIONS');ext=extensions(data,seq[0])
- need(not any(x in ext for x in ('2.5.29.27','2.5.29.28')),'CRL_INDIRECT_DELTA_OR_SCOPE_UNSUPPORTED');need('2.5.29.35' in ext,'CRL_AKI_REQUIRED');b=ext['2.5.29.35'];ids=[value(b,n).hex() for n in children(b,tlv(b)) if n[0]==128];need(len(ids)==1,'CRL_AKI_REQUIRED');start=der_time(data,this);end=der_time(data,nxt);need(start<=fixed_time+300 and end>fixed_time and start<end,'CRL_NOT_CURRENT')
- return {'der':data,'sha256':sha(data),'issuerDER':raw(data,issuer),'AKI':ids[0],'thisUpdate':start,'nextUpdate':end,'signatureStatus':'UNVERIFIED_UNTIL_NATIVE_VERIFY'}
+ scope=direct_complete_crl_scope(ext);need('2.5.29.35' in ext,'CRL_AKI_REQUIRED');b=ext['2.5.29.35'];ids=[value(b,n).hex() for n in children(b,tlv(b)) if n[0]==128];need(len(ids)==1,'CRL_AKI_REQUIRED');start=der_time(data,this);end=der_time(data,nxt);need(start<=fixed_time+300 and end>fixed_time and start<end,'CRL_NOT_CURRENT')
+ return {'der':data,'sha256':sha(data),'issuerDER':raw(data,issuer),'AKI':ids[0],'thisUpdate':start,'nextUpdate':end,'signatureStatus':'UNVERIFIED_UNTIL_NATIVE_VERIFY','distributionPointURIs':scope}
+def select_current_parent(parents,anchors):
+ need(parents,'CHAIN_ISSUER_AMBIGUOUS_OR_MISSING')
+ if len(parents)==1:return parents[0]
+ # A cross-signed certificate and an SDK-trusted root may identify the SAME
+ # issuer key. Prefer the unique existing SDK anchor only when all actual
+ # SPKI encodings match. No new roots or arbitrary same-DN parent choice.
+ trusted=[p for p in parents if p['sha256'] in anchors]
+ keys={p.get('SPKISHA256') for p in parents}
+ need(len(trusted)==1 and len(keys)==1 and None not in keys,'CHAIN_ISSUER_AMBIGUOUS_OR_MISSING');return trusted[0]
+
 def coverage(certs,anchors,crls,leaves,fixed_time):
  groups={}
  for r in crls:groups.setdefault((r['issuerDER'],r['AKI']),set()).add(r['sha256'])
@@ -141,8 +176,8 @@ def coverage(certs,anchors,crls,leaves,fixed_time):
   while True:
    need(current['sha256'] not in seen and len(chain)<8,'CHAIN_LOOP_OR_BOUND');seen.add(current['sha256']);chain.append(current['sha256']);need(current['notBefore']<=fixed_time<=current['notAfter'],'CURRENT_CERTIFICATE_VALIDITY')
    if current['sha256'] in anchors:break
-   parents=[c for c in pool.values() if c['subjectDER']==current['issuerDER'] and current['AKI'] is not None and c['SKI']==current['AKI']];need(len(parents)==1,'CHAIN_ISSUER_AMBIGUOUS_OR_MISSING');parent=parents[0]
-   matches=[r for r in crls if r['issuerDER']==parent['subjectDER'] and r['AKI']==parent['SKI']];need(matches,'CRL_CHAIN_COVERAGE_MISSING');need(len({r['sha256'] for r in matches})==1,'CRL_DUPLICATE_ISSUER_DISAGREES');used[current['sha256']]=matches[0]['sha256'];current=parent
+   parents=[c for c in pool.values() if c['subjectDER']==current['issuerDER'] and current['AKI'] is not None and c['SKI']==current['AKI']];parent=select_current_parent(parents,anchors)
+   matches=[r for r in crls if r['issuerDER']==parent['subjectDER'] and r['AKI']==parent['SKI']];need(matches,'CRL_CHAIN_COVERAGE_MISSING');need(len({r['sha256'] for r in matches})==1,'CRL_DUPLICATE_ISSUER_DISAGREES');matched=matches[0];scope=matched.get('distributionPointURIs',[]);need(not scope or bool(set(scope)&set(certificate_crl_uris(current.get('crlDistributionPointsDER')))),'CRL_NAMED_SCOPE_DOES_NOT_COVER_CERTIFICATE');used[current['sha256']]=matched['sha256'];current=parent
   chains[leaf]=chain
  return {'chains':chains,'certificateToCRLSHA256':used,'state':'STRUCTURAL_CURRENT_COVERAGE_NATIVE_SIGNATURES_REQUIRED'}
 def openssl_vectors(paths,fixed_time):
@@ -271,7 +306,7 @@ def prepare_chain_files(root,cms_blobs,approved_pool,code_bundle,timestamp_bundl
   p.chmod(0o400);return str(p)
  leafpaths={f:write(f+'.pem',pem('CERTIFICATE',certs[f]['der'])) for f in [AUTHOR,REPOSITORY,*timestamps]}
  paths={'codeRoots':write('code-roots.pem',code_bundle),'timestampRoots':write('timestamp-roots.pem',timestamp_bundle),'author':leafpaths[AUTHOR],'repository':leafpaths[REPOSITORY],'tsaLeaves':[leafpaths[f] for f in timestamps],'intermediates':write('untrusted.pem',b''.join(pem('CERTIFICATE',c['der']) for c in certs.values())),'crls':write('current-crls.pem',b''.join(pem('X509 CRL',r['der']) for r in {x['sha256']:x for x in crls}.values()))}
- proof={'state':'EXACT_ROLE_CURRENT_CRL_DATA_NATIVE_RESULTS_PENDING','roles':roles,'codeCoverage':codeplan,'timestampCoverage':tsaplan,'fixedCurrentUnixTime':fixed_time,'bundleSHA256':{'code':sha(code_bundle),'timestamp':sha(timestamp_bundle)},'inputCRLs':[{'sha256':r['sha256'],'AKI':r['AKI'],'issuerDER_SHA256':sha(r['issuerDER']),'thisUpdate':r['thisUpdate'],'nextUpdate':r['nextUpdate']} for r in crls],'fileSHA256':{k:sha(Path(p).read_bytes()) for k,p in paths.items() if isinstance(p,str)}}
+ proof={'state':'EXACT_ROLE_CURRENT_CRL_DATA_NATIVE_RESULTS_PENDING','roles':roles,'codeCoverage':codeplan,'timestampCoverage':tsaplan,'fixedCurrentUnixTime':fixed_time,'bundleSHA256':{'code':sha(code_bundle),'timestamp':sha(timestamp_bundle)},'inputCRLs':[{'sha256':r['sha256'],'AKI':r['AKI'],'issuerDER_SHA256':sha(r['issuerDER']),'thisUpdate':r['thisUpdate'],'nextUpdate':r['nextUpdate'],'distributionPointURIs':r.get('distributionPointURIs',[])} for r in crls],'fileSHA256':{k:sha(Path(p).read_bytes()) for k,p in paths.items() if isinstance(p,str)}}
  return paths,plan,allcerts,proof
 
 def close_external_sockets():

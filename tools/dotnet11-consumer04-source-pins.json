@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "b5db43fa2ed5b48bb0b3d97d0927a4e49f1a3f12"
+      "gitBlob": "2e6c4ead536133126f620c324019ad8c3a27e962"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -227,7 +227,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "8fddda5dae6dbb65fb65728645dc83df23d59f83"
+      "gitBlob": "bd0ee2a62235a0de9c33e78b4864ae0e022cc3ce"
     },
     {
       "path": "tools/curate_dotnet11_inputs.py",
@@ -237,7 +237,7 @@
     {
       "path": "tools/curate_dotnet11_linux_inputs.py",
       "mode": "100644",
-      "gitBlob": "77d23e660611f9d77a2a6f6b543c3405bbf69da5"
+      "gitBlob": "9151418c8bd651a0a205f1b2017788c8468f268f"
     },
     {
       "path": "tools/curation_advisory_source04.py",
@@ -252,7 +252,7 @@
     {
       "path": "tools/curation_linux_method.py",
       "mode": "100644",
-      "gitBlob": "80cd1e96d1b0703af256bc7b0d6fbf423d2a0a0c"
+      "gitBlob": "c7566f4e7e3d498ed86260b9016a4a6b1dcac1ea"
     },
     {
       "path": "tools/curation_public_input04.py",
@@ -465,6 +465,11 @@
       "gitBlob": "656d02ebb7b6860850c8e226dea6e182d2e84005"
     },
     {
+      "path": "tools/test_curation_direct_idp.py",
+      "mode": "100644",
+      "gitBlob": "0f2d50a7c133ed868f3bd22812943640d49e08b7"
+    },
+    {
       "path": "tools/test_curation_discovery.py",
       "mode": "100644",
       "gitBlob": "51ecfd5798fe9382a0cd7a2b2f372c274f43d960"
@@ -493,6 +498,11 @@
       "path": "tools/test_curation_range.py",
       "mode": "100644",
       "gitBlob": "e9fb16aa77aca092c62c577a3849577765d06db8"
+    },
+    {
+      "path": "tools/test_curation_same_key_parent.py",
+      "mode": "100644",
+      "gitBlob": "98c10ee135a3b7defab1f9d87c73c1566a16132c"
     },
     {
       "path": "tools/test_curation_servicing04.py",

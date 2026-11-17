@@ -227,3 +227,16 @@ Loaded helper classes are bound immediately by verified module identity, so late
 Retained official channel11 metadata from run44071519118/1 still names SDK11.0.100/runtime11.0.0, stable release2026-11-10 and active support. Three older security-tagged RC rows caused the old inequality test to misclassify them as later releases. The guard now reuses the reviewed stable-versus-bound version ordering: historical prereleases are lower than stable, while actual later security versions remain Hold. Canonical bounded versions, required release fields and exact consistent latest pointers/current release are checked; missing or malformed metadata remains Hold. SDK/runtime pins, freshness, complete advisories, CMS/PKI/normalization, locks/notices and every cap remain unchanged. No online diagnostic or healthy SDK replay is added.
 
 Known HTTP, URL, TLS and protocol exceptions now retain only exact trusted type categories, bounded numeric status/errno/verification code and fixed operation. No exception reason, URL value, raw header/body or private error text is exposed. Malformed service/repository objects fail with existing fixed Hold codes. This closes a concrete avoidable-UNKNOWN branch before the one permitted full run.
+
+
+Direct complete CRL distribution points are parsed as named scopes, not
+misclassified as indirect CRLs solely because an IssuingDistributionPoint
+extension exists. Only fullName URI lists with no partial-reason, user/CA,
+indirect or attribute restriction are admitted; their names must intersect the
+current certificate CDP. Delta and all other scoped variants remain HOLD.
+Existing native OpenSSL full-chain/current-CRL verification, NuGet CMS/timestamp
+verification, original eight certificates/SDK trust anchors, network transition,
+900s row and4GiB/CPU2/tasks64/swap0 producer limits remain mandatory.
+This data-parser correction alone is not package or product admission.
+
+A unique existing SDK trust anchor is preferred to a cross-signed issuer only when every candidate has the same actual SPKI encoding hash. Distinct keys, multiple/no matching anchors and missing key identity remain HOLD. Native OpenSSL still verifies signatures and the full current CRL chain; no root bundle or trust policy changes.
