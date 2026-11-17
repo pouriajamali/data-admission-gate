@@ -1,4 +1,4 @@
-# v0.1.0-preview.3 â€” unreleased technology candidate
+# v0.1.0-preview.3 — unreleased technology candidate
 
 Proposed source pins: SDK11.0.100, net11.0, runtime11.0.0 and stable C#15.
 This is technology maintenance of the accepted offline M1: no behavior, feature,
