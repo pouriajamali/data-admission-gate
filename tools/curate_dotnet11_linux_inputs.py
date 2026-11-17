@@ -11,13 +11,13 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='40c1c829e9d14a255ee0fdee786d58d9606b9537be7dfc7cffb79abf4a05bf39'
+PROFILE_SHA='84fb4f06c807d29d8639b08bb2e524d70dbe1b32c7e4bfb381266e44c67a9bb6'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
 PACKAGING_SHA='d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b'
 IDS=('Microsoft.AspNetCore.App.Runtime.linux-x64','Microsoft.NETCore.App.Host.linux-x64','Microsoft.NETCore.App.Runtime.linux-x64')
-METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'ed93f536995a01700fab6bf54025a94232ae4f71e056f7f9fbb31b553af6790a'}
+METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'1c64551868c4d608de22249e888d010f3ce5450e9e619bfb991be9f6d0884ae4'}
 AMENDMENT_SHA='0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770'
 class Hold(RuntimeError): pass
 def need(value,code):
@@ -242,7 +242,7 @@ def validate_lock(lock,admitted,local_source,metadata):
 METADATA_FRAMING_MODE='STRICT_SINGLE_CHUNKED_V1'
 FULL_EXECUTION_MODE='FULL_PRODUCER_CURATION'
 DIAGNOSTIC_MODE='METADATA_SERVICE_FRAMING_DIAGNOSTIC_ONLY'
-DIAGNOSTIC_PROFILE_SHA='35fd573563e975927c31b4aa0d707705874458e2b5ebc1b7a9a501481477e8e9'
+DIAGNOSTIC_PROFILE_SHA='e7269ee65f507d19cc5266131df63754f13ba4252eecebc36e69c8985f03d22d'
 DIAGNOSTIC_URL='https://api.nuget.org/v3/index.json'
 LEASE_PROTOCOL_SHA='9120ca49a0d46673053aa0ec0cdbbc6f00731d71ea0b57ddab09e8fc3ac3ac8b'
 
@@ -370,7 +370,7 @@ def diagnostic_proof_payloads(root,R):
   if not p.exists():continue
   need(not p.is_symlink() and p.is_file() and p.stat().st_size<=8388608,'DIAGNOSTIC_PROOF_FILE');body=p.read_bytes()
   if name.endswith('/result.json'):
-   value=strict_json(body,32768);e=value.get('entry',{});framing=e.get('framing');_,A=method_modules();need(A.framing_shape(framing),'DIAGNOSTIC_PROOF_FRAMING');entry={k:e[k] for k in ('url','state','rawBytes','rawSHA256','encoding','ownedHTTP') if k in e};entry['framing']=framing;value={k:value[k] for k in ('state','code','bodyBytesAfter') if k in value};value['entry']=entry;body=(json.dumps(value,separators=(',',':'))+'\n').encode()
+   value=strict_json(body,32768);e=value.get('entry',{});framing=e.get('framing');_,A=method_modules();need(A.framing_shape(framing),'DIAGNOSTIC_PROOF_FRAMING');entry={k:e[k] for k in ('url','state','rawBytes','rawSHA256','encoding','ownedHTTP','failure') if k in e};entry['framing']=framing;value={k:value[k] for k in ('state','code','bodyBytesAfter') if k in value};value['entry']=entry;body=(json.dumps(value,separators=(',',':'))+'\n').encode()
   if name=='cleanup-terminal.json':
    value=strict_json(body);value.pop('remainingBudgetMs',None);value['clockBoundary']='LEGACY_CLEANUP_FIELD_NOT_DIAGNOSTIC_AUTHORITY_SEE_ORIGINAL130';body=(json.dumps(value,separators=(',',':'))+'\n').encode()
   if name.endswith('.json') and '/service.json' not in name:
@@ -383,7 +383,7 @@ def method_modules():
  import importlib.util,sys
  out=[]
  for name,expected in METHOD_SOURCE_PINS.items():
-  p=HERE/(name+'.py');need(digest(p.read_bytes())==expected,'METHOD_HELPER_SOURCE_IDENTITY');s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m);out.append(m)
+  p=HERE/(name+'.py');need(digest(p.read_bytes())==expected,'METHOD_HELPER_SOURCE_IDENTITY');s=importlib.util.spec_from_file_location(name,p);m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m);diagnostics().bind(m,expected,name);out.append(m)
  return tuple(out)
 def method_feasibility():
  return {'state':'SOURCE_IMPLEMENTED_RUNTIME_GUARDS_REQUIRED','normalization':'SAME_THREE_SDK_VERIFY_CONTENT_HASH_OUTPUT_UNOBSERVED','blockers':[],'actualCurrentCRLNativeResults':'UNEXECUTED','actualOwnedKernelDenyAndWitness':'UNEXECUTED','advisoryHandoffSHA256':'c49f46dde2e3e0b36e0cf8c50c882f60a8434d9f6ed8a0cb378dd7c6df2701ca','nativeMethods':'One OpenSSL3 version <=2s plus two current-CRL verify operations <=10s each, exact SDK anchors and original CMS SID role mapping; NuGet remains CMS/RFC3161/Content hash authority.','networkMethod':'Same generation-stopped own worker; exact-unit runtime deny/allow, direct kernel BPF ingress/egress readback and same-unit loopback plus explicit permission-denial socket witness; timeout/unreachable alone HOLD.','SDKReady':False}

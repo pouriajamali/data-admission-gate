@@ -77,7 +77,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
  def redirect_request(self,*a,**k):raise Hold('METADATA_REDIRECT')
 def save(path,data):
  with Path(path).open('xb') as f:f.write(data)
-METADATA_PRIMARY_CODES=('ABSENT', 'ADVISORY_COMPLETE_SNAPSHOT', 'ADVISORY_EXACT_RANGE', 'ADVISORY_RANGE', 'CHUNKED', 'COMPLETE', 'CURRENT_ADVISORY_MATCH', 'DECIMAL', 'DECODED_BEFORE_PARSE', 'DEFLATE', 'DIAGNOSTIC_ORIGINAL_DEADLINE', 'DUPLICATE', 'FAILED_BEFORE_OPEN', 'GZIP', 'HOLD', 'IDENTITY', 'INVALID', 'JSON_PARSED_NOT_ADMITTED', 'METADATA_BODY_BOUND', 'METADATA_CALLER_ORIGIN_BINDING', 'METADATA_CANONICAL_SEGMENT', 'METADATA_CHILD_HOLD', 'METADATA_CHILD_OUTPUT_UNEXPECTED', 'METADATA_CHILD_RECEIPT_IDENTITY', 'METADATA_CHILD_RESULT_BOUND', 'METADATA_CHILD_WIRE_BOUND', 'METADATA_CHILD_WIRE_HASH', 'METADATA_CHUNK_BODY_BOUND', 'METADATA_CHUNK_COUNT', 'METADATA_CHUNK_DELIMITER', 'METADATA_CHUNK_PARSER_IDENTITY', 'METADATA_CHUNK_SIZE_LINE', 'METADATA_CHUNK_TERMINAL', 'METADATA_CHUNK_TRAILER_OR_TERMINATOR', 'METADATA_CLOSED_ONCE', 'METADATA_COMBINED_BYTES_CAP', 'METADATA_DUPLICATE_KEY', 'METADATA_ENCODING', 'METADATA_FRAMING_MODE', 'METADATA_FRESHNESS', 'METADATA_GET', 'METADATA_GZIP_BOUND_OR_MEMBER', 'METADATA_GZIP_EOF', 'METADATA_GZIP_PROGRESS', 'METADATA_HTTP_DATE', 'METADATA_HTTP_FRAMING', 'METADATA_HTTP_STATUS_OR_URL', 'METADATA_JSON_INVALID', 'METADATA_LENGTH', 'METADATA_LENGTH_MISMATCH', 'METADATA_NAMESPACE', 'METADATA_NONFINITE', 'METADATA_ORIGIN', 'METADATA_OWN_CHILD_CGROUP', 'METADATA_OWN_CHILD_FAILED', 'METADATA_OWN_CHILD_IDENTITY', 'METADATA_OWN_CHILD_TERMINAL', 'METADATA_OWN_MAIN_ALARM_REQUIRED', 'METADATA_PERIODIC_ALARM_UNSUPPORTED', 'METADATA_PHASE_IDENTITY', 'METADATA_REDIRECT', 'METADATA_REQUEST10_DEADLINE', 'METADATA_REQUEST_FILE', 'METADATA_REQUEST_FILE_HASH', 'METADATA_REQUEST_OUTPUT_SCOPE', 'METADATA_REQUEST_SOURCE', 'METADATA_REQUEST_SPEC_BOUND', 'METADATA_TRANSPORT_FAILURE', 'METADATA_URL', 'METADATA_URL_ALLOWLIST', 'METADATA_URL_NOT_IN_INDEX', 'MULTIPLE', 'NONE', 'NO_SELECTED_NUGET_ADVISORY_MATCH', 'NO_TRANSFER_ENCODING_V1', 'OBSERVED', 'ORIGINAL_BODY_BUDGET', 'ORIGINAL_METADATA_DEADLINE', 'OTHER', 'OVER_LIMIT', 'RAW_COMPLETE', 'RAW_PARTIAL', 'SELECTED_VERSION_NOT_STABLE', 'SIGALRM', 'STARTED', 'STRICT_SINGLE_CHUNKED_V1', 'UNKNOWN', 'UNKNOWN_OR_REDACTED', 'UNSUPPORTED_ADVISORY_VERSION', 'VULNERABILITY_INDEX_AMBIGUOUS', 'VULNERABILITY_INDEX_NOT_ALLOWLISTED', 'VULNERABILITY_INDEX_NOT_DECLARED', 'VULNERABILITY_INDEX_SHAPE', 'VULNERABILITY_PAGE_PARTITION', 'VULNERABILITY_PAGE_SELF_REFERENCE', 'VULNERABILITY_PAGE_SHAPE', 'VULNERABILITY_PAGE_TUPLE_CHANGED', 'VULNERABILITY_SERVICE_INDEX_AMBIGUOUS', 'VULNERABILITY_SERVICE_RESOURCES', 'VULNERABILITY_SUPPORTED_RESOURCE_MISSING')
+METADATA_PRIMARY_CODES=('ABSENT', 'ADVISORY_COMPLETE_SNAPSHOT', 'ADVISORY_EXACT_RANGE', 'ADVISORY_RANGE', 'BODY_READ', 'BODY_SET_TIMEOUT', 'BODY_TERMINAL', 'CHUNKED', 'COMPLETE', 'CURRENT_ADVISORY_MATCH', 'DATE_GUARD', 'DECIMAL', 'DECODED_BEFORE_PARSE', 'DEFLATE', 'DIAGNOSTIC_ORIGINAL_DEADLINE', 'DUPLICATE', 'ENCODING_GUARD', 'FAILED_BEFORE_OPEN', 'FRAMING_GUARD', 'GZIP', 'HOLD', 'IDENTITY', 'INCOMPLETE_BODY', 'INVALID', 'JSON_PARSED_NOT_ADMITTED', 'LENGTH_GUARD', 'METADATA_BODY_BOUND', 'METADATA_CALLER_ORIGIN_BINDING', 'METADATA_CANONICAL_SEGMENT', 'METADATA_CHILD_HOLD', 'METADATA_CHILD_OUTPUT_UNEXPECTED', 'METADATA_CHILD_RECEIPT_IDENTITY', 'METADATA_CHILD_RESULT_BOUND', 'METADATA_CHILD_WIRE_BOUND', 'METADATA_CHILD_WIRE_HASH', 'METADATA_CHUNK_BODY_BOUND', 'METADATA_CHUNK_COUNT', 'METADATA_CHUNK_DELIMITER', 'METADATA_CHUNK_PARSER_IDENTITY', 'METADATA_CHUNK_SIZE_LINE', 'METADATA_CHUNK_TERMINAL', 'METADATA_CHUNK_TRAILER_OR_TERMINATOR', 'METADATA_CLOSED_ONCE', 'METADATA_COMBINED_BYTES_CAP', 'METADATA_DUPLICATE_KEY', 'METADATA_ENCODING', 'METADATA_FRAMING_MODE', 'METADATA_FRESHNESS', 'METADATA_GET', 'METADATA_GZIP_BOUND_OR_MEMBER', 'METADATA_GZIP_EOF', 'METADATA_GZIP_PROGRESS', 'METADATA_HTTP_DATE', 'METADATA_HTTP_FRAMING', 'METADATA_HTTP_STATUS_OR_URL', 'METADATA_INCOMPLETE_BODY', 'METADATA_JSON_INVALID', 'METADATA_LENGTH', 'METADATA_LENGTH_MISMATCH', 'METADATA_NAMESPACE', 'METADATA_NONFINITE', 'METADATA_ORIGIN', 'METADATA_OWN_CHILD_CGROUP', 'METADATA_OWN_CHILD_FAILED', 'METADATA_OWN_CHILD_IDENTITY', 'METADATA_OWN_CHILD_TERMINAL', 'METADATA_OWN_MAIN_ALARM_REQUIRED', 'METADATA_PERIODIC_ALARM_UNSUPPORTED', 'METADATA_PHASE_IDENTITY', 'METADATA_REDIRECT', 'METADATA_REQUEST10_DEADLINE', 'METADATA_REQUEST_FILE', 'METADATA_REQUEST_FILE_HASH', 'METADATA_REQUEST_OUTPUT_SCOPE', 'METADATA_REQUEST_SOURCE', 'METADATA_REQUEST_SPEC_BOUND', 'METADATA_SOCKET_IO', 'METADATA_TRANSPORT_FAILURE', 'METADATA_TRANSPORT_TIMEOUT', 'METADATA_URL', 'METADATA_URL_ALLOWLIST', 'METADATA_URL_NOT_IN_INDEX', 'MULTIPLE', 'NONE', 'NO_SELECTED_NUGET_ADVISORY_MATCH', 'NO_TRANSFER_ENCODING_V1', 'OBSERVED', 'OPEN', 'ORIGINAL_BODY_BUDGET', 'ORIGINAL_METADATA_DEADLINE', 'OS_ERROR', 'OTHER', 'OVER_LIMIT', 'PEER', 'RAW_COMPLETE', 'RAW_PARTIAL', 'RESPONSE', 'SAVE', 'SELECTED_VERSION_NOT_STABLE', 'SIGALRM', 'SOURCE_HOLD', 'STARTED', 'STATUS_GUARD', 'STRICT_SINGLE_CHUNKED_V1', 'TIMEOUT', 'UNKNOWN', 'UNKNOWN_OR_REDACTED', 'UNSUPPORTED_ADVISORY_VERSION', 'VULNERABILITY_INDEX_AMBIGUOUS', 'VULNERABILITY_INDEX_NOT_ALLOWLISTED', 'VULNERABILITY_INDEX_NOT_DECLARED', 'VULNERABILITY_INDEX_SHAPE', 'VULNERABILITY_PAGE_PARTITION', 'VULNERABILITY_PAGE_SELF_REFERENCE', 'VULNERABILITY_PAGE_SHAPE', 'VULNERABILITY_PAGE_TUPLE_CHANGED', 'VULNERABILITY_SERVICE_INDEX_AMBIGUOUS', 'VULNERABILITY_SERVICE_RESOURCES', 'VULNERABILITY_SUPPORTED_RESOURCE_MISSING')
 
 FRAMING_LIMIT=2097152
 FRAMING_KEYS=('observationState','actualStatus','responseURLMatchesExpected','contentLengthHeaderCount','contentLengthShape','declaredContentLength','transferEncodingHeaderCount','transferEncodingCategory','contentEncodingHeaderCount','contentEncodingCategory','statusAllowed','urlAllowed','noTransferEncoding','headerCountsAllowed','applicationBodyBytesRead','primaryCode','sourceOperation','currentRequestIndex','elapsedNs')
@@ -177,32 +177,35 @@ def _wire_request(ctx,url,destination,limit,total,allowed_urls,json_data=False):
  budget(ctx);need(url in allowed_urls and url not in ctx['requested'] and len(ctx['requested'])<23,'METADATA_CLOSED_ONCE')
  ctx['requested'].add(url);opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect());headers={'Accept-Encoding':'gzip' if json_data else 'identity','User-Agent':'producer04-input-curation/1'}
  entry={'url':url,'rawBytes':0,'state':'STARTED','framing':unknown_framing()};ctx['records'].append(entry)
- request_end=ctx['deadlineMonotonicNs']
+ request_end=ctx['deadlineMonotonicNs'];entry['operation']='OPEN'
  with opener.open(urllib.request.Request(url,headers=headers),timeout=min(10,(request_end-time.monotonic_ns())/1e9)) as response:
-  entry['framing']=framing_observation(response,url,ctx.get('currentRequestIndex',len(ctx['records'])-1))
+  entry['operation']='RESPONSE';entry['framing']=framing_observation(response,url,ctx.get('currentRequestIndex',len(ctx['records'])-1))
   budget(ctx)
-  need(response.status==200 and response.geturl()==url,'METADATA_HTTP_STATUS_OR_URL')
-  chunked=admit_metadata_framing(response,ctx.get('metadataFramingMode',LEGACY_METADATA_FRAMING_MODE),limit,ctx['deadlineMonotonicNs'])
-  encoding=response.headers.get('Content-Encoding','identity').lower();need(encoding in (('identity','gzip') if json_data else ('identity',)),'METADATA_ENCODING')
-  date=response.headers.get('Date');need(date is not None and len(response.headers.get_all('Date',[]))==1,'METADATA_HTTP_DATE')
+  entry['operation']='STATUS_GUARD';need(response.status==200 and response.geturl()==url,'METADATA_HTTP_STATUS_OR_URL')
+  entry['operation']='FRAMING_GUARD';chunked=admit_metadata_framing(response,ctx.get('metadataFramingMode',LEGACY_METADATA_FRAMING_MODE),limit,ctx['deadlineMonotonicNs'])
+  entry['operation']='ENCODING_GUARD';encoding=response.headers.get('Content-Encoding','identity').lower();need(encoding in (('identity','gzip') if json_data else ('identity',)),'METADATA_ENCODING')
+  entry['operation']='DATE_GUARD';date=response.headers.get('Date');need(date is not None and len(response.headers.get_all('Date',[]))==1,'METADATA_HTTP_DATE')
   try:
    parsed=email.utils.parsedate_to_datetime(date);need(parsed.tzinfo is not None,'METADATA_HTTP_DATE');dt=parsed.timestamp()
   except (TypeError,ValueError):raise Hold('METADATA_HTTP_DATE') from None
   need(-300<=ctx['utcNow']-dt<=86400,'METADATA_FRESHNESS')
-  length=response.headers.get('Content-Length');need(length is None or (re.fullmatch(r'0|[1-9][0-9]*',length) and int(length)<=limit),'METADATA_LENGTH')
-  sock=response.fp.raw._sock;peer=sock.getpeername();ip=ipaddress.ip_address(peer[0]);entry['peerIP']=str(ip);entry['peerPort']=peer[1]
+  entry['operation']='LENGTH_GUARD';length=response.headers.get('Content-Length');need(length is None or (re.fullmatch(r'0|[1-9][0-9]*',length) and int(length)<=limit),'METADATA_LENGTH')
+  entry['operation']='PEER';sock=response.fp.raw._sock;peer=sock.getpeername();ip=ipaddress.ip_address(peer[0]);entry['peerIP']=str(ip);entry['peerPort']=peer[1]
   if url.startswith('https://api.nuget.org/') and peer[1]==443:ctx['boundOfficialPeer']=(str(ip),443)
   chunks=[];size=0
   while length is None or size<int(length):
-   budget(ctx);remaining=(request_end-time.monotonic_ns())/1e9;need(remaining>0,'METADATA_REQUEST10_DEADLINE');sock.settimeout(remaining);piece=response.read(min(65536,limit-size+1));need(time.monotonic_ns()<request_end,'METADATA_REQUEST10_DEADLINE')
+   budget(ctx);remaining=(request_end-time.monotonic_ns())/1e9;need(remaining>0,'METADATA_REQUEST10_DEADLINE');entry['operation']='BODY_SET_TIMEOUT';sock.settimeout(remaining);entry['operation']='BODY_READ';piece=response.read(min(65536,limit-size+1));need(time.monotonic_ns()<request_end,'METADATA_REQUEST10_DEADLINE')
    if not piece:break
    size+=len(piece);entry['rawBytes']=size;entry['framing']['applicationBodyBytesRead']=size;entry['state']='RAW_PARTIAL';need(size<=limit,'METADATA_BODY_BOUND');total['bodyBytes']+=len(piece);need(total['bodyBytes']<=536870912,'ORIGINAL_BODY_BUDGET');chunks.append(piece)
+   if chunked and response.own04ChunkFraming['terminated'] is True:
+    need(response.isclosed() and response.own04ChunkFraming['declaredDataBytes']==size,'METADATA_CHUNK_TERMINAL');break
+  entry['operation']='BODY_TERMINAL'
   if chunked:
    need(response.own04ChunkFraming['terminated'] is True and response.isclosed() and response.own04ChunkFraming['declaredDataBytes']==size,'METADATA_CHUNK_TERMINAL');entry['chunkFraming']=dict(response.own04ChunkFraming)
   need(length is None or size==int(length),'METADATA_LENGTH_MISMATCH');wire=b''.join(chunks)
   # Peer is recorded only when the underlying transport exposes it; never DNS re-resolve.
   entry.update(rawBytes=size,rawSHA256=sha(wire),encoding=encoding,date=date,lastModified=response.headers.get('Last-Modified'),cacheControl=response.headers.get('Cache-Control'),state='RAW_COMPLETE')
- budget(ctx);save(destination,wire);budget(ctx);return entry,wire
+ entry['operation']='SAVE';budget(ctx);save(destination,wire);budget(ctx);return entry,wire
 @contextlib.contextmanager
 def absolute_request(ctx):
  """Parent alarm covers startup and terminal handling; HTTP runs in owned child."""
@@ -218,14 +221,26 @@ def absolute_request(ctx):
   # Expiry wins even on open/header errors, zero-length bodies and return cleanup.
   if now>=end:raise Hold(code) from None
 
+METADATA_FAILURE_OPERATIONS=('UNKNOWN','OPEN','RESPONSE','STATUS_GUARD','FRAMING_GUARD','ENCODING_GUARD','DATE_GUARD','LENGTH_GUARD','PEER','BODY_SET_TIMEOUT','BODY_READ','BODY_TERMINAL','SAVE')
+
+def safe_metadata_failure(exc,operation):
+ import http.client
+ code=safe_metadata_code(exc);category='SOURCE_HOLD' if type(exc) is Hold else 'UNKNOWN';number='UNKNOWN'
+ if type(exc) in (OSError,TimeoutError,ConnectionResetError,ConnectionAbortedError,BrokenPipeError):
+  category='TIMEOUT' if type(exc) is TimeoutError else 'OS_ERROR';code='METADATA_TRANSPORT_TIMEOUT' if category=='TIMEOUT' else 'METADATA_SOCKET_IO';n=OSError.errno.__get__(exc)
+  if type(n) is int and n in (1,2,5,9,12,13,22,24,28,32,60,104,110,111):number=n
+ elif type(exc) is http.client.IncompleteRead:category='INCOMPLETE_BODY';code='METADATA_INCOMPLETE_BODY'
+ return {'code':code,'category':category,'errno':number,'operation':operation if type(operation) is str and operation in METADATA_FAILURE_OPERATIONS else 'UNKNOWN'}
+
+
 def _owned_request_child(spec):
  """Only the fixed one-shot public metadata operation; no stdout or SDK action."""
  ctx={'deadlineMonotonicNs':spec['deadlineMonotonicNs'],'deadlineCode':spec['deadlineCode'],'utcNow':spec['utcNow'],'currentRequestIndex':spec.get('currentRequestIndex',0),'metadataFramingMode':spec.get('metadataFramingMode',LEGACY_METADATA_FRAMING_MODE),'requested':set(),'records':[]};total={'bodyBytes':spec['bodyBytesBefore']};result=None;started=time.monotonic_ns()
  try:
   entry,wire=_wire_request(ctx,spec['url'],spec['wirePath'],spec['limit'],total,tuple(spec['allowedURLs']),spec['jsonData']);retain_framing(entry,'NONE',started);result={'state':'COMPLETE','entry':entry,'bodyBytesAfter':total['bodyBytes']}
  except BaseException as exc:
-  code=safe_metadata_code(exc)
-  if ctx['records']:retain_framing(ctx['records'][-1],code,started)
+  entry=ctx['records'][-1] if ctx['records'] else {'operation':'OPEN'};failure=safe_metadata_failure(exc,entry.get('operation','UNKNOWN'));code=failure['code']
+  if ctx['records']:ctx['records'][-1]['failure']=failure;retain_framing(ctx['records'][-1],code,started)
   result={'state':'HOLD','code':code,'entry':ctx['records'][-1] if ctx['records'] else {'url':spec['url'],'state':'FAILED_BEFORE_OPEN'}}
  save(spec['resultPath'],(json.dumps(result,separators=(',',':'))+'\n').encode())
 

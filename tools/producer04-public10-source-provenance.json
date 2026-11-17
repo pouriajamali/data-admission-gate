@@ -89,5 +89,16 @@
     "previousPrivateHelperSHA256": "3de1882c41521c9967382bc0837ad6846177e8a86100e73acb2c789fdd609d8a",
     "currentPrivateHelperSHA256": "ed93f536995a01700fab6bf54025a94232ae4f71e056f7f9fbb31b553af6790a",
     "rule": "Full mode only: either original no-TE path or single exact chunked, no Content-Length/Trailer ambiguity, exact stdlib response identity, <=65536 <=16hex chunk sizes bounded by original body limit, CRLF exact, no extensions/trailers, mandatory zero termination. Original origin/status/freshness/gzip/JSON/deadline/signatures/advisory/SDK/retention remain mandatory. Diagnostic stays original no-TE guard; public raw3 transport unchanged."
+  },
+  "private04BodyTerminalDelta": {
+    "state": "BOUNDED_OFFLINE_CAUSE_FIX_NO_NEW_DIAGNOSTIC",
+    "previousHelperSHA256": "ed93f536995a01700fab6bf54025a94232ae4f71e056f7f9fbb31b553af6790a",
+    "currentHelperSHA256": "1c64551868c4d608de22249e888d010f3ce5450e9e619bfb991be9f6d0884ae4",
+    "actualFailedRun": "44067619591/1",
+    "actualResultSHA256": "b76c42a087831566ace0052ae81b9781e95e87bcdb740c969fc1e3484534defa",
+    "historicalException": "UNKNOWN_NOT_RETAINED; no raw exception recovered or guessed as fact.",
+    "offlineDefect": "Completed zero chunk closes response stream/transport before returning final nonempty payload. Old outer loop sets timeout on that already-closed transport on its next iteration; closure-aware synthetic HTTPResponse reproduces OSError errno9 after1262bytes and the same UNKNOWN child result. Break only after explicit validated zero termination/closed response/exact declared byte count.",
+    "binding": "Actual source-verified module object is bound to safeTrace immediately after execution, preserving its exact Hold identity across later module reloads; same-name foreign classes remain unknown.",
+    "privacy": "Exact trusted type + finite errno/operation category only. No exception message/args/raw header/body excerpt. Original all trust/deadline/body/proof/caps remain unchanged."
   }
 }
