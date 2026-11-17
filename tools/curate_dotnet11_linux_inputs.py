@@ -11,13 +11,13 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='b153ec147e63496a7d144e858cbb28e25dbf9f8d46e742b154c08da346c71dcd'
+PROFILE_SHA='160b90e87d709f310c0e7f1955e48e8deb7a8fd58312f348283532cd82736b36'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
 PACKAGING_SHA='d7523d3ce9764ca3f27595d66ee0d0e3f40174f688c775a2c327a0bb27ffc75b'
 IDS=('Microsoft.AspNetCore.App.Runtime.linux-x64','Microsoft.NETCore.App.Host.linux-x64','Microsoft.NETCore.App.Runtime.linux-x64')
-METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'8c6313a4ae0dbb43db71b1de92624180c5fc79678a2ae50bea6cb3556c485e51'}
+METHOD_SOURCE_PINS={'curation_linux_method':'a2ed7e4bb9d643f02819907e27af0a1145e966f383f487d306b79372720f9451','curation_advisory_source04':'50416b4a399f435311faac5a6e59c923ced511cbf108f4766e1201cc26804d1f'}
 AMENDMENT_SHA='0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770'
 class Hold(RuntimeError): pass
 def need(value,code):
@@ -35,6 +35,7 @@ def strict_json(raw,limit=524288):
 def load_json(path,expected,limit=524288):
  p=Path(path);need(not p.is_symlink() and p.is_file() and p.stat().st_size<=limit,'BOUNDED_POLICY_FILE')
  raw=p.read_bytes();need(digest(raw)==expected,'POLICY_BYTES_IDENTITY');return strict_json(raw,limit)
+NAMESPACE_AMENDMENT_SHA='c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614'
 PUBLIC_TRANSPORT_SHA='002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484'
 PUBLIC_HELPER_SHA='658448fc0e981c9b1bac9efab8ed18623d4980054cb7d2358c35efac88112bb0'
 
@@ -43,7 +44,7 @@ def public_input_module():
  p=HERE/'curation_public_input04.py';need(digest(p.read_bytes())==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_HELPER_SOURCE');spec=importlib.util.spec_from_file_location('curation_public_input04',p);m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m);diagnostics().bind(m,PUBLIC_HELPER_SHA,'public-input');return m
 
 def policies():
- contract=load_json(HERE/'producer04-linux-curation.contract.json',CONTRACT_SHA);profile=load_json(HERE/'producer04-linux-curation.profile.json',PROFILE_SHA);need(profile['inputTransport']=='PUBLIC_ORIGINALS_V1' and profile['publicInputTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA and profile['publicInputHelperSHA256']==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_PROFILE');load_json(HERE/'producer04-linux-curation-public-input-transport.json',PUBLIC_TRANSPORT_SHA);return contract,profile
+ contract=load_json(HERE/'producer04-linux-curation.contract.json',CONTRACT_SHA);profile=load_json(HERE/'producer04-linux-curation.profile.json',PROFILE_SHA);need(profile['inputTransport']=='PUBLIC_ORIGINALS_V1' and profile['publicInputTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA and profile['publicInputHelperSHA256']==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_PROFILE');load_json(HERE/'producer04-linux-curation-public-input-transport.json',PUBLIC_TRANSPORT_SHA);need(profile['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'ADVISORY_NAMESPACE_PROFILE');load_json(HERE/'producer04-linux-advisory-namespace-amendment.json',NAMESPACE_AMENDMENT_SHA);return contract,profile
 
 def content_hash(stdout,package_id,version,exit_code,raw_receipt):
  """Strict English CLI shape hypothesis; released SDK output remains unobserved."""
@@ -68,16 +69,28 @@ def content_hash(stdout,package_id,version,exit_code,raw_receipt):
  need(raw_receipt.get('id')==package_id and raw_receipt.get('version')==version and re.fullmatch('[0-9a-f]{64}',raw_receipt.get('sha256','')) is not None,'VERIFY_RAW_BINDING')
  return {'id':package_id,'version':version,'rawSHA256':raw_receipt['sha256'],'normalizedNuGetContentHash':value,'algorithm':'NuGet SDK GetContentHash via same verify command; no local formula','logSHA256':digest(stdout),'cryptographicAdmission':False,'revocationCoverage':'UNKNOWN_REQUIRES_SEPARATE_METHOD'}
 
-def official_uri(url,pages=False):
+ADVISORY_INDEX_URLS=('https://api.nuget.org/v3/vulnerabilities/index.json','https://api.nuget.org/v3-vulnerabilities/index.json')
+ADVISORY_SUBTREES=('/v3/vulnerabilities/','/v3-vulnerabilities/')
+
+def _advisory_uri_shape(url,index=False):
+ need(type(url) is str and 0<len(url)<=2048 and all(33<=ord(c)<127 for c in url),'METADATA_URL')
+ u=urlsplit(url);need(url.startswith('https://api.nuget.org/') and u.scheme=='https' and u.netloc=='api.nuget.org' and not any(c in url for c in ('%','\\','?','#')),'METADATA_ORIGIN')
+ prefix=next((p for p in ADVISORY_SUBTREES if u.path.startswith(p)),None);need(prefix is not None and '//' not in u.path and u.path.endswith('.json'),'METADATA_NAMESPACE');tail=u.path[len(prefix):];parts=tail.split('/');need(1<=len(parts)<=16 and all(1<=len(p)<=128 and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*',p) is not None and '..' not in p and not p.endswith('.') for p in parts),'METADATA_CANONICAL_SEGMENT')
+ if index:need(url in ADVISORY_INDEX_URLS,'VULNERABILITY_INDEX_NOT_ALLOWLISTED')
+ else:need(url not in ADVISORY_INDEX_URLS,'VULNERABILITY_PAGE_SELF_REFERENCE')
+ return url
+
+def official_uri(url,pages=False,advisory_index=False):
+ need(not (pages and advisory_index),'FINITE_URI_ROLE')
+ if pages or advisory_index:return _advisory_uri_shape(url,index=advisory_index)
  need(type(url) is str and len(url)<=2048 and not any(ord(c)<33 for c in url),'FINITE_URI_TEXT')
  u=urlsplit(url)
  need(u.scheme=='https' and u.netloc=='api.nuget.org' and not u.query and not u.fragment and '%' not in url and '\\' not in url,'FINITE_OFFICIAL_ORIGIN')
  need(u.path.startswith('/') and '//' not in u.path and all(p not in ('.','..') for p in u.path.split('/')),'FINITE_URI_PATH')
- if pages: need(u.path.startswith('/v3-vulnerabilities/') and u.path.endswith('.json'),'FINITE_VULNERABILITY_NAMESPACE')
  return url
 def finite_manifest(contract,repo_url,vuln_url,page_urls,certificate_url=None):
  need(type(page_urls) is list and 1<=len(page_urls)<=8,'FINITE_COMPLETE_PAGES')
- dynamic=[official_uri(repo_url),official_uri(vuln_url,pages=True),*[official_uri(x,pages=True) for x in page_urls]]
+ dynamic=[official_uri(repo_url),official_uri(vuln_url,advisory_index=True),*[official_uri(x,pages=True) for x in page_urls]]
  if certificate_url is not None: dynamic.append(official_uri(certificate_url))
  fixed=[x['url'] for x in contract['finiteMetadataAcquisition']['sdkMetadataOnly']]
  pki=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];urls=fixed+dynamic+pki
@@ -237,10 +250,11 @@ def method_feasibility():
 def require_method():
  method_modules();load_json(HERE/'producer04-linux-curation-method-amendment.json',AMENDMENT_SHA)
 def validate_admission(gate,expected_head,profile_sha):
- required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce','inputTransport','publicTransportAmendmentSHA256'}
+ required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce','inputTransport','publicTransportAmendmentSHA256','advisoryNamespaceAmendmentSHA256'}
  need(type(gate) is dict and set(gate)==required,'CURATION_GATE_SCHEMA')
  need(all(type(v) is str for v in gate.values()),'CURATION_GATE_VALUE_TYPES')
  need(gate['schema']=='producer04-linux-curation-execution-admission/v1' and gate['state']=='EXACT_SOURCE_RUNTIME_BOUND' and gate['purpose']==PURPOSE,'CURATION_GATE_STATE_PURPOSE')
+ need(gate['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'ADVISORY_NAMESPACE_GATE')
  need(gate['inputTransport']=='PUBLIC_ORIGINALS_V1' and gate['publicTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA,'PUBLIC_INPUT_GATE')
  need(gate['sourceHEAD']==expected_head and re.fullmatch('[0-9a-f]{40}',expected_head or '') is not None,'CURATION_GATE_HEAD')
  need(gate['contractSHA256']==CONTRACT_SHA and gate['amendmentSHA256']==AMENDMENT_SHA and gate['profileSHA256']==profile_sha,'CURATION_GATE_POLICY')
@@ -344,7 +358,7 @@ def _capsule(spec,manifest,contract,total,phase):
 def _metadata(spec,phase,contract,A,total,job):
  import email.utils
  root=phase/'metadata';root.mkdir(mode=0o700);fixed=contract['finiteMetadataAcquisition']['sdkMetadataOnly'];pki=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];requestroot=root/'owned-http';requestroot.mkdir(mode=0o700);ctx={'ownedJob':job,'requestWorkRoot':str(requestroot),'requestCwd':str(phase),'requestEnvironment':{'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','HOME':str(Path(spec['root'])/'home'),'TMPDIR':str(Path(spec['root'])/'tmp'),'PYTHONDONTWRITEBYTECODE':'1'},'deadlineMonotonicNs':spec['startTick']*1000000+420000000000,'utcNow':time.time(),'utcAnchorMonotonicNs':time.monotonic_ns(),'requested':set(),'records':[],'allowedURLs':{x['url'] for x in fixed}|set(pki)}
- _,service=A.bounded_json_get(ctx,fixed[0]['url'],root/'service.json',2097152,total,'service-index');resources=service.get('resources');need(type(resources) is list,'SERVICE_RESOURCES')
+ _,service=A.bounded_json_get(ctx,fixed[0]['url'],root/'service.json',2097152,total,'service-index');resources=service.get('resources');need(type(resources) is list,'SERVICE_RESOURCES');ctx['advisoryServiceResources']=resources
  def resource(prefix):
   rows=[r for r in resources if type(r) is dict and type(r.get('@type')) is str and r['@type'].startswith(prefix)];need(rows,'OFFICIAL_RESOURCE_MISSING');versions={}
   for r in rows:
@@ -352,14 +366,14 @@ def _metadata(spec,phase,contract,A,total,job):
    if r['@type'] not in ('RepositorySignatures/5.0.0','VulnerabilityInfo/6.7.0'):continue
    need(re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',v),'OFFICIAL_RESOURCE_VERSION');u=r.get('@id');official_uri(u);versions.setdefault(tuple(map(int,v.split('.'))),set()).add(u)
   need(versions,'SUPPORTED_OFFICIAL_RESOURCE_MISSING');urls=versions[max(versions)];need(len(urls)==1,'OFFICIAL_RESOURCE_AMBIGUOUS');return next(iter(urls))
- repo=resource('RepositorySignatures/');vuln=resource('VulnerabilityInfo/');official_uri(vuln,True);ctx['allowedURLs'].update((repo,vuln));_,repository=A.bounded_json_get(ctx,repo,root/'repository.json',2097152,total,'repository-index');indexrec,index=A.bounded_json_get(ctx,vuln,root/'vulnerability-index.json',2097152,total,'vulnerability-index');urls=A.advisory_index_urls(index)
+ repo=resource('RepositorySignatures/');vuln=A.select_advisory_index(resources);official_uri(vuln,advisory_index=True);ctx['advisoryIndexURI']=vuln;ctx['allowedURLs'].update((repo,vuln));_,repository=A.bounded_json_get(ctx,repo,root/'repository.json',2097152,total,'repository-index');indexrec,index=A.bounded_json_get(ctx,vuln,root/'vulnerability-index.json',2097152,total,'vulnerability-index');urls=A.advisory_index_urls(index,vuln);ctx['advisoryIndex']=index;ctx['advisoryPageURLs']=urls
  for item in index:
   try:updated=A.datetime.datetime.fromisoformat(item['@updated'].replace('Z','+00:00'))
   except ValueError:raise Hold('VULNERABILITY_UPDATED_TIME') from None
   need(updated.tzinfo is not None and updated.timestamp()<=ctx['utcNow']+300,'VULNERABILITY_FUTURE_TIME')
  ctx['allowedURLs'].update(urls);pages={};used=indexrec['rawBytes']+indexrec['decodedBytes']
  for i,u in enumerate(urls):
-  rec,data=A.bounded_json_get(ctx,u,root/('vulnerability-page-'+str(i)+'.json'),33554432-used,total,'vulnerability-page-'+str(i),urls);used+=rec['rawBytes']+rec['decodedBytes'];pages[u]=data
+  A.admit_metadata_url(u,urls);rec,data=A.bounded_json_get(ctx,u,root/('vulnerability-page-'+str(i)+'.json'),33554432-used,total,'vulnerability-page-'+str(i),urls);used+=rec['rawBytes']+rec['decodedBytes'];pages[u]=data
  _,servicing=A.bounded_json_get(ctx,fixed[1]['url'],root/'servicing.json',4194304,total,'servicing')
  certificates=repository.get('signingCertificates');need(type(certificates) is list and any(str(c.get('fingerprints',{}).get('2.16.840.1.101.3.4.2.1','')).lower()==REPOSITORY.lower() for c in certificates if type(c) is dict),'CURRENT_REPOSITORY_SIGNER_MISSING')
  need(servicing.get('channel-version')=='11.0' and servicing.get('support-phase') in ('active','maintenance'),'SERVICING_CHANNEL_NOT_SUPPORTED');releases=servicing.get('releases');need(type(releases) is list and releases,'SERVICING_RELEASES')

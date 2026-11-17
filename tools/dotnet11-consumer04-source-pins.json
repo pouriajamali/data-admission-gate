@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "70a2556204351e915b0991aa5abf95abd6b3b63e"
+      "gitBlob": "032c3d5bbe23a709b93669ceaceba32f2fd3a53e"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -102,12 +102,12 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "b7fd75b65e66ff3e27f114e3943f2294df65dfcc"
+      "gitBlob": "3e387af1ab68e0241acfaa5866e0da6ef57651d2"
     },
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "5c0405ee2200c6d44719767fe7e57916d131dae7"
+      "gitBlob": "ebb84fe972face6417ea89d17d4d38885c4b5855"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -227,7 +227,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "ffb5cb11bf9feefaac5851c13ae4622cb6005af8"
+      "gitBlob": "2e6f72576c32cc31b4434b0c127a1ebe1eea7f32"
     },
     {
       "path": "tools/curate_dotnet11_inputs.py",
@@ -237,12 +237,12 @@
     {
       "path": "tools/curate_dotnet11_linux_inputs.py",
       "mode": "100644",
-      "gitBlob": "294f78f2467a47be22b5cf1c3a6516b8e03fd01b"
+      "gitBlob": "ecad706886b367e7c3aeda394eb9f78055b4ba56"
     },
     {
       "path": "tools/curation_advisory_source04.py",
       "mode": "100644",
-      "gitBlob": "2f327295305bfb61ad1293294e264d7e5969c664"
+      "gitBlob": "049a5deab59c061cce874f497083d0e50cce7824"
     },
     {
       "path": "tools/curation_data_inspector.py",
@@ -267,12 +267,12 @@
     {
       "path": "tools/curation_safe_cause04.py",
       "mode": "100644",
-      "gitBlob": "364c2545aeb9fd7e223f098cc3501ac5d2d87ea6"
+      "gitBlob": "88c858d01bf1ec52d462b091ef9be22cd3806b2e"
     },
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
-      "gitBlob": "4f68148cbd7c03618db44c29b6e04e501140060a"
+      "gitBlob": "5eb1d9562190ec8ff6c2373b8136ca168055393d"
     },
     {
       "path": "tools/dotnet11-consumer04-normal-profile.json",
@@ -330,9 +330,14 @@
       "gitBlob": "811971005515255e51f16f4671de21a2e5bff0d5"
     },
     {
+      "path": "tools/producer04-linux-advisory-namespace-amendment.json",
+      "mode": "100644",
+      "gitBlob": "27367aef0197f1a1da0c1d296af64e10c56efc42"
+    },
+    {
       "path": "tools/producer04-linux-curation-admission.schema.json",
       "mode": "100644",
-      "gitBlob": "9d00079bad942f7c84b4847be32d9c7594a0b579"
+      "gitBlob": "c82144743a624d845ab2926c06968f1a59310fe3"
     },
     {
       "path": "tools/producer04-linux-curation-cert-roles.json",
@@ -357,12 +362,12 @@
     {
       "path": "tools/producer04-linux-curation.profile.json",
       "mode": "100644",
-      "gitBlob": "bdeb1b8741aedb167d018d46fb0fc6e3c5a8cd95"
+      "gitBlob": "58336cc797a3c30888bc5e67a3d4804277f32fa9"
     },
     {
       "path": "tools/producer04-public10-source-provenance.json",
       "mode": "100644",
-      "gitBlob": "1f90b7af50012db1da01dda8560db019915951ca"
+      "gitBlob": "6c69ba17cb739fd7b0a4b045c1ff7d0334e894cb"
     },
     {
       "path": "tools/producer04-runtime-range-contract.json",
@@ -433,6 +438,11 @@
       "path": "tools/test_actionlint_admission.py",
       "mode": "100644",
       "gitBlob": "ed8d9360be2d9c88440dc9364d35653d82b1074f"
+    },
+    {
+      "path": "tools/test_curation_advisory_namespace04.py",
+      "mode": "100644",
+      "gitBlob": "834fe9cbca7396eb023ee1c4d0d84f5e48e17354"
     },
     {
       "path": "tools/test_curation_causal_r1r2.py",

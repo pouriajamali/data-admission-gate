@@ -11,19 +11,36 @@ class Hold(RuntimeError):pass
 def need(v,code,*redacted):
  if not v:raise Hold(code)
 def sha(b):return hashlib.sha256(b).hexdigest()
-def canonical_metadata_url(url):
- need(type(url) is str and len(url)<=2048 and not any(ord(c)<33 for c in url),'METADATA_URL')
- u=urlsplit(url);need(u.scheme=='https' and u.netloc=='api.nuget.org' and not u.query and not u.fragment and '%' not in url and '\\' not in url and '..' not in u.path.split('/') and '//' not in u.path,'METADATA_ORIGIN')
- need(u.path.startswith('/v3-vulnerabilities/') and u.path.endswith('.json'),'METADATA_NAMESPACE');return url
-def advisory_index_urls(pages):
- need(type(pages) is list and 1<=len(pages)<=8,'VULNERABILITY_PAGE_PARTITION')
+NAMESPACE_AMENDMENT_SHA='c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614'
+ADVISORY_INDEX_URLS=('https://api.nuget.org/v3/vulnerabilities/index.json','https://api.nuget.org/v3-vulnerabilities/index.json')
+ADVISORY_SUBTREES=('/v3/vulnerabilities/','/v3-vulnerabilities/')
+
+def advisory_uri_shape(url,index=False):
+ need(type(url) is str and 0<len(url)<=2048 and all(33<=ord(c)<127 for c in url),'METADATA_URL')
+ u=urlsplit(url);need(url.startswith('https://api.nuget.org/') and u.scheme=='https' and u.netloc=='api.nuget.org' and not any(c in url for c in ('%','\\','?','#')),'METADATA_ORIGIN')
+ prefix=next((p for p in ADVISORY_SUBTREES if u.path.startswith(p)),None);need(prefix is not None and '//' not in u.path and u.path.endswith('.json'),'METADATA_NAMESPACE');tail=u.path[len(prefix):];parts=tail.split('/');need(1<=len(parts)<=16 and all(1<=len(p)<=128 and re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*',p) is not None and '..' not in p and not p.endswith('.') for p in parts),'METADATA_CANONICAL_SEGMENT')
+ if index:need(url in ADVISORY_INDEX_URLS,'VULNERABILITY_INDEX_NOT_ALLOWLISTED')
+ else:need(url not in ADVISORY_INDEX_URLS,'VULNERABILITY_PAGE_SELF_REFERENCE')
+ return url
+
+def advisory_index_url(url):return advisory_uri_shape(url,index=True)
+def canonical_metadata_url(url):return advisory_uri_shape(url,index=False)
+
+def select_advisory_index(resources):
+ need(type(resources) is list,'VULNERABILITY_SERVICE_RESOURCES');eligible=[r for r in resources if type(r) is dict and r.get('@type')=='VulnerabilityInfo/6.7.0'];need(eligible,'VULNERABILITY_SUPPORTED_RESOURCE_MISSING');urls={advisory_index_url(r.get('@id')) for r in eligible};need(len(urls)==1,'VULNERABILITY_SERVICE_INDEX_AMBIGUOUS');return next(iter(urls))
+
+def advisory_index_urls(pages,index_uri):
+ advisory_index_url(index_uri);need(type(pages) is list and 1<=len(pages)<=8,'VULNERABILITY_PAGE_PARTITION')
  need(all(type(p) is dict and type(p.get('@id')) is str and type(p.get('@name')) is str and re.fullmatch(r'[A-Za-z0-9_-]{1,64}',p['@name']) and type(p.get('@updated')) is str and 1<=len(p['@updated'])<=128 for p in pages),'VULNERABILITY_INDEX_SHAPE')
  urls=tuple(canonical_metadata_url(p['@id']) for p in pages)
  need(len(set(urls))==len(urls) and len({p['@name'] for p in pages})==len(pages),'VULNERABILITY_INDEX_AMBIGUOUS');return urls
+
 def admit_metadata_url(url,allowed_urls):
  need(type(allowed_urls) is tuple and 1<=len(allowed_urls)<=8 and len(set(allowed_urls))==len(allowed_urls),'METADATA_URL_ALLOWLIST')
  for u in allowed_urls:canonical_metadata_url(u)
  canonical_metadata_url(url);need(url in allowed_urls,'METADATA_URL_NOT_IN_INDEX');return url
+
+
 def stable_compare(version,bound):
  need(type(version) is str and re.fullmatch(r'\d+(?:\.\d+){0,3}',version) is not None,'SELECTED_VERSION_NOT_STABLE')
  m=re.fullmatch(r'(\d+(?:\.\d+){0,3})(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?',bound);need(m is not None,'UNSUPPORTED_ADVISORY_VERSION')
@@ -131,13 +148,17 @@ def bounded_get(ctx,url,destination,limit,total,allowed_urls,json_data=False):
 
 def bounded_json_get(ctx,url,destination,limit,total,phase,allowed_urls=None):
  need(phase in ('service-index','repository-index','vulnerability-index','servicing') or re.fullmatch(r'vulnerability-page-[0-7]',phase),'METADATA_PHASE_IDENTITY')
+ if phase=='vulnerability-index':
+  declared=select_advisory_index(ctx.get('advisoryServiceResources'));need(url==ctx.get('advisoryIndexURI')==declared and (allowed_urls is None or allowed_urls==(declared,)),'VULNERABILITY_INDEX_NOT_DECLARED')
+ elif phase.startswith('vulnerability-page-'):
+  declared=select_advisory_index(ctx.get('advisoryServiceResources'));need(ctx.get('advisoryIndexURI')==declared,'VULNERABILITY_INDEX_NOT_DECLARED');closed=advisory_index_urls(ctx.get('advisoryIndex'),declared);need(type(ctx.get('advisoryPageURLs')) is tuple and ctx['advisoryPageURLs']==closed and allowed_urls==closed,'VULNERABILITY_PAGE_TUPLE_CHANGED');admit_metadata_url(url,closed)
  allowed=allowed_urls or (url,);need(url in ctx['allowedURLs'] and url in allowed,'METADATA_CALLER_ORIGIN_BINDING')
  entry,wire=bounded_get(ctx,url,Path(str(destination)+'.wire'),limit,total,allowed,json_data=True)
  decoded=decode_json(wire,entry['encoding'],limit-len(wire));total['bodyBytes']+=len(decoded);need(total['bodyBytes']<=536870912,'ORIGINAL_BODY_BUDGET');entry.update(decodedBytes=len(decoded),decodedSHA256=sha(decoded),phase=phase,state='DECODED_BEFORE_PARSE');save(destination,decoded)
  data=strict_json(decoded);budget(ctx);entry['state']='JSON_PARSED_NOT_ADMITTED';return dict(entry),data
 def advisory_guard(ctx,specs,total):
  """Use already retained complete service/index/pages; no duplicate source10 GET."""
- selected={x['id'].lower():x['version'] for x in specs};pages=ctx['advisoryPages'];urls=advisory_index_urls(ctx['advisoryIndex'])
+ declared=select_advisory_index(ctx.get('advisoryServiceResources'));need(ctx.get('advisoryIndexURI')==declared,'VULNERABILITY_INDEX_NOT_DECLARED');selected={x['id'].lower():x['version'] for x in specs};pages=ctx['advisoryPages'];urls=advisory_index_urls(ctx['advisoryIndex'],declared);need(type(ctx.get('advisoryPageURLs')) is tuple and ctx['advisoryPageURLs']==urls,'VULNERABILITY_PAGE_TUPLE_CHANGED')
  need(set(pages)==set(urls),'ADVISORY_COMPLETE_SNAPSHOT')
  for url in urls:
   admit_metadata_url(url,urls);data=vulnerability_page_entries(pages[url])

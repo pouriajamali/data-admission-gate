@@ -62,5 +62,14 @@
     "Stable selected versions only; known prerelease-bound limitation retained; unrecognized inputs HOLD.",
     "Complete original snapshot, strict JSON/gzip, per-request10s, no proxies/auth/redirects and no semantic clean placeholder."
   ],
-  "actualSource10ImportOrRuntime": false
+  "actualSource10ImportOrRuntime": false,
+  "private04NamespaceDelta": {
+    "state": "PRIVATE04_NAMESPACE_CORRECTION_ONLY_ORIGINAL_PUBLIC10_EVIDENCE_IMMUTABLE",
+    "baselinePrivateHelperSHA256": "8c6313a4ae0dbb43db71b1de92624180c5fc79678a2ae50bea6cb3556c485e51",
+    "currentPrivateHelperSHA256": "50416b4a399f435311faac5a6e59c923ced511cbf108f4766e1201cc26804d1f",
+    "namespaceAmendmentSHA256": "c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614",
+    "retainedServiceSHA256": "5e763505b0587d013ddda3ddb24e80d3c6590ac6ce60916d4278fb9df018e07f",
+    "supersedesPrivateAdaptationClaimAtIndex": 1,
+    "correction": "The earlier private adaptation claim did not establish URI eligibility: e9 rejected actual official /v3/vulnerabilities/index.json. New private04 code admits only one current-service-declared index from exact2allowlist and exact1..8 declared page tuple in explicit2subtrees. Public10 source/commit/excerpt/license/origin and range/evaluation code unchanged."
+  }
 }

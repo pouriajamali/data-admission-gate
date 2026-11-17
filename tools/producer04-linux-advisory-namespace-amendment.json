@@ -1,0 +1,60 @@
+{
+  "schema": "producer04-advisory-namespace-amendment/v1",
+  "state": "SOURCE_BOUND_NAMESPACE_ONLY_NOT_RUNTIME_AUTHORITY",
+  "allowanceSHA256": "08a1248d051eb33b87f7c2b2f8270f23a859fb5dbee7fb6a9515ffc182bb97e9",
+  "parentContractSHA256": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241",
+  "cryptoMethodAmendmentSHA256": "0ced5ea8dfe74fed6125c0fba8f0398f592f1d395cca4aee061f3f10346e0770",
+  "publicOriginalsAmendmentSHA256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484",
+  "resourceType": "VulnerabilityInfo/6.7.0",
+  "indexURIAllowlist": [
+    "https://api.nuget.org/v3/vulnerabilities/index.json",
+    "https://api.nuget.org/v3-vulnerabilities/index.json"
+  ],
+  "pageNamespaces": [
+    "/v3/vulnerabilities/",
+    "/v3-vulnerabilities/"
+  ],
+  "origin": "https://api.nuget.org",
+  "eligibility": "Only one exact current-service-declared supported index; conflicting supported URIs HOLD, identical duplicates explicitly deduplicated. Never both/probed/fallback indices.",
+  "pages": "Closed immutable tuple of1..8 distinct exact IDs and distinct names from that full index; only exact tuple members in the two explicit canonical subtrees/.json. No service/index self-reference, arbitrary/v3 JSON, traversal/alias/percent/backslash/doubleslash/control/userinfo/query/fragment/port/origin case tricks.",
+  "retainedServiceEvidence": {
+    "path": "E:\\Codex WorkSpace\\Git Projects\\portfolio-management\\development-management-20261110\\wave4-state\\project04-public-e9-curation-once-20261117\\proof-linux-x64\\sdk11-curation-linux-x64\\curation\\metadata\\service.json",
+    "bytes": 9431,
+    "sha256": "5e763505b0587d013ddda3ddb24e80d3c6590ac6ce60916d4278fb9df018e07f",
+    "resourceType": "VulnerabilityInfo/6.7.0",
+    "resourceURI": "https://api.nuget.org/v3/vulnerabilities/index.json"
+  },
+  "unchangedEnvelope": {
+    "externalMetadataGETsMax": 23,
+    "metadataInflightMax": 2,
+    "metadataRequestSecondsMax": 10,
+    "metadataAbsoluteAcquisitionEndSeconds": 420,
+    "indexCountMax": 1,
+    "pageCountMax": 8,
+    "allAdvisoryRawPlusDecodedBytesMax": 33554432,
+    "serviceAndRepositoryEachRawPlusDecodedBytesMax": 2097152,
+    "allBodiesOriginalCapBytes": 536870912,
+    "rawPublicGETsMax": 3,
+    "rawPublicBodyBytesExact": 60404733,
+    "rawRequestSecondsMax": 45,
+    "rawAggregateSecondsMax": 135,
+    "SDKCommandsMax": 7,
+    "OpenSSLCommandsMax": 3,
+    "rowWorkerTerminalSeconds": [
+      900,
+      840,
+      60
+    ],
+    "memoryBytes": 4294967296,
+    "tasksMax": 64,
+    "CPUEquivalentMax": 2,
+    "swapBytes": 0,
+    "sourceScratchBytesMax": 268435456,
+    "linuxScratchBytesMax": 2147483648,
+    "proofBytesMax": 8388608,
+    "retentionDays": 3,
+    "newBodiesOrMetadataGETs": 0,
+    "rule": "Next runtime could use only original one advisory index and original up to8 declared pages within SAME23 total; no24th request, new index/page retries/HEAD/ranges/redirects/auth/proxy or resource budget increase."
+  },
+  "truthBoundary": "Retained service is SOURCE fixture only. Future full/current index/pages/audit/PKI outcomes remainUNKNOWN; all consumed runtime gates closed."
+}

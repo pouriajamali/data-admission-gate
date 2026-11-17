@@ -18,7 +18,8 @@
     "amendmentSHA256",
     "dispatchNonce",
     "inputTransport",
-    "publicTransportAmendmentSHA256"
+    "publicTransportAmendmentSHA256",
+    "advisoryNamespaceAmendmentSHA256"
   ],
   "properties": {
     "schema": {
@@ -42,7 +43,7 @@
       "const": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
     },
     "profileSHA256": {
-      "const": "b153ec147e63496a7d144e858cbb28e25dbf9f8d46e742b154c08da346c71dcd"
+      "const": "160b90e87d709f310c0e7f1955e48e8deb7a8fd58312f348283532cd82736b36"
     },
     "inputManifestSHA256": {
       "type": "string",
@@ -72,6 +73,9 @@
     },
     "publicTransportAmendmentSHA256": {
       "const": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484"
+    },
+    "advisoryNamespaceAmendmentSHA256": {
+      "const": "c5bce32345d471e6f417a78fad5a89b2ec39eb70a2d2d2e4a3a79e56f4d61614"
     }
   },
   "$defs": {
