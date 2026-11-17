@@ -236,7 +236,15 @@ def network_witness(port,peer,before,unit,policy):
    data+=b
   need(data.startswith(b'HTTP/1.0 200 ') and b'\r\n\r\n' in data,'DENY_LOOPBACK_HTTP');positive=data.split(b'\r\n\r\n',1)[1]
  ip=ipaddress.ip_address(peer[0]);family=socket.AF_INET6 if ip.version==6 else socket.AF_INET
- with socket.socket(family,socket.SOCK_STREAM) as s:s.settimeout(max(.001,3-(time.monotonic()-started)));negative=s.connect_ex((str(ip),443))
+ # cgroup skb egress filters packets. TCP SYN failures may be retried by TCP;
+ # UDP sendto propagates the local egress permission error synchronously.
+ # One zero-payload datagram, same already-bound peer/port, no response wait.
+ with socket.socket(family,socket.SOCK_DGRAM) as s:
+  s.settimeout(max(.001,3-(time.monotonic()-started)));negative=0
+  try:s.sendto(b'',(str(ip),443))
+  except OSError as error:
+   if error.errno not in (errno.EPERM,errno.EACCES):raise
+   negative=error.errno
  need(time.monotonic()-started<=3,'DENY_WITNESS_TIME');return witness_result(positive,negative,before,pid_snapshot(os.getpid(),unit),peer,policy)
 
 class NativeCalls:

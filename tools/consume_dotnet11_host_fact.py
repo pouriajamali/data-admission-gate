@@ -20,12 +20,12 @@ CURATION_SAFE_ROOT=None
 def safe_cause_module():
  global CURATION_DIAGNOSTICS
  if CURATION_DIAGNOSTICS is None:
-  CURATION_DIAGNOSTICS=R.load_module('curation_safe_cause04','ea3c07f6eb03ac327f3bf772916a7ecd4f730e7bb92aa84c5621ec755d646343')
+  CURATION_DIAGNOSTICS=R.load_module('curation_safe_cause04','e4737b4137482a727b903e919cdd422ccb7f73b0dcb72f57147b6936e461eade')
   D=CURATION_DIAGNOSTICS.STATE;D.bind(CURATION_DIAGNOSTICS,R.digest(CURATION_DIAGNOSTICS.__file__),'safe-cause');D.bind(sys.modules[__name__],R.read(HERE/'dotnet11-consumer04-admission.lock.json')['controllerSha256'],'caller');D.bind_loaded(HERE)
  return CURATION_DIAGNOSTICS
 
 def curation_module():
- m=R.load_module('curate_dotnet11_linux_inputs','5d4eef752ae53f8bedb6fe94edf488cf212b70e0fbdce5d93e0d6becf6a31c26');safe_cause_module().STATE.bind(m,'5d4eef752ae53f8bedb6fe94edf488cf212b70e0fbdce5d93e0d6becf6a31c26','curation');return m
+ m=R.load_module('curate_dotnet11_linux_inputs','88427b7707979039d0037bb1635d78cfdb5bdb95fce664e9869dd0dc55521fd9');safe_cause_module().STATE.bind(m,'88427b7707979039d0037bb1635d78cfdb5bdb95fce664e9869dd0dc55521fd9','curation');return m
 
 def capture_curation_cause(exc,secondary=False):
  try:
