@@ -408,11 +408,6 @@ with the documented original caps. A separately owner-approved Windows04
 qualification is experimental on26H2/build26300.9974; formal .NET11 support is
 not confirmed. Neither fact alone establishes preview.3 product delivery.
 
-Windows04 local qualification passed five SDK commands and stopped at restore
-(null NuGet path1). Six attempts were consumed; build/hello did not run. The
-[prepared three-command continuation](docs/SDK11_LOCAL_QUALIFICATION.md) needs a
-new explicit9-attempt numerical grant. No Windows/product success is claimed.
-
 Windows04 completed all eight logical qualification commands using nine total
 attempts (five original healthy results plus the approved three-command
 continuation). Both Jobs ended with population0; no healthy command was replayed.
@@ -427,3 +422,11 @@ fixed six-command Linux SDK data run using the existing own-unit BPF denial
 method and four already available originals, including the single explicitly
 approved Desktop input. No product test, preview.3 binary or release is claimed
 by this prepared source.
+
+Current local input status: theLinux facade completed read-only SDK/current
+context checks with SDK0. Its later package-curation supervisor exited139
+before any SDK invocation; actual worker terminal/population0 were recovered.
+The39-input candidate union includes the specifically approved Desktop archive,
+with one metadata GET and no new raw download. Four Windows native package
+signatures/content hashes and product acceptance remain pending; preview.3 is
+not released. A separate Windows facade validation executes zero SDK commands.

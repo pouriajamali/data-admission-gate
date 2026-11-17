@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "c3ca3f363a3901d834f5ab545dd5ae310fbd0dd1"
+      "gitBlob": "bbf1ad8ad5da408cb16c0cd184afb139207fb44d"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
       "mode": "100644",
-      "gitBlob": "34ee20b103fdcdb406a5699243a83244b6805cb6"
+      "gitBlob": "4a62af04225bc626826cac56a2ae3bf10d84d8f5"
     },
     {
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
@@ -398,6 +398,11 @@
       "path": "tools/producer04-linux-curation.profile.json",
       "mode": "100644",
       "gitBlob": "fe7e8ca60df2ddcd5c05b3755eceba4c1ca0394e"
+    },
+    {
+      "path": "tools/producer04-local-input-windows.profile.json",
+      "mode": "100644",
+      "gitBlob": "d77ba320e4b1192ba3d2477b1da8fa72345f89ee"
     },
     {
       "path": "tools/producer04-local-native-windows.profile.json",
@@ -838,6 +843,11 @@
       "path": "tools/test_shared_normal_windows_delta.py",
       "mode": "100644",
       "gitBlob": "b6ce435e968eb0f3588f6dd34ddd77a52dbf6d68"
+    },
+    {
+      "path": "tools/validate_local_windows_input.py",
+      "mode": "100644",
+      "gitBlob": "3568144210f078beeab06506b31290b523ffaa04"
     },
     {
       "path": "tools/windows_qualification_job.py",

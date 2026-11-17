@@ -75,3 +75,13 @@ Its real unit/cgroup terminal and zero population were observed and its exact
 lease released. Local Git reads now use no optional locks and a maximum30-second
 per-call timeout bounded by the unchanged original row deadline/startup budget.
 Frozen common helpers, caps, package gates and SDK count limits are unchanged.
+
+On5b62cfa, the Linux local input facade actually verified the entire SDK and
+current source/MainPID/held-start/caps/kernel deadline inside the original own
+service, with SDK0 and GET0. The subsequent native-package supervisor exited139
+before any SDK command or completed network-denial proof. Its exact worker was
+terminated and current zero population confirmed; this row is HOLD. Native
+Windows packages, product tests and preview.3 release remain unaccepted.
+The Windows facade has a separate SDK-zero current-input validation entrypoint
+using the same existing dedicated Job and original limits. It never invokes
+SDK, native package verification, an external request or a security setter.
