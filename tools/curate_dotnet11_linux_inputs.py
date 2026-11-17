@@ -11,7 +11,7 @@ from urllib.parse import urlsplit
 
 HERE=Path(__file__).resolve().parent
 CONTRACT_SHA='f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241'
-PROFILE_SHA='256101ae7714d4452ea660b52ebe32c097e5fe4e0e1246eb733021bab6575dbd'
+PROFILE_SHA='b153ec147e63496a7d144e858cbb28e25dbf9f8d46e742b154c08da346c71dcd'
 PURPOSE='PRODUCER04_LINUX_INPUT_CURATION'
 AUTHOR='9A1B131BEE0605433056A4EA3815478A8E177961A968C6C0027C1093D1FEB630'
 REPOSITORY='1F4B311D9ACC115C8DC8018B5A49E00FCE6DA8E2855F9F014CA6F34570BC482D'
@@ -23,11 +23,27 @@ class Hold(RuntimeError): pass
 def need(value,code):
  if not value: raise Hold(code)
 def digest(raw): return hashlib.sha256(raw).hexdigest()
+def strict_json(raw,limit=524288):
+ need(type(raw) is bytes and len(raw)<=limit,'BOUNDED_POLICY_FILE')
+ def pairs(items):
+  out={}
+  for key,value in items:need(key not in out,'BOUNDED_POLICY_DUPLICATE');out[key]=value
+  return out
+ try:return json.loads(raw.decode('utf-8'),object_pairs_hook=pairs,parse_constant=lambda _:(_ for _ in ()).throw(Hold('BOUNDED_POLICY_NONFINITE')))
+ except (UnicodeError,json.JSONDecodeError):raise Hold('BOUNDED_POLICY_JSON') from None
+
 def load_json(path,expected,limit=524288):
  p=Path(path);need(not p.is_symlink() and p.is_file() and p.stat().st_size<=limit,'BOUNDED_POLICY_FILE')
- raw=p.read_bytes();need(digest(raw)==expected,'POLICY_BYTES_IDENTITY');return json.loads(raw)
+ raw=p.read_bytes();need(digest(raw)==expected,'POLICY_BYTES_IDENTITY');return strict_json(raw,limit)
+PUBLIC_TRANSPORT_SHA='002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484'
+PUBLIC_HELPER_SHA='658448fc0e981c9b1bac9efab8ed18623d4980054cb7d2358c35efac88112bb0'
+
+def public_input_module():
+ import importlib.util,sys
+ p=HERE/'curation_public_input04.py';need(digest(p.read_bytes())==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_HELPER_SOURCE');spec=importlib.util.spec_from_file_location('curation_public_input04',p);m=importlib.util.module_from_spec(spec);sys.modules[spec.name]=m;spec.loader.exec_module(m);diagnostics().bind(m,PUBLIC_HELPER_SHA,'public-input');return m
+
 def policies():
- return load_json(HERE/'producer04-linux-curation.contract.json',CONTRACT_SHA),load_json(HERE/'producer04-linux-curation.profile.json',PROFILE_SHA)
+ contract=load_json(HERE/'producer04-linux-curation.contract.json',CONTRACT_SHA);profile=load_json(HERE/'producer04-linux-curation.profile.json',PROFILE_SHA);need(profile['inputTransport']=='PUBLIC_ORIGINALS_V1' and profile['publicInputTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA and profile['publicInputHelperSHA256']==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_PROFILE');load_json(HERE/'producer04-linux-curation-public-input-transport.json',PUBLIC_TRANSPORT_SHA);return contract,profile
 
 def content_hash(stdout,package_id,version,exit_code,raw_receipt):
  """Strict English CLI shape hypothesis; released SDK output remains unobserved."""
@@ -167,7 +183,7 @@ def read_proof_payload(root,path,value,durable):
   actual,body=durable_snapshot(root,relative);need(actual==value['durableInputs'][relative],'DURABLE_ORIGINAL_CHANGED');return body
  return Path(path).read_bytes()
 def curation_proof_candidates(root,value,success):
- root=Path(root);durable=durable_proof_selection(root,value,success);paths=[*root.glob('*.json'),*(root/'curation/metadata').rglob('*'),*(root/'curation/original-data').glob('*'),*(root/'curation').glob('*/process.json'),*(root/'curation').glob('*/stdout.log'),*(root/'curation').glob('*/stderr.log'),*durable.values()]
+ root=Path(root);durable=durable_proof_selection(root,value,success);paths=[*root.glob('*.json'),*(root/'curation/public-input').glob('*/request.json'),*(root/'curation/public-input').glob('*/result.json'),*(root/'curation/public-input').glob('*/process/process.json'),*(root/'curation/metadata').rglob('*'),*(root/'curation/original-data').glob('*'),*(root/'curation').glob('*/process.json'),*(root/'curation').glob('*/stdout.log'),*(root/'curation').glob('*/stderr.log'),*durable.values()]
  unique={p.relative_to(root).as_posix():p for p in paths if p.is_file()};need(all(not p.is_symlink() for p in unique.values()),'CURATION_PROOF_LINK')
  return [unique[k] for k in sorted(unique)],set(durable)
 
@@ -221,10 +237,11 @@ def method_feasibility():
 def require_method():
  method_modules();load_json(HERE/'producer04-linux-curation-method-amendment.json',AMENDMENT_SHA)
 def validate_admission(gate,expected_head,profile_sha):
- required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce'}
+ required={'schema','state','purpose','sourceHEAD','sourceTree','contractSHA256','amendmentSHA256','profileSHA256','inputManifestSHA256','runId','attempt','leaseAdmissionSHA256','dispatchNonce','inputTransport','publicTransportAmendmentSHA256'}
  need(type(gate) is dict and set(gate)==required,'CURATION_GATE_SCHEMA')
  need(all(type(v) is str for v in gate.values()),'CURATION_GATE_VALUE_TYPES')
  need(gate['schema']=='producer04-linux-curation-execution-admission/v1' and gate['state']=='EXACT_SOURCE_RUNTIME_BOUND' and gate['purpose']==PURPOSE,'CURATION_GATE_STATE_PURPOSE')
+ need(gate['inputTransport']=='PUBLIC_ORIGINALS_V1' and gate['publicTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA,'PUBLIC_INPUT_GATE')
  need(gate['sourceHEAD']==expected_head and re.fullmatch('[0-9a-f]{40}',expected_head or '') is not None,'CURATION_GATE_HEAD')
  need(gate['contractSHA256']==CONTRACT_SHA and gate['amendmentSHA256']==AMENDMENT_SHA and gate['profileSHA256']==profile_sha,'CURATION_GATE_POLICY')
  need(re.fullmatch('[0-9a-f]{40}',gate['sourceTree']) is not None and all(re.fullmatch('[0-9a-f]{64}',gate[k]) is not None for k in ['inputManifestSHA256','leaseAdmissionSHA256']),'CURATION_GATE_IDENTITIES')
@@ -275,12 +292,11 @@ def validate_capsule_descriptor(desc,expected_head):
  need(type(desc) is dict and set(desc)=={'assetID','releaseID','name','bytes','sha256','draft'} and desc['draft'] is True and all(type(desc[k]) is int and desc[k]>0 for k in ['assetID','releaseID']) and desc['bytes']==60416000 and re.fullmatch('[0-9a-f]{64}',desc.get('sha256','')) and desc['name']=='producer04-linux-native11-inputs-'+expected_head+'.tar','CAPSULE_IDENTITY');return desc
 
 def validate_input_manifest(manifest,expected_head):
- need(type(manifest) is dict and set(manifest)=={'schema','sourceHEAD','capsule','ownerScratchLimitBytes','leaseAdmissionPath'} and manifest['schema']=='producer04-linux-curation-input-manifest/v1' and manifest['sourceHEAD']==expected_head,'CURATION_INPUT_MANIFEST')
- validate_capsule_descriptor(manifest['capsule'],expected_head)
- need(type(manifest['ownerScratchLimitBytes']) is int and 0<manifest['ownerScratchLimitBytes']<=2147483648 and Path(manifest['leaseAdmissionPath']).is_absolute(),'CURATION_OWNER_OR_LEASE_INPUT');return manifest
+ return public_input_module().validate_manifest(manifest,expected_head)
+
 def prepare_event_handoff(expected_head):
  import os
- need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_SHA')==expected_head,'CURATION_MANUAL_EXACT_SOURCE');event=json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_bytes());inputs=event.get('inputs',{});need(inputs.get('linux_curation') in (True,'true') and inputs.get('mode')=='ordinary' and inputs.get('expected_commit')==expected_head,'CURATION_EVENT_SELECTOR');text=inputs.get('curation_handoff','');expected=inputs.get('curation_handoff_sha256','');need(type(text) is str and len(text.encode())<=16384 and digest(text.encode())==expected,'CURATION_ROOT_INTENT_HASH');payload=json.loads(text);private=Path(os.environ['RUNNER_TEMP'])/('admission04-curation-intent-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);private.mkdir(mode=0o700);gate,mb,lb=render_event_handoff(payload,expected_head,os.environ['GITHUB_RUN_ID'],os.environ['GITHUB_RUN_ATTEMPT'],private);gb=(json.dumps(gate,sort_keys=True,separators=(',',':'))+'\n').encode();_private_write(private/'root-intent.json',text.encode());_private_write(private/'input-manifest.json',mb);_private_write(private/'lease-admission.json',lb);_private_write(private/'execution-admission.json',gb);return private/'execution-admission.json',digest(gb),private/'input-manifest.json'
+ need(os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch' and os.environ.get('GITHUB_SHA')==expected_head,'CURATION_MANUAL_EXACT_SOURCE');event=strict_json(Path(os.environ['GITHUB_EVENT_PATH']).read_bytes(),4194304);inputs=event.get('inputs',{});need(inputs.get('linux_curation') in (True,'true') and inputs.get('mode')=='ordinary' and inputs.get('expected_commit')==expected_head,'CURATION_EVENT_SELECTOR');text=inputs.get('curation_handoff','');expected=inputs.get('curation_handoff_sha256','');need(type(text) is str and len(text.encode())<=16384 and digest(text.encode())==expected,'CURATION_ROOT_INTENT_HASH');payload=strict_json(text.encode(),16384);private=Path(os.environ['RUNNER_TEMP'])/('admission04-curation-intent-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);private.mkdir(mode=0o700);gate,mb,lb=render_event_handoff(payload,expected_head,os.environ['GITHUB_RUN_ID'],os.environ['GITHUB_RUN_ATTEMPT'],private);gb=(json.dumps(gate,sort_keys=True,separators=(',',':'))+'\n').encode();_private_write(private/'root-intent.json',text.encode());_private_write(private/'input-manifest.json',mb);_private_write(private/'lease-admission.json',lb);_private_write(private/'execution-admission.json',gb);return private/'execution-admission.json',digest(gb),private/'input-manifest.json'
 def _capsule(spec,manifest,contract,total,phase):
  """One exact private draft asset transfer; never NuGet body re-acquisition."""
  import os,tarfile,urllib.request,urllib.error
@@ -419,7 +435,7 @@ def run_curation_worker(spec,backend,R,Q):
  D.mark('disk-ledger',context=context,now=R.clock())
  inv=R.read(HERE/'sdk11-normal-inputs.lock.json')['rids']['linux-x64']['input'];allocationUnit=os.statvfs(root).f_frsize;need(allocationUnit>0,'ACTUAL_ALLOCATION_UNIT');sdkNeed=sum(((r['bytes']+allocationUnit-1)//allocationUnit)*allocationUnit if r['type']=='file' else allocationUnit for r in inv['members']);need(allocationUnit==4096,'UNSUPPORTED_SCRATCH_ALLOCATION_MODEL');required=sdkNeed+sum(profile['runtimeScratchAllocationsWithoutSDK'].values());need(os.statvfs(root).f_favail>=12000,'ACTUAL_SCRATCH_INODES');free=shutil.disk_usage(root).free;need(required<=min(ownerLimit,free),'ACTUAL_PRIVATE_SCRATCH_LEDGER');R.write(root/'curation-space-before-acquisition.json',{'allocationUnit':allocationUnit,'requiredBytes':required,'freeBytes':free,'applicableCap':ownerLimit})
  phase=root/'curation';phase.mkdir(mode=0o700);total={'bodyBytes':211463422};budget.stage(1,min(300,max(1,(spec['startTick']+360000-R.clock())//1000)));normal=R.load_module('check_dotnet11','d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d');sdkDirectory=Path(os.environ['RUNNER_TEMP'])/('sdk11-normal-04-'+host['runId']+'-'+host['attempt']+'-curation');main.safe_cause_module().require_workspace(os.environ,R.ROOT);D.mark('commontransport-enter',context=context,now=R.clock());sdk,receipt=normal.transport('linux-x64',sdkDirectory,context);D.mark('commontransport-return',now=R.clock());need(Path(sdk).is_relative_to(sdkDirectory),'OWN_SDK_ALLOCATION_SCOPE');R.write(root/'curation-sdk-input-receipt.json',receipt);D.mark('inputreceipt-write',now=R.clock());need(R.digest(sdk/'sdk/11.0.100/NuGet.Packaging.dll')==PACKAGING_SHA,'CURATION_NUGET_PACKAGING_BINARY')
- budget.stage(2,max(1,(spec['startTick']+420000-R.clock())//1000));D.mark('capsule',now=R.clock());raw=_capsule(spec,manifest,contract,total,phase);roles=load_json(HERE/'producer04-linux-curation-cert-roles.json',profile['certificateRolesSHA256']);cms=[]
+ budget.stage(2,max(1,(spec['startTick']+420000-R.clock())//1000));D.mark('public-originals',now=R.clock());raw=public_input_module().acquire(spec,manifest,phase,total,Q.j,D,gate);roles=load_json(HERE/'producer04-linux-curation-cert-roles.json',profile['certificateRolesSHA256']);cms=[]
  for row in sorted(raw,key=lambda r:r['index']):
   with zipfile.ZipFile(row['path']) as z:
    item=z.getinfo('.signature.p7s');need(item.file_size<=2097152,'CURRENT_CMS_BOUND');b=z.read(item);need(digest(b)==roles['packageCMS'][row['index']]['sha256'],'CURRENT_CMS_BYTES');cms.append(b)

@@ -18,7 +18,7 @@
   "signaturePerCommandSeconds": 20,
   "graphPerCommandSeconds": 45,
   "externalMetadataGETsMax": 23,
-  "rawBodyReGETs": 0,
+  "rawBodyReGETs": 3,
   "bodyBytesMax": 536870912,
   "proofBytesMax": 8388608,
   "sourceScratchMaxBytes": 268435456,
@@ -62,7 +62,6 @@
   "actualRuntimeReady": false,
   "runtimeScratchAllocationsWithoutSDK": {
     "sdkArchive": 211464192,
-    "inputCapsule": 60416000,
     "rawDirectory": 60407808,
     "packageCacheOriginalNupkgs": 60407808,
     "packageCacheExpandedMembersAndDirectories": 153853952,
@@ -85,8 +84,16 @@
   "safeOriginalCauseBytesMax": 16384,
   "safeCauseNodesMax": 3,
   "safeMappedFramesMax": 10,
-  "sourceAllowanceSHA256": "048fca50999d8f3fae2bfb60665147d1c85ef61e848223d2cdbea372a86bb644",
+  "sourceAllowanceSHA256": "1eb4ebcd01ba4a8845600ec4bf47fd5e36288c487a9963aa5e604cdc3a41f763",
   "frozenCommonContextKeysObserved": 15,
-  "retainedInputProducedSourceHEAD": "071a5f477ef77def9c638cb982bc2c4157325e06",
-  "retainedInputCapsuleSHA256": "167906c5a1740e3ded7a15c2cb6c1323247d9ad4549253fcc19f405d56794eae"
+  "inputTransport": "PUBLIC_ORIGINALS_V1",
+  "publicInputTransportAmendmentSHA256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484",
+  "publicInputHelperSHA256": "658448fc0e981c9b1bac9efab8ed18623d4980054cb7d2358c35efac88112bb0",
+  "safeCauseHelperSHA256": "1912bf278d664ad9b268ba11ad7630a5976885d3a39c1012c060b65c65cb22b7",
+  "publicBodyGETsMax": 3,
+  "publicOriginalBodyBytes": 60404733,
+  "publicOriginalsPerRequestSeconds": 45,
+  "publicOriginalsAggregateSeconds": 135,
+  "publicOriginalsInflightMax": 1,
+  "publicOriginalsChunkBytesMax": 65536
 }

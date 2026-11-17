@@ -6,7 +6,7 @@
   "productInputState": "PENDING_ORIGINAL_PRODUCT_GATES",
   "commonNormalModuleSha256": "d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d",
   "normalCatalogSha256": "686c6c778f7841e6015fa401f3892b853df80e3341fbb5d02b27c682887c1c78",
-  "controllerSha256": "ad86e371fe5aabc9c5fdd68c47c540b1b6c820b6d59ef04b3f7c18460a7a46bf",
+  "controllerSha256": "b2b69626def09160806d0ddbda0bd879c35c50fd15c465a9e0a0b12cba2bf5f6",
   "profileSha256": "cfd22549f1c60671d7c4b2bb8a8be3d1609b551bcada21c20f1653adfd675f91",
   "profileFile": "dotnet11-consumer04-normal-profile.json",
   "sourcePinsFile": "dotnet11-consumer04-source-pins.json",
@@ -22,5 +22,8 @@
   },
   "sourceBindingStrategy": "EXACT_EVENT_COMMIT_AND_SOURCE_PINS",
   "sourceAllowlistAndProductAcceptance": "Existing04 product109/17/4/contracts/versions/locks/notices/advisories/signatures preserved; missingactualinputs remainHOLD. Exactfuturegate must bindacceptedproducerfact and owncurrenthost/controller/profile before targets.",
-  "nextGateRequired": "Exact own source/profile/current context and closed product locks/rawpacks/signatures/notices/advisories/oracle/public gate. No source state/owncaps/admission fact fabricated."
+  "nextGateRequired": "Exact own source/profile/current context and closed product locks/rawpacks/signatures/notices/advisories/oracle/public gate. No source state/owncaps/admission fact fabricated.",
+  "curationProfileSha256": "b153ec147e63496a7d144e858cbb28e25dbf9f8d46e742b154c08da346c71dcd",
+  "curationAdmissionSchemaSha256": "fcf07c63f1a7fd1a942ab6792d4b457889314f302acae2450f74d402de21e4a3",
+  "publicInputTransportAmendmentSha256": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484"
 }

@@ -22,7 +22,7 @@
     {
       "path": ".github/workflows/verify.yml",
       "mode": "100644",
-      "gitBlob": "69479d3acc25d4b8eeec6e9b31fe82e8525adb76"
+      "gitBlob": "fd4c5f8debaa8c592e58f035fc7443969c177adb"
     },
     {
       "path": ".gitignore",
@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "71a446d20e7c25b65ef2e9c42221c986ff8f17a9"
+      "gitBlob": "70a2556204351e915b0991aa5abf95abd6b3b63e"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -102,12 +102,12 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "429a006babfab41cf4df00c2aa0d23f850d11606"
+      "gitBlob": "b7fd75b65e66ff3e27f114e3943f2294df65dfcc"
     },
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "6b01b24c42a655afb0c970f18e92a995dcd188fa"
+      "gitBlob": "5c0405ee2200c6d44719767fe7e57916d131dae7"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -227,7 +227,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "541747eddfded301cc692d592af9cf683c71e002"
+      "gitBlob": "ffb5cb11bf9feefaac5851c13ae4622cb6005af8"
     },
     {
       "path": "tools/curate_dotnet11_inputs.py",
@@ -237,7 +237,7 @@
     {
       "path": "tools/curate_dotnet11_linux_inputs.py",
       "mode": "100644",
-      "gitBlob": "9a51bfc2f5ba01f8f138af79658c781e1c91a048"
+      "gitBlob": "294f78f2467a47be22b5cf1c3a6516b8e03fd01b"
     },
     {
       "path": "tools/curation_advisory_source04.py",
@@ -255,6 +255,11 @@
       "gitBlob": "80cd1e96d1b0703af256bc7b0d6fbf423d2a0a0c"
     },
     {
+      "path": "tools/curation_public_input04.py",
+      "mode": "100644",
+      "gitBlob": "969d1bc7c13d5036dc34f24efd583f1524a2b8f0"
+    },
+    {
       "path": "tools/curation_range_candidate.py",
       "mode": "100644",
       "gitBlob": "ee84103cbb5fcf253f1797116813fbf7311b1c4b"
@@ -262,12 +267,12 @@
     {
       "path": "tools/curation_safe_cause04.py",
       "mode": "100644",
-      "gitBlob": "271ef0fb7c6236cc7076b4f8a1d7cd224118c32f"
+      "gitBlob": "364c2545aeb9fd7e223f098cc3501ac5d2d87ea6"
     },
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
-      "gitBlob": "d7a031fe121b228bfd04bd2d9e7fed33582aa915"
+      "gitBlob": "4f68148cbd7c03618db44c29b6e04e501140060a"
     },
     {
       "path": "tools/dotnet11-consumer04-normal-profile.json",
@@ -327,7 +332,7 @@
     {
       "path": "tools/producer04-linux-curation-admission.schema.json",
       "mode": "100644",
-      "gitBlob": "88dd35afd32dfc0d1063e25dd1b3214beb02a1ca"
+      "gitBlob": "9d00079bad942f7c84b4847be32d9c7594a0b579"
     },
     {
       "path": "tools/producer04-linux-curation-cert-roles.json",
@@ -340,6 +345,11 @@
       "gitBlob": "34dce527e4d2eb6907014fb141d0a08318ea39b0"
     },
     {
+      "path": "tools/producer04-linux-curation-public-input-transport.json",
+      "mode": "100644",
+      "gitBlob": "dfc75918a4be63d16836660e31d3eda771822a94"
+    },
+    {
       "path": "tools/producer04-linux-curation.contract.json",
       "mode": "100644",
       "gitBlob": "fd3ae4886e5f866e1870b1f3ed2dc3daa20fb78f"
@@ -347,7 +357,7 @@
     {
       "path": "tools/producer04-linux-curation.profile.json",
       "mode": "100644",
-      "gitBlob": "2cc9a38c410864f9465321c5404b875caea8cd6c"
+      "gitBlob": "bdeb1b8741aedb167d018d46fb0fc6e3c5a8cd95"
     },
     {
       "path": "tools/producer04-public10-source-provenance.json",
@@ -443,6 +453,11 @@
       "path": "tools/test_curation_method_delta.py",
       "mode": "100644",
       "gitBlob": "ae758df561549c385abab7f3f54c6065a83c78cd"
+    },
+    {
+      "path": "tools/test_curation_public_input04.py",
+      "mode": "100644",
+      "gitBlob": "0b22a30562f4aa3269e8b9d2f63a58606a4d944c"
     },
     {
       "path": "tools/test_curation_range.py",

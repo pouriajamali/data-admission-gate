@@ -20,12 +20,12 @@ CURATION_SAFE_ROOT=None
 def safe_cause_module():
  global CURATION_DIAGNOSTICS
  if CURATION_DIAGNOSTICS is None:
-  CURATION_DIAGNOSTICS=R.load_module('curation_safe_cause04','fee4b215b7c287e3e8aa3df1217674040343fa8e553dd693a3447e0b352db207')
+  CURATION_DIAGNOSTICS=R.load_module('curation_safe_cause04','1912bf278d664ad9b268ba11ad7630a5976885d3a39c1012c060b65c65cb22b7')
   D=CURATION_DIAGNOSTICS.STATE;D.bind(CURATION_DIAGNOSTICS,R.digest(CURATION_DIAGNOSTICS.__file__),'safe-cause');D.bind(sys.modules[__name__],R.read(HERE/'dotnet11-consumer04-admission.lock.json')['controllerSha256'],'caller');D.bind_loaded(HERE)
  return CURATION_DIAGNOSTICS
 
 def curation_module():
- m=R.load_module('curate_dotnet11_linux_inputs','a1a98b01282441cb36cfdfd35c9c34ae0759e34451bc612d1e7c305efeebfab9');safe_cause_module().STATE.bind(m,'a1a98b01282441cb36cfdfd35c9c34ae0759e34451bc612d1e7c305efeebfab9','curation');return m
+ m=R.load_module('curate_dotnet11_linux_inputs','220b3ec12a0a8c38e1acb934bc4095e9c2af53a84b19cd426cfec58b4af14b1d');safe_cause_module().STATE.bind(m,'220b3ec12a0a8c38e1acb934bc4095e9c2af53a84b19cd426cfec58b4af14b1d','curation');return m
 
 def capture_curation_cause(exc,secondary=False):
  try:
@@ -135,28 +135,15 @@ def linux_parent(args):
  start=int(os.environ['SDK11_QUALIFICATION_START_TICK']);R.f.need(0<=R.clock()-start<60000,'STARTUP60_EXPIRED');temp=Path(os.environ['RUNNER_TEMP']).resolve();root=temp/('admission04-sdk11-linux-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']);R.a.scoped(root,temp,absent=True);root.mkdir(mode=0o700);R.f.need(root.stat().st_uid==os.getuid() and root.stat().st_gid==os.getgid() and (root.stat().st_mode&0o777)==0o700,'FRESH_PRIVATE_RUNNER_ROOT')
  if args.curation_admission:CURATION_SAFE_ROOT=root
  unit='admission04-sdk11-ci-'+uuid.uuid4().hex;private=root/'private-spec.json';s={'purpose':'CONSUMER04_PRODUCT','rid':'linux-x64','root':str(root),'unit':unit,'uid':os.getuid(),'gid':os.getgid(),'expectedCommit':args.expected_commit,'startTick':start,'supervisorPID':os.getpid(),'supervisorStartIdentity':'proc-start:'+Q.start_identity(os.getpid())}
- if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256,'curationInputManifestPath':str(args.curation_input_manifest),'curationTokenPath':str(root/'curation-input-token')})
+ if args.curation_admission:s.update({'purpose':CURATION_PURPOSE,'curationAdmissionPath':str(args.curation_admission),'curationAdmissionSHA256':args.curation_admission_sha256,'curationInputManifestPath':str(args.curation_input_manifest)})
  if args.curation_admission:
-  token=os.environ.pop('CURATION_INPUT_TOKEN',None);R.f.need(token and len(token)<=8192 and '\n' not in token and '\r' not in token,'EXISTING_CI_INPUT_ASSET_TOKEN_REQUIRED')
-  fd=os.open(root/'curation-input-token',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
-  with os.fdopen(fd,'w') as out:out.write(token)
-  st=(root/'curation-input-token').stat();s['curationTokenIdentity']=[st.st_dev,st.st_ino]
-  token=''
+  R.f.need(curation_module().policies()[1]['inputTransport']=='PUBLIC_ORIGINALS_V1','PUBLIC_INPUT_TRANSPORT_REQUIRED');R.f.need('CURATION_INPUT_TOKEN' not in os.environ,'PUBLIC_INPUT_TOKEN_CONFIG_FORBIDDEN')
  R.write(private,s);R.write(root/'stage-0.json',{'index':0,'startedTick':start,'deadlineTick':start+60000})
  for path in [str(HERE),str(root),sys.executable]:R.f.need(not any(c in path for c in ['\n','\r','%','$','"',"'"]),'SYSTEMD_FIXED_ARGV_PATH')
  envnames=['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_REF','GITHUB_EVENT_NAME','GITHUB_EVENT_PATH','GITHUB_JOB','GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT','RUNNER_ENVIRONMENT','RUNNER_OS','RUNNER_NAME','ImageOS','ImageVersion','RUNNER_TEMP'];sets=safe_cause_module().forward_environment(os.environ,R.ROOT) if args.curation_admission else ['--setenv='+k+'='+os.environ[k] for k in envnames if k in os.environ];remaining=max(1,(start+840000-R.clock())//1000);observer=' '.join(shlex.quote(str(x)) for x in [sys.executable,'-I','-S','-B',Path(__file__).resolve(),'--stop-post',private])
  argv=['/usr/bin/sudo','-n','/usr/bin/systemd-run','--wait','--collect','--pipe','--unit='+unit,'--uid='+str(s['uid']),'--gid='+str(s['gid']),'--property=Description='+unit,'--property=MemoryMax=4294967296','--property=MemorySwapMax=0','--property=TasksMax=64','--property=CPUQuota=200%','--property=CPUQuotaPeriodSec=100ms','--property=RuntimeMaxSec='+str(remaining),'--property=TimeoutStopSec=5','--property=KillMode=control-group','--property=WorkingDirectory='+str(R.ROOT),'--property=ExecStopPost='+observer,'--setenv=PYTHONDONTWRITEBYTECODE=1',*sets,sys.executable,'-I','-S','-B',str(Path(__file__).resolve()),'--worker',str(private)]
  R.write(root/'root-starter.json',{'argv':argv,'boundary':'ExistingtrustedrootOSstarter only; fixednonrootUser/Group. Allworker/acquisition/extraction/targets/observer insideactualcgroup; norootSDK/arbitraryrootcommand/install/config.'})
- primary=None
- try:
-  terminal,stop=(run_curation_linux(s,argv) if s['purpose']==CURATION_PURPOSE else Q.run_owned_linux(s,argv));finish_consumer(s,terminal,stop['actualCaps']['memoryPeak'])
- except BaseException as exc:primary=exc;raise
- finally:
-  if s['purpose']==CURATION_PURPOSE and (root/'curation-input-token').exists():
-   try:
-    path=root/'curation-input-token';st=path.lstat();R.f.need(not path.is_symlink() and [st.st_dev,st.st_ino]==s['curationTokenIdentity'],'CURATION_TOKEN_CLEANUP_IDENTITY');path.unlink()
-   except BaseException:
-    if primary is None:raise
+ terminal,stop=(run_curation_linux(s,argv) if s['purpose']==CURATION_PURPOSE else Q.run_owned_linux(s,argv));finish_consumer(s,terminal,stop['actualCaps']['memoryPeak'])
 
 def run_curation_linux(s,argv):
  root=Path(s['root']);proc=None;pidfd=None;error=None;stop=None;terminal=None;transitioned=False;L=curation_module();M,_=L.method_modules()

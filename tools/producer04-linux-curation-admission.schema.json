@@ -16,7 +16,9 @@
     "attempt",
     "leaseAdmissionSHA256",
     "amendmentSHA256",
-    "dispatchNonce"
+    "dispatchNonce",
+    "inputTransport",
+    "publicTransportAmendmentSHA256"
   ],
   "properties": {
     "schema": {
@@ -40,7 +42,7 @@
       "const": "f19c85da149c694974f6bdd1517026228a2d4a5b22b60d20f0fa229e7d934241"
     },
     "profileSHA256": {
-      "const": "256101ae7714d4452ea660b52ebe32c097e5fe4e0e1246eb733021bab6575dbd"
+      "const": "b153ec147e63496a7d144e858cbb28e25dbf9f8d46e742b154c08da346c71dcd"
     },
     "inputManifestSHA256": {
       "type": "string",
@@ -64,6 +66,88 @@
     "dispatchNonce": {
       "type": "string",
       "pattern": "^[0-9a-f]{32}$"
+    },
+    "inputTransport": {
+      "const": "PUBLIC_ORIGINALS_V1"
+    },
+    "publicTransportAmendmentSHA256": {
+      "const": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484"
+    }
+  },
+  "$defs": {
+    "publicOriginalInputManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "sourceHEAD",
+        "inputTransport",
+        "publicTransportAmendmentSHA256",
+        "publicInputs",
+        "ownerScratchLimitBytes",
+        "leaseAdmissionPath"
+      ],
+      "properties": {
+        "schema": {
+          "const": "producer04-linux-public-input-manifest/v1"
+        },
+        "sourceHEAD": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "inputTransport": {
+          "const": "PUBLIC_ORIGINALS_V1"
+        },
+        "publicTransportAmendmentSHA256": {
+          "const": "002a672c7df822b89a33fee8bb8e0dee867aefc719177fbc4e4c1f880326c484"
+        },
+        "publicInputs": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "const": [
+            {
+              "index": 0,
+              "id": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "11.0.0",
+              "rid": "linux-x64",
+              "bytes": 13048557,
+              "sha256": "3f4bdd1255f9ccf02a3ad22656e165bd86e9f0179f18d88cf0fc7de02b230593",
+              "sha512": "ec6ed1b5be30b1acf04abe10f173b0c1f8df48f470da277685c2821aee7cb6e6ad21748c56a15b6c9a857e6758e0aba066048a644ccaeaad09ff82e3ee463814",
+              "url": "https://api.nuget.org/v3-flatcontainer/microsoft.aspnetcore.app.runtime.linux-x64/11.0.0/microsoft.aspnetcore.app.runtime.linux-x64.11.0.0.nupkg"
+            },
+            {
+              "index": 1,
+              "id": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "11.0.0",
+              "rid": "linux-x64",
+              "bytes": 5085644,
+              "sha256": "a152b2d7ebb7fb9431ab96490e4c35c86af564419c20d81745e71760a4465469",
+              "sha512": "a7d54c6d254dd2f5807f5a23f8d4e6d98ba48b9954fbb7af26994f7a26760bcf41d762fa63626b4c0773bc44c5285cc73f19ffe1c466cb9b48e2d27f11de616c",
+              "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.host.linux-x64/11.0.0/microsoft.netcore.app.host.linux-x64.11.0.0.nupkg"
+            },
+            {
+              "index": 2,
+              "id": "Microsoft.NETCore.App.Runtime.linux-x64",
+              "version": "11.0.0",
+              "rid": "linux-x64",
+              "bytes": 42270532,
+              "sha256": "458f0a7e0de107e4c08b3f375b920cd9427bbb5463870187b5f8afff0eb8664f",
+              "sha512": "f76bc258a41b896f53d90802453c221d51e9c69bfc7c300e8824549e53bd4242e1776a1618a26df7384737899b77b025fd6981c03fad17426df14c7939fa31ee",
+              "url": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.linux-x64/11.0.0/microsoft.netcore.app.runtime.linux-x64.11.0.0.nupkg"
+            }
+          ]
+        },
+        "ownerScratchLimitBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483648
+        },
+        "leaseAdmissionPath": {
+          "type": "string",
+          "pattern": "^/"
+        }
+      }
     }
   }
 }

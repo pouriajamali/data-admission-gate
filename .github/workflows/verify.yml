@@ -118,8 +118,6 @@ jobs:
           exit $LASTEXITCODE
       - name: Fixed Ubuntu qualifier or own consumer04 controller
         if: runner.os == 'Linux'
-        env:
-          CURATION_INPUT_TOKEN: ${{ inputs.linux_curation && github.token || '' }}
         shell: bash
         run: |
           set -euo pipefail
