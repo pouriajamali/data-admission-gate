@@ -1,0 +1,19 @@
+{
+  "schema": "producer04-causal-linux139-isolated-transition/v1",
+  "projectId": "04",
+  "wholeSecondsMax": 120,
+  "kernelWorkSecondsMax": 45,
+  "singlePolicyChildSecondsMax": 15,
+  "originalCleanupSecondsMax": 50,
+  "memoryMaxBytes": 4294967296,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "tasksMax": 64,
+  "swapMaxBytes": 0,
+  "SDKCommands": 0,
+  "rawOrMetadataGETs": 0,
+  "qualificationOrNativePrerequisiteReplays": 0,
+  "methodSHA256": "e882af75dc56a5a0f9eb9b4101f2ccaf88141fa3ced9037ea0fd7b1eb357ed74",
+  "networkMethod": "Same source-bound existing scoped_parent_transition, in one fixed isolated trusted-OS child; no monkeypatch/guard or global policy change.",
+  "diagnosticOnly": "No native admission until actual current loopback/permission witness and official package crypto later."
+}

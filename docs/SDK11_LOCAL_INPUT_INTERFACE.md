@@ -147,3 +147,29 @@ start/image telemetry is retained and the row is HOLD; no second attempt.
 This step does not switch an existing consumer to the new mode, invoke facade/
 qualification/native/product stages, or resolve Linux139/nativeCoreHost. Six
 mode/guard/AST delta tests preserve the entire original default helper behavior.
+
+Additive facade Windows source Git reads now use a fixed subprocess mask0x408
+(DETACHED_PROCESS|CREATE_UNICODE_ENVIRONMENT). They do not use SUSPENDED,
+NEW_CONSOLE, NO_WINDOW, BREAKAWAY or debug flags, and do not delegate to frozen
+W.git. Its exact executable/argv/-C, inherited current cwd, four allowed OS
+env keys plus GIT_CONFIG_NOSYSTEM=1/GLOBAL=NUL/TERMINAL_PROMPT=0/GCMNever,
+original deadline/min10-second timeout and combined output cap/exit checks are
+preserved. Clean-source/tree/blob/pin checks and inherited Job/singleton remain.
+Only source-child mocked delta tests are added; no live Git-child/capture/
+facade/qualification/SDK/native stage is run by this patch. Actual current own06
+input validation remains an independent SDK-zero P0 responsibility.
+
+Linux139 preservation review found the actual parent351 ELF core, signal11,
+RIP0x5914c0 in the existing Python3.12 binary, faultaddress0. Bounded native
+return addresses resolve through _PyEval_EvalFrameDefault/PyEval_EvalCode and
+PyRun startup frames. No BPF/kernel or native_prerequisite cause is inferred.
+The five prior prerequisite commands actually finished0 and the later network
+request was durable. A limited SDK-zero causal diagnostic runs the identical
+pinned scoped_parent_transition in one fixed trusted-OS child, retaining the
+existing coordinator/pidfd/cleanup on a child fault and recording fatal Python
+source-line evidence. No method monkeypatch, crypto, qualification, import
+prerequisite replay, external GET or new framework is introduced. Kernel
+worker45seconds, whole diagnostic120, existing4GiB/CPU2/64/swap0 are retained.
+Only the own exact stopped unit may receive its existing runtime IP denial;
+no global policy changes. A successful metadata transition is still not an
+actual loopback/permission witness or native package admission.

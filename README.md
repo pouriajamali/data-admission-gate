@@ -461,3 +461,15 @@ mode/AST guard tests. The one30-second SDK-zero singleton validation records
 actual Job members/parent/terminal; its receipt is launch evidence only. No
 existing consumer is automatically switched, no singleton exception is added,
 and Linux139/native package/product delivery remain separate unresolved gates.
+
+The additive local facade also fixes Windows source-Git child creation to
+DETACHED|UNICODE (0x408), retaining original executable/argv/env/timeout/output
+and complete source/blob checks. Frozen62 and W.git remain unchanged; this
+source delta alone does not admit a current consumer or native packages.
+
+Preserved Linux139 evidence now includes the actual parent351 signal11 core
+and bounded Python native fault metadata. A separate SDK-zero fault-isolation
+diagnostic retains the existing coordinator while the exact pinned own-unit
+network transition runs in one bounded OS child; it preserves all original
+held-PID/source/caps/clock/cleanup controls. This supplies diagnosis evidence
+and never substitutes for current network-denial witnesses or native crypto.

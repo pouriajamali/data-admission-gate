@@ -41,11 +41,15 @@ def git_prefix(checkout,repository):
   args+=['--git-dir=/mnt/'+m[1].lower()+'/'+m[2],'--work-tree='+str(checkout)]
  return [*args,'-C',str(checkout)]
 
+def _windows_source_git(argv,cwd,end,limit=1048576):
+ env={k:v for k,v in os.environ.items() if k.upper() in ('SYSTEMROOT','WINDIR','TEMP','TMP')};env.update(GIT_CONFIG_NOSYSTEM='1',GIT_CONFIG_GLOBAL='NUL',GIT_TERMINAL_PROMPT='0',GCM_INTERACTIVE='Never')
+ r=subprocess.run(['C:/Program Files/Git/cmd/git.exe','-C',str(cwd),*argv],capture_output=True,env=env,timeout=min(10,C._remaining(end)),creationflags=0x8|0x400);C.need(r.returncode==0 and len(r.stdout)+len(r.stderr)<=limit,'NORMAL_WINDOWS_SOURCE_TOOL');return r.stdout
+
 def source(ctx,paths,pins,end):
  checkout=pathlib.Path(ctx['checkout']).resolve();argv=git_prefix(checkout,ctx['repository'])
  def run(*args):
   if os.name=='nt':
-   W=C._load('normal_windows_input',C.PINS['windowsNormalHelperSha256']);return W.git(C,args,checkout,end)
+   return _windows_source_git(args,checkout,end)
   env={**C.SAFE_ENV,'GIT_OPTIONAL_LOCKS':'0'}
   r=subprocess.run([*argv,'--no-optional-locks',*args],cwd=checkout,env=env,capture_output=True,timeout=min(30,C._remaining(end)))
   C.need(len(r.stdout)+len(r.stderr)<=1048576,'LOCAL_SOURCE_OUTPUT_CAP');C.need(r.returncode==0,'LOCAL_SOURCE_TOOL_FAILED');return r.stdout
