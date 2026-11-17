@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "d006b8544441b7fa73c9783afebed4cdfff3a521"
+      "gitBlob": "8f95dc60a7062299b32bc370408fb5e81abdfde0"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
       "mode": "100644",
-      "gitBlob": "3ad95c6ecad27d4303078fb2aad6723403b722b1"
+      "gitBlob": "20654081958496a4bfcbb8aaab7b35cd49209cff"
     },
     {
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
@@ -290,6 +290,11 @@
       "gitBlob": "ddf2687db28e5144497dfde619d17a2756c6b888"
     },
     {
+      "path": "tools/diagnose_local_windows_job_ids.py",
+      "mode": "100644",
+      "gitBlob": "2397cc0b34d276c3780dd6477ea08ef211c7e869"
+    },
+    {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
       "gitBlob": "0b203777b52cf720157c8df3e90f3832ccab43fe"
@@ -337,7 +342,7 @@
     {
       "path": "tools/local_sdk11_input.py",
       "mode": "100644",
-      "gitBlob": "c0103aa0fe1c2735f4e5a4831f01d3bb0fb6aa84"
+      "gitBlob": "53c3204cf52a166fae8ce29b7214d9d9a0677c01"
     },
     {
       "path": "tools/materialize_qualification_linux.py",
@@ -403,6 +408,11 @@
       "path": "tools/producer04-local-input-windows.profile.json",
       "mode": "100644",
       "gitBlob": "d77ba320e4b1192ba3d2477b1da8fa72345f89ee"
+    },
+    {
+      "path": "tools/producer04-local-job-diagnostic.profile.json",
+      "mode": "100644",
+      "gitBlob": "2952e981ca4a9495b8075c31b725f693fe986c58"
     },
     {
       "path": "tools/producer04-local-native-windows.profile.json",
@@ -837,7 +847,7 @@
     {
       "path": "tools/test_local_sdk11_input.py",
       "mode": "100644",
-      "gitBlob": "981ab9262aac005764cfc9bacdb1461d2bd2bb31"
+      "gitBlob": "93cd0975a0b52d17327f2ca6415d0c049a5fe35d"
     },
     {
       "path": "tools/test_shared_normal_windows_delta.py",
@@ -845,9 +855,19 @@
       "gitBlob": "b6ce435e968eb0f3588f6dd34ddd77a52dbf6d68"
     },
     {
+      "path": "tools/test_windows_job_close_diagnostic.py",
+      "mode": "100644",
+      "gitBlob": "439767b0d97dd963ab00a8ad9e780cc2f79ff63d"
+    },
+    {
       "path": "tools/validate_local_windows_input.py",
       "mode": "100644",
       "gitBlob": "3568144210f078beeab06506b31290b523ffaa04"
+    },
+    {
+      "path": "tools/windows_job_close_diagnostic.py",
+      "mode": "100644",
+      "gitBlob": "03718d4378b6a800547ea5efa84f3b400d7bdb87"
     },
     {
       "path": "tools/windows_qualification_job.py",

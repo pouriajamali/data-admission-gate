@@ -21,7 +21,7 @@ def policy(profile,project,rid):
  role=route.get('role');limits=MATRIX[project]
  if rid=='win-x64':
   C.need(project in WINDOWS_AUTHORITIES and route.get('authorityId')==WINDOWS_AUTHORITIES[project] and route.get('formalDotnet11Support')=='NOT_CONFIRMED','LOCAL_INDEPENDENT_WINDOWS_TASK_AUTHORITY_REQUIRED')
-  if project=='06':C.need(role=='R06_WINDOWS','LOCAL06_ONLY_ORIGINAL_R06_WINDOWS_ROUTE');limits=(1073741824,16,1)
+  if project=='06':C.need(role=='P3_WINDOWS_BUILD' and route.get('phase')=='P3','LOCAL06_P3_BUILD_ONLY_R06_IS_BINARY_PAIRED_SCENARIO')
   else:C.need(role=='generic','LOCAL04_GENERIC_ROLE')
  else:
   C.need(rid=='linux-x64','LOCAL_RID');C.need(role=='generic' or project=='06' and role=='native-linux16','LOCAL_LINUX_RETIRED_OR_UNKNOWN_ROLE')

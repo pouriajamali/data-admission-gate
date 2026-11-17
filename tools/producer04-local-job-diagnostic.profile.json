@@ -1,0 +1,32 @@
+{
+  "schema": "sdk11-own-normal-input-profile/v1",
+  "state": "ADMITTED_SOURCE_PROFILE",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "rowSeconds": 900,
+  "memoryMaxBytes": 4294967296,
+  "swapMaxBytes": null,
+  "tasksMax": 64,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "ownedUnitPrefix": "admission04-sdk11-ci-",
+  "SDKCommandsMax": 0,
+  "existingCurationCeiling": 7,
+  "SDKStageSecondsMax": 300,
+  "workerEndSeconds": 840,
+  "terminalReserveSeconds": 60,
+  "sourceScratchMaxBytes": 268435456,
+  "scratchMaxBytes": 2147483648,
+  "proofBytesMax": 8388608,
+  "localInputRoute": {
+    "rid": "win-x64",
+    "role": "generic",
+    "readOnlyExistingPool": true,
+    "qualifiedFactSha256": "841b508658a3a843f7d194b089b355b3e2e572873b4301349f3b545255086339",
+    "authorityId": "call_82e9689938c64cbdb74f7e75b4bef33c+call_923c5d0e47704ebc80ab26e6a4fc3fbf",
+    "formalDotnet11Support": "NOT_CONFIRMED"
+  },
+  "scope": "One SDK-zero diagnostic of exact current own Job IDs, child Git retained-handle close boundaries and unchanged singleton guard. No SDK/package/network or consumer admission.",
+  "cpuCores": 2,
+  "ownedJobPrefix": "Local\\admission04-input-"
+}

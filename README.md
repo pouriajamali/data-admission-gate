@@ -414,7 +414,8 @@ continuation). Both Jobs ended with population0; no healthy command was replayed
 The [local input facade](docs/SDK11_LOCAL_INPUT_INTERFACE.md) preserves the old
 62 shared files and CI schema while checking each caller's actual current
 source, caps, original clock and kernel supervisor. Consumer06 Windows scope
-comes from its fresh direct task instruction, with its own R06 limits.
+comes from its fresh direct task instruction. Its original P3 perOS SDK/build
+route uses4GiB/CPU2/64; R06 remains a separate binary-only paired scenario.
 
 Own04 portable net11 locks are reused from actual SDK curation on793ec500; all
 four project/build input blobs are unchanged. Windows package curation is a
@@ -437,3 +438,10 @@ Its dedicated4GiB/CPU2/64 Job was terminal with population0. That guard remains
 enforced; the Windows local consumer interface is not delivered as admitted.
 The native Linux supervisor139 cause remains unresolved. The shared input
 work and product04 delivery are HOLD, with no new preview.3 binaries/release.
+
+The corrected local handoff includes both qualification catalogs in its full
+byte/hash/Git-blob dependency manifest. A bounded source-changed SDK-zero
+Windows diagnostic records exact own Job IDs/counts and child Git handle-close
+boundaries while preserving the frozen singleton/ownership/deadline controls.
+It does not turn the earlier860e missing counters or Linux139 into a known
+cause, native package/network-denial PASS or product admission.

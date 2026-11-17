@@ -3,7 +3,12 @@
 This additive facade preserves every byte of common4dab62 and frozen schema63e.
 It never relabels CI/current host data, runs SDK, downloads/extracts/copies SDK,
 changes limits/security or asserts product admission. Existing hosted APIs remain.
-Import the identical `tools/local_sdk11_input.py` beside the62 common files.
+Use the complete consumption manifest in the corrected handoff. In addition
+to the62 frozen common files it includes the identical facade, both
+`tools/dotnet11-linux-qualification-inputs.lock.json` (307d56b0) and
+`tools/dotnet11-qualification-inputs.lock.json` (f87ecbf9), and this interface
+document. Both exact qualification facts are separate pinned runtime data.
+Copy every manifest byte/hash; the facade alone beside62 files is incomplete.
 Both `transport(rid,directory,context)` and `inspect_sdk(rid,root,context)` use
 an existing read-only qualified pool; `directory/root` must be the exact SDKPath
 from the pinned producer fact. The returned tree is NOT caller owned: never
@@ -31,7 +36,12 @@ independent authorityId and formalDotnet11Support=NOT_CONFIRMED. Scope04 uses it
 two direct qualification grants. Scope06 uses the independently verified direct
 human instruction01a1ea8f-e946-71b0-b4a7-40cd30723b0f in chat06 authorizing local
 Windows consumption/coordination; this does NOT import04's experimental grant.
-Windows06 accepts only original R06_WINDOWS1GiB/CPU1/16. Generic Linux06 is
+Windows06 SDK input/build uses only role=P3_WINDOWS_BUILD and phase=P3 with
+its originally approved generic4GiB/CPU2/64/900-second caps, as recorded in the
+original06 M0 resources/P3 perOS contract. R06_WINDOWS is a separate binary-only
+paired scenario (Windows1GiB/CPU1/16 plus existingWSL3GiB/CPU1/48), not an SDK
+route; it is now explicitly denied here. This corrects the earlier mistaken
+restriction of the SDK facade toR06; no task cap increased. Generic Linux06 is
 4GiB/CPU2/64, native-linux16 alone128. Retired LinuxR3 is not revived. Other
 Windows scopes are denied until their independent route is supplied.
 
@@ -93,3 +103,14 @@ new Windows consumer admission is inferred. A diagnosis of this exact mismatch
 and the Linux supervisor exit139 is required before further native/product
 work. The two observed failures are separate from immutable qualification
 history. No failed row is advertised as a completed local input delivery.
+
+The source-changed Windows SDK-zero diagnostic records actual own outer Job
+Assigned/Listed/IDs, accounting and PID/start before child Git creation and
+before/after closing its retained thread, process and child-Job handles, then
+queries the identical frozen OwnJob singleton guard. The diagnostic runner is
+an additive copy of the pinned old job helper with read-only observation calls
+only; AST comparison verifies all original controls and handle close order.
+It never opens a child process handle for observation. Prior860e ID counts
+were absent; no lifecycle race/conhost/count semantics cause is asserted.
+Neither a diagnostic result nor a read-only facade check proves native package
+crypto, network denial or product acceptance. Linux139 remains UNKNOWN.
