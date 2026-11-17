@@ -430,3 +430,10 @@ The39-input candidate union includes the specifically approved Desktop archive,
 with one metadata GET and no new raw download. Four Windows native package
 signatures/content hashes and product acceptance remain pending; preview.3 is
 not released. A separate Windows facade validation executes zero SDK commands.
+
+The SDK-zero Windows facade validation stopped at the existing
+NORMAL_WINDOWS_MAIN_WORKER_ONLY guard before any SDK or package verification.
+Its dedicated4GiB/CPU2/64 Job was terminal with population0. That guard remains
+enforced; the Windows local consumer interface is not delivered as admitted.
+The native Linux supervisor139 cause remains unresolved. The shared input
+work and product04 delivery are HOLD, with no new preview.3 binaries/release.

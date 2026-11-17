@@ -85,3 +85,11 @@ Windows packages, product tests and preview.3 release remain unaccepted.
 The Windows facade has a separate SDK-zero current-input validation entrypoint
 using the same existing dedicated Job and original limits. It never invokes
 SDK, native package verification, an external request or a security setter.
+
+Actual Windows observation on860e072: the existing OwnJob guard rejected
+NORMAL_WINDOWS_MAIN_WORKER_ONLY after the initial Git read. SDK0, GET0; the
+Job ended with population0. No PID-count/cap/watchdog rule was relaxed and no
+new Windows consumer admission is inferred. A diagnosis of this exact mismatch
+and the Linux supervisor exit139 is required before further native/product
+work. The two observed failures are separate from immutable qualification
+history. No failed row is advertised as a completed local input delivery.
