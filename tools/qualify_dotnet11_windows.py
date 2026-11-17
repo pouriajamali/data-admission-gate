@@ -4,7 +4,7 @@ import argparse,hashlib,importlib.util,json,os,re,sys,uuid
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 p=HERE/'sdk11_ci_runtime.py'
-if hashlib.sha256(p.read_bytes()).hexdigest()!='8a325b45785ac13a1926b741a31e79ddd63f558e36df39665f285ee5095e62e8':raise RuntimeError('RUNTIME_SOURCE_IDENTITY')
+if hashlib.sha256(p.read_bytes()).hexdigest()!='7420a8d64bc031ca3ab6cbdaf997083c51693efaedb59f9fe9ede642d1c59685':raise RuntimeError('RUNTIME_SOURCE_IDENTITY')
 spec=importlib.util.spec_from_file_location('sdk11_ci_runtime',p);R=importlib.util.module_from_spec(spec);sys.modules[spec.name]=R;spec.loader.exec_module(R)
 j=R.load_module('windows_qualification_job',R.PINS['jobHelperSha256'])
 class Backend:

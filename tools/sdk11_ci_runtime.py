@@ -63,6 +63,12 @@ def job_environment(root):
  for key in ['LD_PRELOAD','LD_LIBRARY_PATH','DOTNET_STARTUP_HOOKS','DOTNET_ADDITIONAL_DEPS','CORECLR_ENABLE_PROFILING','CORECLR_PROFILER','NUGET_PLUGIN_PATHS']:
   f.need(not os.environ.get(key),'UNSAFE_RUNTIME_ENVIRONMENT')
  allowed=['SystemRoot','WINDIR','COMSPEC','PATHEXT','NUMBER_OF_PROCESSORS','PROCESSOR_ARCHITECTURE','LANG','LC_ALL','HOME','USERPROFILE','USER','LOGNAME'];env={k:os.environ[k] for k in allowed if k in os.environ};env['PATH']='C:/Windows/System32;C:/Windows;C:/Program Files/Git/cmd' if os.name=='nt' else '/usr/bin:/bin'
+ # NuGet CORECLR resolves machine-wide defaults from PROGRAMFILES(X86),
+ # then PROGRAMFILES. A filtered Windows environment must provide nonnull
+ # private empty roots, without inheriting runner machine/user NuGet config.
+ if os.name=='nt':
+  for key,name in [('PROGRAMFILES(X86)','program-files-x86'),('PROGRAMFILES','program-files'),('PROGRAMDATA','program-data'),('APPDATA','app-data'),('LOCALAPPDATA','local-app-data')]:
+   target=root/name;target.mkdir(mode=0o700);env[key]=str(target)
  for name in ['cli-home','packages','http','tmp']:(root/name).mkdir(mode=0o700)
  env.update({'DOTNET_CLI_HOME':str(root/'cli-home'),'NUGET_PACKAGES':str(root/'packages'),'NUGET_HTTP_CACHE_PATH':str(root/'http'),'TMP':str(root/'tmp'),'TEMP':str(root/'tmp'),'TMPDIR':str(root/'tmp'),'DOTNET_CLI_TELEMETRY_OPTOUT':'1','DOTNET_GENERATE_ASPNET_CERTIFICATE':'false','DOTNET_SKIP_FIRST_TIME_EXPERIENCE':'1','DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE':'true','DOTNET_MULTILEVEL_LOOKUP':'0','DOTNET_PROCESSOR_COUNT':'2','MSBUILDDISABLENODEREUSE':'1','DOTNET_CLI_USE_MSBUILD_SERVER':'0','DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER':'1','PYTHONDONTWRITEBYTECODE':'1'});return env
 def bootstrap_identity():
