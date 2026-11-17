@@ -61,3 +61,10 @@ no renewed clock. Source callers must retain their own native dependencies,
 exact SDK graphs/locks/packages/signatures/revocation/notices/advisories, tests,
 packaged literal/oracle cases, signing/publication and actual terminal proof.
 No current caller is admitted by this source alone. Live validation is pending.
+
+The first native controller import onf8ca18d failed before main/unit/SDK because
+method_modules expects the old diagnostics caller. It now loads those exact
+already-pinned method modules directly, preserving every actual control. The
+original WSL launcher exited1 and its operator was terminal; exact own lease
+release is recorded with source/traceback evidence. No foreign lease reset or
+healthy SDK replay occurred. A real import regression check passes without SDK.

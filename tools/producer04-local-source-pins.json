@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
       "mode": "100644",
-      "gitBlob": "d67e4c0b6000b1ed7868227ae90abea63b7b68d9"
+      "gitBlob": "e57ca6fd832bdf72cb0dde2b57bb5bfd92f3bdef"
     },
     {
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
@@ -257,7 +257,7 @@
     {
       "path": "tools/curate_windows_inputs_local_linux.py",
       "mode": "100644",
-      "gitBlob": "815500da377f9dba6c955f8db4a06d241dca204a"
+      "gitBlob": "2ed8beedc416fcd3fee176b38d739f5f1f78f6fd"
     },
     {
       "path": "tools/curation_advisory_source04.py",
