@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_SHARED_NORMAL_INPUT.md",
       "mode": "100644",
-      "gitBlob": "d2e9f1f8ef6db39cd5afebf026429d096201213b"
+      "gitBlob": "05b15b70da542e1161fbe4259470ada6f91ffa21"
     },
     {
       "path": "docs/SDK11_SUPPORTED_HOSTS.md",
@@ -227,7 +227,7 @@
     {
       "path": "tools/consume_dotnet11_host_fact.py",
       "mode": "100644",
-      "gitBlob": "cbf8fa8a12f4500fbb67c3bb3b9db4c322cdfb4e"
+      "gitBlob": "0f76c6016dd967ddd190ea68c3672f2604145477"
     },
     {
       "path": "tools/curate_dotnet11_inputs.py",
@@ -237,7 +237,7 @@
     {
       "path": "tools/curate_dotnet11_linux_inputs.py",
       "mode": "100644",
-      "gitBlob": "31c5ee47035d8cf0a3dec54bca5a38887560b639"
+      "gitBlob": "45175b1395bb75981d21794ffa42083c459c2fb5"
     },
     {
       "path": "tools/curation_advisory_source04.py",
@@ -272,7 +272,7 @@
     {
       "path": "tools/dotnet11-consumer04-admission.lock.json",
       "mode": "100644",
-      "gitBlob": "8f552c3bb270c2111412cdf739e263f7852d9f52"
+      "gitBlob": "0b203777b52cf720157c8df3e90f3832ccab43fe"
     },
     {
       "path": "tools/dotnet11-consumer04-normal-profile.json",

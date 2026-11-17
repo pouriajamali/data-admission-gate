@@ -25,7 +25,7 @@ def safe_cause_module():
  return CURATION_DIAGNOSTICS
 
 def curation_module():
- m=R.load_module('curate_dotnet11_linux_inputs','40e979e0a30b68740a0f0a49671646c0dbff25cc9477acf5bf1dca4669f8478d');safe_cause_module().STATE.bind(m,'40e979e0a30b68740a0f0a49671646c0dbff25cc9477acf5bf1dca4669f8478d','curation');return m
+ m=R.load_module('curate_dotnet11_linux_inputs','9e199eadd9d399dbb940f635a64d57e11ddd37f91e5bad15eba5bd6cd3f15216');safe_cause_module().STATE.bind(m,'9e199eadd9d399dbb940f635a64d57e11ddd37f91e5bad15eba5bd6cd3f15216','curation');return m
 
 def capture_curation_cause(exc,secondary=False):
  try:

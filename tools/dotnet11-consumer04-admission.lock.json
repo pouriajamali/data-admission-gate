@@ -6,7 +6,7 @@
   "productInputState": "PENDING_ORIGINAL_PRODUCT_GATES",
   "commonNormalModuleSha256": "d9c690d8c82825b018c04089c279036829d3baf2534c2634bba84910c415a37d",
   "normalCatalogSha256": "686c6c778f7841e6015fa401f3892b853df80e3341fbb5d02b27c682887c1c78",
-  "controllerSha256": "c205309163ef457c3301f06462ea493ef36a52daea193745665d6695a34c8817",
+  "controllerSha256": "353d66842608936ab776a1d3b020461c864e72d3881d7708866e651a9644df7c",
   "profileSha256": "cfd22549f1c60671d7c4b2bb8a8be3d1609b551bcada21c20f1653adfd675f91",
   "profileFile": "dotnet11-consumer04-normal-profile.json",
   "sourcePinsFile": "dotnet11-consumer04-source-pins.json",

@@ -47,14 +47,15 @@ def policies():
  contract=load_json(HERE/'producer04-linux-curation.contract.json',CONTRACT_SHA);profile=load_json(HERE/'producer04-linux-curation.profile.json',PROFILE_SHA);need(profile['inputTransport']=='PUBLIC_ORIGINALS_V1' and profile['publicInputTransportAmendmentSHA256']==PUBLIC_TRANSPORT_SHA and profile['publicInputHelperSHA256']==PUBLIC_HELPER_SHA,'PUBLIC_INPUT_PROFILE');load_json(HERE/'producer04-linux-curation-public-input-transport.json',PUBLIC_TRANSPORT_SHA);need(profile['advisoryNamespaceAmendmentSHA256']==NAMESPACE_AMENDMENT_SHA,'ADVISORY_NAMESPACE_PROFILE');load_json(HERE/'producer04-linux-advisory-namespace-amendment.json',NAMESPACE_AMENDMENT_SHA);need(profile['metadataFramingMode']==METADATA_FRAMING_MODE,'METADATA_FRAMING_PROFILE');return contract,profile
 
 def content_hash(stdout,package_id,version,exit_code,raw_receipt):
- """Strict English CLI shape hypothesis; released SDK output remains unobserved."""
+ """Exact package block plus four observed signed-package role reports."""
  need(type(stdout) is bytes and len(stdout)<=32768,'VERIFY_LOG_BOUND')
  need(exit_code==0,'VERIFY_EXIT_NOT_ZERO')
  try: text=stdout.decode('utf-8',errors='strict')
  except UnicodeError: raise Hold('VERIFY_LOG_ENCODING') from None
  need(not any(ord(c)<32 and c not in '\r\n\t' for c in text),'VERIFY_LOG_CONTROL')
  lines=[x.strip() for x in text.splitlines()];identity=package_id+'.'+version
- blocks=[i for i,x in enumerate(lines) if x.startswith('Verifying ')]
+ role_lines=('Verifying the author primary signature with certificate:',"Verifying author primary signature's timestamp with timestamping service certificate:",'Verifying the repository countersignature with certificate:',"Verifying repository countersignature's timestamp with timestamping service certificate:")
+ blocks=[i for i,x in enumerate(lines) if x.startswith('Verifying ') and x not in role_lines]
  hashes=[i for i,x in enumerate(lines) if x.startswith('Content hash')]
  successes=[i for i,x in enumerate(lines) if x.startswith('Successfully verified package')]
  need(len(blocks)==len(hashes)==len(successes)==1,'VERIFY_SINGLE_IDENTITY_HASH_BLOCK')
