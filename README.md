@@ -491,3 +491,11 @@ signatures are reused. Original4GiB/CPU2/64,840/900seconds,SDK300seconds,
 2GiB scratch and8MiB proof remain enforced. ABI64 isolation and actual current
 network denial remain mandatory. Execution and final product delivery are
 pending their actual receipts; no Actions or global SDK admission is implied.
+
+The first fresh native attempt reached actual local input byte/cap checks,
+then failed before crypto/SDK because metadata reused immutable stage1.
+The causal correction uses independent stage2 with the same absolute420s
+metadata end,840/900s outer limits and300s SDK stage. Four new schedule
+checks retain duplicate-stage denial and prior evidence. Windows WSL transport
+uses fixed CREATE_NO_WINDOW|UNICODE and null stdin; this changes no Linux
+admission, kernel caps or network guards. Product delivery remains pending.

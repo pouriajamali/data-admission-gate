@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "e50f9da44f5aa0574908e267ffb76538c54b0f93"
+      "gitBlob": "3f88e92d3296bff82ab83fd526e4e32c3f307bca"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -262,7 +262,7 @@
     {
       "path": "tools/curate_windows_inputs_fresh_local_linux.py",
       "mode": "100644",
-      "gitBlob": "3323774d33e36bc476d01141129c94f540fdcc3e"
+      "gitBlob": "e6b59e6233bcbe2d6d05cbacb035ff965739266f"
     },
     {
       "path": "tools/curate_windows_inputs_local_linux.py",
