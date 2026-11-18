@@ -1,0 +1,29 @@
+{
+  "schema": "sdk11-own-normal-input-profile/v1",
+  "state": "ADMITTED_SOURCE_PROFILE",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "rowSeconds": 900,
+  "memoryMaxBytes": 4294967296,
+  "tasksMax": 64,
+  "workerEndSeconds": 840,
+  "terminalReserveSeconds": 60,
+  "sourceScratchMaxBytes": 268435456,
+  "scratchMaxBytes": 2147483648,
+  "proofBytesMax": 8388608,
+  "nativeHandoffSHA256": "cc0b9022982f30f4dac7148932e8d8a326b03f4f81cda6df02bbaad289a60443",
+  "scope": "Original product04 acceptance:109unit cases including one Linux-only case;17 extracted self-contained package checks;4 literal compatibility cases. One OS per phase, existing qualified SDK and exact native inputs only. No qualification/signature target replay, no GET, no Actions. Source/own caps/deadline/teardown independently enforced.",
+  "SDKStageSecondsMax": 660,
+  "controlledTopLevelSDKVectors": 2,
+  "packageScriptSDKPublishVectors": 1,
+  "localInputRoute": {
+    "rid": "linux-x64",
+    "role": "generic",
+    "readOnlyExistingPool": true,
+    "qualifiedFactSha256": "ad63c4ad44af1844e1c937152294b07cdce9faccf2e2e7899cc221f2e485fb3c"
+  },
+  "swapMaxBytes": 0,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "ownedUnitPrefix": "admission04-sdk11-ci-"
+}
