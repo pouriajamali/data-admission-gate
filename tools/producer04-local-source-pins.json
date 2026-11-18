@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "15ca7ca964e968b425ed50115a80f40e8b8788ec"
+      "gitBlob": "4885b5ff9645d56f4cb93285ae70c6fd95688882"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -107,7 +107,7 @@
     {
       "path": "docs/SDK11_LOCAL_INPUT_INTERFACE.md",
       "mode": "100644",
-      "gitBlob": "9f17ba2d125c98dd71ed8970a45eb82276bce172"
+      "gitBlob": "086371896617a04c7d4f024d7a3e2437d5e16a95"
     },
     {
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
@@ -255,6 +255,11 @@
       "gitBlob": "45175b1395bb75981d21794ffa42083c459c2fb5"
     },
     {
+      "path": "tools/curate_windows_corehost_local_linux.py",
+      "mode": "100644",
+      "gitBlob": "cc68cb61a8557b15d33697e710c5c83dae79bd36"
+    },
+    {
       "path": "tools/curate_windows_inputs_local_linux.py",
       "mode": "100644",
       "gitBlob": "1d5068bc4e2f45cef885242ee5aefc2fcb84e236"
@@ -345,6 +350,11 @@
       "gitBlob": "71ce9df06fb058efe5c959c4aab017cd7a3ff7aa"
     },
     {
+      "path": "tools/local_linux_network_query.py",
+      "mode": "100644",
+      "gitBlob": "7ff38d6cf701088528ceeadbfa75d219fe2a6ede"
+    },
+    {
       "path": "tools/local_sdk11_input.py",
       "mode": "100644",
       "gitBlob": "11f9c244207e6033b90b13adaaf8e6354146e897"
@@ -418,6 +428,11 @@
       "path": "tools/producer04-linux139-transition-diagnostic.profile.json",
       "mode": "100644",
       "gitBlob": "9e2988544a71e12405c95ae9f82cc0e087defe45"
+    },
+    {
+      "path": "tools/producer04-local-corehost-inputs.profile.json",
+      "mode": "100644",
+      "gitBlob": "759147fc6535345422df7afe91229065846095e8"
     },
     {
       "path": "tools/producer04-local-input-windows.profile.json",
@@ -780,6 +795,11 @@
       "gitBlob": "ed8d9360be2d9c88440dc9364d35653d82b1074f"
     },
     {
+      "path": "tools/test_corehost_prepared_scope.py",
+      "mode": "100644",
+      "gitBlob": "4f88b4a57f79b23ad7316c3602eb1e2a9f51db4c"
+    },
+    {
       "path": "tools/test_curation_advisory_namespace04.py",
       "mode": "100644",
       "gitBlob": "834fe9cbca7396eb023ee1c4d0d84f5e48e17354"
@@ -863,6 +883,11 @@
       "path": "tools/test_linux139_transition_delta.py",
       "mode": "100644",
       "gitBlob": "509c30ab66a0c77dcf8a196ed90902aa0a69600b"
+    },
+    {
+      "path": "tools/test_local_linux_network_query.py",
+      "mode": "100644",
+      "gitBlob": "6b7e18fe54fc9567e7d6d006b9e0c3b460c4bd4d"
     },
     {
       "path": "tools/test_local_sdk11_input.py",

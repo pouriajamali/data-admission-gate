@@ -173,3 +173,30 @@ worker45seconds, whole diagnostic120, existing4GiB/CPU2/64/swap0 are retained.
 Only the own exact stopped unit may receive its existing runtime IP denial;
 no global policy changes. A successful metadata transition is still not an
 actual loopback/permission witness or native package admission.
+
+The bounded9fe8f25 diagnostic completed with SDK0 and real own terminal0; its
+isolated policy child diedSIGSEGV at the original bpf_query207 during the
+after-policy query (scoped_parent_transition226), with fatal source frames.
+A concrete ABI defect is now repaired in additive
+`tools/local_linux_network_query.py`: the old query output buffer had40bytes,
+but Linux6.18 UAPI defines64bytes through revision56; cgroup.c writes that
+revision output unconditionally, beyond a40-byte buffer. The olde882 crypto/
+method file remains immutable. Only zero-initialized link_ids/link_attach_flags/
+revision fields and a64/offset56 guard are added; prefix fields, syscalls, IDs,
+cap/stop/source/clock/policy/readback guards are identical. A safe canary test
+models the actual offset56 write, showing overflow of the old allocation and
+containment in64. This is a source-level causal repair; live verification is
+still pending and no exact heap-address correlation or kernel defect is claimed.
+Sources: https://raw.githubusercontent.com/torvalds/linux/v6.18/include/uapi/linux/bpf.h
+and https://raw.githubusercontent.com/torvalds/linux/v6.18/kernel/bpf/cgroup.c .
+A narrower prepared CoreHost-only entry retains the original900/840/300
+4GiB/CPU2/64/swap0 and hard network/loopback/permission witnesses, with only
+the first two officialNuGet verify commands for the two existing WinCoreHost
+originals. It adds no package/ASP.NET reference/graph/restore/build/SDK acquisition.
+Qualified ELF closure is reused with current complete SDK/dependency byte checks,
+not repeated loader/ELF commands. Windows raw fingerprints, CMS/notices, exact
+eight-cert/nativeCRL history and complete applicable-advisory windows remain
+mandatory. The controller and operator both require the one trusted05 Ubuntu
+recovery-completion notice before any heavy Ubuntu operation/lease claim. No
+WSL reset/config/security or lease reset is performed by04. If recovery/input
+freshness is missing, no native command is started. No global readiness follows.

@@ -473,3 +473,12 @@ diagnostic retains the existing coordinator while the exact pinned own-unit
 network transition runs in one bounded OS child; it preserves all original
 held-PID/source/caps/clock/cleanup controls. This supplies diagnosis evidence
 and never substitutes for current network-denial witnesses or native crypto.
+
+The Linux139 diagnostic now localizes its isolated child fault to the original
+BPF-query loop; the concrete40-byte versus64-byte kernel-output ABI defect is
+repaired in a separate local query helper. Three ABI/canary/guard delta tests
+pass; the original method/history and all62 shared files remain unchanged.
+Live native validation is pending the sole owner05 Ubuntu recovery notice.
+The prepared narrower path performs only the two first WindowsCore/Host
+signature/RFC3161/content-hash commands under the existing caps/network gates;
+it creates no consumer graph, ASP.NET reference or SDK/product admission.
