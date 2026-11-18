@@ -21,6 +21,9 @@ NATIVE_CONTROLLER_SHA='38a22d3cc48735df5b037a1d0dd481414dd6101e8132fa6f3e09aa783
 def need(v,why):R.f.need(v,why)
 
 check=need
+def pinned(path,sha):
+ need(R.digest(path)==sha,'RETAINED_INPUT_RECEIPT_SHA');return R.read(path)
+
 L=load('curate_dotnet11_linux_inputs','9e199eadd9d399dbb940f635a64d57e11ddd37f91e5bad15eba5bd6cd3f15216')
 M=load('curation_linux_method',L.METHOD_SOURCE_PINS['curation_linux_method'])
 A=load('curation_advisory_source04',L.METHOD_SOURCE_PINS['curation_advisory_source04'])
@@ -200,7 +203,7 @@ def worker(path):
     if lib.lower().startswith(('api-ms-','ext-ms-')):continue
     need((image.parent/lib).is_file() or (pathlib.Path(os.environ['SystemRoot'])/'System32'/lib).is_file(),'CURRENT_WINDOWS_IMPORT_EXISTS')
   R.write(root/'current-native-prerequisite-byte-reuse.json',{'state':'QUALIFIED_SIGNED_WINDOWS_BYTES_REUSED_CURRENT_IMPORTS_PRESENT','factSHA256':'841b508658a3a843f7d194b089b355b3e2e572873b4301349f3b545255086339','qualificationReplays':0})
- need(R.clock()<budget.current,'BOUNDED_INPUT_STAGE180')
+ need(R.clock()<budget.current,'BOUNDED_INPUT_STAGE180');budget.stage(2,180)
  packages,runtime_locks,native_input_reference,responses,index,pages,audit=retained_current_inputs(root)
  phase=root/'curation';phase.mkdir();(phase/'raw').mkdir();(phase/'packages').mkdir();raws=[]
  for p in packages:

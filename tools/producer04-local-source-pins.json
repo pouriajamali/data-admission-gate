@@ -532,7 +532,7 @@
     {
       "path": "tools/run_local_product04.py",
       "mode": "100644",
-      "gitBlob": "db596cd7ff95c17454800cda5e521e8c809b68c9"
+      "gitBlob": "12c21f993f805fa742354eb9796a3f0c94a3be5b"
     },
     {
       "path": "tools/sdk11-ci-execution.profile.json",
