@@ -194,7 +194,7 @@ def worker(path):
  if os.name=='nt':raw=local._windows_source_git(['rev-parse','HEAD','HEAD^{tree}'],ROOT,(s['startTick']+60000)*1000000)
  else:
   rec,raw=R.output(backend.run,[*git,'rev-parse','HEAD','HEAD^{tree}'],ROOT,env,budget.deadline(10),root/'source-git')
- v=raw.decode().splitlines();need(len(v)==2 and v[0]==s['expectedCommit'],'EXACT_PRODUCT_SOURCE');source={'commit':v[0],'tree':v[1]};ctx=context(s,root,cap,source);before=local.inspect_sdk(RID,SDK,ctx);R.write(root/'local-sdk-input-before.json',before)
+ v=raw.decode().splitlines();need(len(v)==2 and v[0]==s['expectedCommit'],'EXACT_PRODUCT_SOURCE');source={'commit':v[0],'tree':v[1]};ctx=context(s,root,cap,source);need(R.clock()<budget.current,'ORIGINAL_HELD_SOURCE_STARTUP60');budget.stage(1,180);before=local.inspect_sdk(RID,SDK,ctx);R.write(root/'local-sdk-input-before.json',before)
  if os.name!='nt':reuse_native_prerequisites(root)
  else:
   for name in ['dotnet.exe','host/fxr/11.0.0/hostfxr.dll','shared/Microsoft.NETCore.App/11.0.0/coreclr.dll','shared/Microsoft.NETCore.App/11.0.0/clrjit.dll']:
@@ -203,7 +203,7 @@ def worker(path):
     if lib.lower().startswith(('api-ms-','ext-ms-')):continue
     need((image.parent/lib).is_file() or (pathlib.Path(os.environ['SystemRoot'])/'System32'/lib).is_file(),'CURRENT_WINDOWS_IMPORT_EXISTS')
   R.write(root/'current-native-prerequisite-byte-reuse.json',{'state':'QUALIFIED_SIGNED_WINDOWS_BYTES_REUSED_CURRENT_IMPORTS_PRESENT','factSHA256':'841b508658a3a843f7d194b089b355b3e2e572873b4301349f3b545255086339','qualificationReplays':0})
- need(R.clock()<budget.current,'ORIGINAL_STARTUP60');budget.stage(1,180)
+ need(R.clock()<budget.current,'BOUNDED_INPUT_STAGE180')
  packages,runtime_locks,native_input_reference,responses,index,pages,audit=retained_current_inputs(root)
  phase=root/'curation';phase.mkdir();(phase/'raw').mkdir();(phase/'packages').mkdir();raws=[]
  for p in packages:
