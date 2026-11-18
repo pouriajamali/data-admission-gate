@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "a6bdab1429322ae575a7d2fe55f50430f50316e6"
+      "gitBlob": "ab34fe22ab3d5843b0369894167eae7f4c6285fb"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -102,7 +102,7 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "d9b5f903aa56c4e071dd20bf7c23d341735c0c5a"
+      "gitBlob": "c5b07d0f17dfcd45288690c24a2e2f292bfb5c30"
     },
     {
       "path": "docs/SDK11_DELIVERY_HISTORY.md",
@@ -118,6 +118,11 @@
       "path": "docs/SDK11_LOCAL_QUALIFICATION.md",
       "mode": "100644",
       "gitBlob": "b27f80ae6da61abcd4266a09b13a6cde8add7932"
+    },
+    {
+      "path": "docs/SDK11_OFFLINE_FINALIZATION.md",
+      "mode": "100644",
+      "gitBlob": "d9513f75ece5f740d5db1966a9ede67b0f2b5892"
     },
     {
       "path": "docs/SDK11_SHARED_INPUT_INTERFACE.json",
@@ -260,6 +265,11 @@
       "gitBlob": "45175b1395bb75981d21794ffa42083c459c2fb5"
     },
     {
+      "path": "tools/curate_managed06_windows.py",
+      "mode": "100644",
+      "gitBlob": "774d4cb271aae9c4d62bb50bc24b72260c1d65fe"
+    },
+    {
       "path": "tools/curate_windows_corehost_local_linux.py",
       "mode": "100644",
       "gitBlob": "cc68cb61a8557b15d33697e710c5c83dae79bd36"
@@ -350,6 +360,11 @@
       "gitBlob": "9c5f5955c2068141e5f69eb06a066953cd2fef9e"
     },
     {
+      "path": "tools/finalize_retained_product04.py",
+      "mode": "100644",
+      "gitBlob": "e2b97593ec862dd1be759844b21f4226c63c6d65"
+    },
+    {
       "path": "tools/fixtures/windows_qualification_denials.json",
       "mode": "100644",
       "gitBlob": "285d31a0e4f5a699a0ce36067804b08f4d6fb37c"
@@ -368,6 +383,11 @@
       "path": "tools/local_sdk11_input.py",
       "mode": "100644",
       "gitBlob": "11f9c244207e6033b90b13adaaf8e6354146e897"
+    },
+    {
+      "path": "tools/managed06_sdk_report_parser.py",
+      "mode": "100644",
+      "gitBlob": "01b7c6d7bfe2a97bc9cce68ca7ae4bc5294674c8"
     },
     {
       "path": "tools/materialize_qualification_linux.py",
@@ -465,6 +485,16 @@
       "gitBlob": "bec19d20920e10fff17e701ede45398bc7d3cc74"
     },
     {
+      "path": "tools/producer04-local-offline-finalization-linux-x64.profile.json",
+      "mode": "100644",
+      "gitBlob": "e09e2f22831074f693c9ae289235d646b4f98b02"
+    },
+    {
+      "path": "tools/producer04-local-offline-finalization-win-x64.profile.json",
+      "mode": "100644",
+      "gitBlob": "bfd8f65a842ca0f3741e6eee10ccc07ecc2867c3"
+    },
+    {
       "path": "tools/producer04-local-product-linux-x64.profile.json",
       "mode": "100644",
       "gitBlob": "57136f1168ecee9e0442df2a3f53b9d91b298fb3"
@@ -473,6 +503,11 @@
       "path": "tools/producer04-local-product-win-x64.profile.json",
       "mode": "100644",
       "gitBlob": "4a5459cc1e0a958649ffe4397909aee608490d1f"
+    },
+    {
+      "path": "tools/producer04-managed06-windows.profile.json",
+      "mode": "100644",
+      "gitBlob": "5df1bbf00c5366116cb6b164bb036c78f4961b95"
     },
     {
       "path": "tools/producer04-metadata-framing-diagnostic.profile.json",

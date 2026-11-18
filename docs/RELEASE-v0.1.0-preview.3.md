@@ -39,3 +39,8 @@ symlink fixture. That case is separately `LOCAL_SYMLINK_PRIVILEGE` skipped,
 in addition to `LINUX_ONLY` FIFO. Counts retain the109-case inventory; the
 release receipt separates actual new cases, exact healthy-case reuse and skips.
 No Developer Mode, privilege, path guard or security setting is changed.
+
+Runtime/source archives bind to tested e48e0bf5ca550fc736c2f6f551c34347f54c00ff.
+Separate bounded offline finalization tooling is later source; both original
+postcheck envelope HOLDs remain unchanged. Publication requires actual per-OS
+offline final receipts. See SDK11_OFFLINE_FINALIZATION.md for the exact boundary.

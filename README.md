@@ -246,3 +246,7 @@ symlink fixture. That case is separately `LOCAL_SYMLINK_PRIVILEGE` skipped,
 in addition to `LINUX_ONLY` FIFO. Counts retain the109-case inventory; the
 release receipt separates actual new cases, exact healthy-case reuse and skips.
 No Developer Mode, privilege, path guard or security setting is changed.
+
+[Retained runtime bytes and separate offline finalization](docs/SDK11_OFFLINE_FINALIZATION.md)
+records the exact native test sources, two Windows host skips and the distinction
+between preserved original envelope HOLDs and fresh offline input verification.
