@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "4885b5ff9645d56f4cb93285ae70c6fd95688882"
+      "gitBlob": "e50f9da44f5aa0574908e267ffb76538c54b0f93"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -260,6 +260,11 @@
       "gitBlob": "cc68cb61a8557b15d33697e710c5c83dae79bd36"
     },
     {
+      "path": "tools/curate_windows_inputs_fresh_local_linux.py",
+      "mode": "100644",
+      "gitBlob": "3323774d33e36bc476d01141129c94f540fdcc3e"
+    },
+    {
       "path": "tools/curate_windows_inputs_local_linux.py",
       "mode": "100644",
       "gitBlob": "1d5068bc4e2f45cef885242ee5aefc2fcb84e236"
@@ -443,6 +448,11 @@
       "path": "tools/producer04-local-job-diagnostic.profile.json",
       "mode": "100644",
       "gitBlob": "2952e981ca4a9495b8075c31b725f693fe986c58"
+    },
+    {
+      "path": "tools/producer04-local-native-fresh.profile.json",
+      "mode": "100644",
+      "gitBlob": "c280979708e64f0487d3aefe454b04a43f6462d3"
     },
     {
       "path": "tools/producer04-local-native-windows.profile.json",

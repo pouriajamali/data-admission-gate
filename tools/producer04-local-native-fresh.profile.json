@@ -1,0 +1,39 @@
+{
+  "schema": "sdk11-own-normal-input-profile/v1",
+  "state": "ADMITTED_SOURCE_PROFILE",
+  "projectId": "04",
+  "repository": "pouriajamali/data-admission-gate",
+  "rowSeconds": 900,
+  "memoryMaxBytes": 4294967296,
+  "swapMaxBytes": 0,
+  "tasksMax": 64,
+  "cpuQuotaMicros": 200000,
+  "cpuPeriodMicros": 100000,
+  "ownedUnitPrefix": "admission04-sdk11-ci-",
+  "SDKCommandsMax": 6,
+  "existingCurationCeiling": 7,
+  "SDKStageSecondsMax": 300,
+  "workerEndSeconds": 840,
+  "terminalReserveSeconds": 60,
+  "sourceScratchMaxBytes": 268435456,
+  "scratchMaxBytes": 2147483648,
+  "proofBytesMax": 8388608,
+  "localInputRoute": {
+    "rid": "linux-x64",
+    "role": "generic",
+    "readOnlyExistingPool": true,
+    "qualifiedFactSha256": "ad63c4ad44af1844e1c937152294b07cdce9faccf2e2e7899cc221f2e485fb3c"
+  },
+  "scope": "Four exact existing Windows signed inputs plus two own04 Windows graph/locks. Fresh official metadata and current native PKI renewal because prior mutable snapshot expired; original SDK host histories reused. Existing ABI64 isolated actor and exact current kernel denial retained.",
+  "newPackages": [],
+  "exactExistingPackageIDs": [
+    "Microsoft.AspNetCore.App.Runtime.win-x64",
+    "Microsoft.NETCore.App.Host.win-x64",
+    "Microsoft.NETCore.App.Runtime.win-x64",
+    "Microsoft.WindowsDesktop.App.Runtime.win-x64"
+  ],
+  "originalFiniteContractSDKCeiling": 6,
+  "recoveryOwner05CompletionNoticeRequired": true,
+  "freshMetadataGETsMax": 23,
+  "currentOpenSSLCommandsMax": 3
+}

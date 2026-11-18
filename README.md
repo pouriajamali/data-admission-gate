@@ -482,3 +482,12 @@ Live native validation is pending the sole owner05 Ubuntu recovery notice.
 The prepared narrower path performs only the two first WindowsCore/Host
 signature/RFC3161/content-hash commands under the existing caps/network gates;
 it creates no consumer graph, ASP.NET reference or SDK/product admission.
+
+Current local continuation uses a separate fresh native controller: four exact
+existing Windows inputs and two own04 Windows graphs, with at most23 official
+metadata GETs and three bounded OpenSSL operations to renew expired mutable
+PKI/advisory evidence. Historical SDK qualification and healthy Linux package
+signatures are reused. Original4GiB/CPU2/64,840/900seconds,SDK300seconds,
+2GiB scratch and8MiB proof remain enforced. ABI64 isolation and actual current
+network denial remain mandatory. Execution and final product delivery are
+pending their actual receipts; no Actions or global SDK admission is implied.
