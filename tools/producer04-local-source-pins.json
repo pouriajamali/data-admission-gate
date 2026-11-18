@@ -57,7 +57,7 @@
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "3f88e92d3296bff82ab83fd526e4e32c3f307bca"
+      "gitBlob": "92b3c3ef9cc2a83a859cbd913e734b5b74a3c0c3"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -262,7 +262,7 @@
     {
       "path": "tools/curate_windows_inputs_fresh_local_linux.py",
       "mode": "100644",
-      "gitBlob": "e6b59e6233bcbe2d6d05cbacb035ff965739266f"
+      "gitBlob": "aabbfe69d6cff5721dd8e7c00abfa9d3b287fc32"
     },
     {
       "path": "tools/curate_windows_inputs_local_linux.py",
@@ -452,7 +452,7 @@
     {
       "path": "tools/producer04-local-native-fresh.profile.json",
       "mode": "100644",
-      "gitBlob": "c280979708e64f0487d3aefe454b04a43f6462d3"
+      "gitBlob": "04b67ce403da95c4314e304bc4d7d232048787a6"
     },
     {
       "path": "tools/producer04-local-native-windows.profile.json",

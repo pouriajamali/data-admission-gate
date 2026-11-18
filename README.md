@@ -499,3 +499,13 @@ metadata end,840/900s outer limits and300s SDK stage. Four new schedule
 checks retain duplicate-stage denial and prior evidence. Windows WSL transport
 uses fixed CREATE_NO_WINDOW|UNICODE and null stdin; this changes no Linux
 admission, kernel caps or network guards. Product delivery remains pending.
+
+The following native attempt ended naturally before SDK after the10-second
+large advisory-page transfer deadline. Existing complete current originals
+are now identity-bound data input: three completed native-row metadata bodies
+and the same complete base URL are reused; only seven missing/expired public
+metadata bodies are obtained in the existing bounded Windows data Job. Linux
+retains one small current-cgroup HTTPS request for current clock/peer, original
+per-request10-second cap, complete snapshot expiry, native CRL/signature checks
+and actual kernel denial. Three data-loader delta checks pass; this source
+preparation does not itself admit packages, hosts or the product.
