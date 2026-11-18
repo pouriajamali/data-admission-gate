@@ -69,7 +69,7 @@ def current_metadata(s,phase,contract,A,total,job):
   date=__import__('datetime').datetime.fromisoformat(item['@updated'].replace('Z','+00:00'));check(date.tzinfo is not None and date.timestamp()<=ctx['utcNow']+300,'VULNERABILITY_FUTURE_TIME')
  pkis=contract['finiteMetadataAcquisition']['PKIExactObservedGETs'];responses={u:bodies[u] for u in pkis};return ctx,[bodies[u] for u in pkis if u.endswith('.crt')],[bodies[u] for u in pkis if u.endswith('.crl')],responses
 
-COORDINATOR_FILES={'private-spec.json','root-starter.json','held-worker-before-continue.json','network-policy-applied.json','isolated-policy-result.json','network-transition-child-result.json','launcher-stdout.log','launcher-stderr.log','network-transition-child.stdout','network-transition-child.stderr'}
+COORDINATOR_FILES={'systemd-readiness.json','effective-root-starter.json','private-spec.json','root-starter.json','held-worker-before-continue.json','network-policy-applied.json','isolated-policy-result.json','network-transition-child-result.json','launcher-stdout.log','launcher-stderr.log','network-transition-child.stdout','network-transition-child.stderr'}
 COORDINATOR_FILES|={n+'.ready' for n in tuple(COORDINATOR_FILES) if n.endswith('.json')}
 
 def scratch_owner(relative,uid,is_directory,mode,worker_uid):
@@ -138,9 +138,18 @@ def worker(path):
   if thread:thread.join(timeout=2);check(not thread.is_alive(),'STATIC_ADAPTER_TERMINAL')
  signal.setitimer(signal.ITIMER_REAL,0)
 
+def wait_systemd_ready(s,argv):
+ root=pathlib.Path(s['root']);deadline=min(s['startTick']+60000,R.clock()+20000);check(R.clock()<deadline,'ORIGINAL_STARTUP_REMAINING');args=['/usr/bin/systemctl','is-system-running','--wait'];started=R.clock()
+ try:
+  result=subprocess.run(args,capture_output=True,env=Q.OS_ENV,timeout=max(.01,(deadline-R.clock())/1000));check(len(result.stdout)+len(result.stderr)<=16384,'SYSTEMD_READINESS_REPORT_BOUND');state=result.stdout.decode('ascii',errors='strict').strip();R.write(root/'systemd-readiness.json',{'argv':args,'exitCode':result.returncode,'state':state,'stdoutSHA256':hashlib.sha256(result.stdout).hexdigest(),'stderrSHA256':hashlib.sha256(result.stderr).hexdigest(),'elapsedMs':R.clock()-started,'deadlineTick':deadline,'originalStartTick':s['startTick'],'scope':'Read-only bus readiness, not host/SDK admission; no service/config changes.'});check(R.clock()<deadline and result.returncode in (0,1) and state in ('running','degraded') and not result.stderr,'SYSTEMD_NOT_READY_WITHIN_ORIGINAL_STARTUP')
+ except subprocess.TimeoutExpired:
+  R.write(root/'systemd-readiness.json',{'state':'TIMEOUT','originalStartTick':s['startTick'],'deadlineTick':deadline,'scope':'No unit or SDK start in readiness timeout.'});raise
+ remaining=(s['startTick']+840000-R.clock())//1000;check(remaining>0,'ORIGINAL_WORK840');effective=[('--property=RuntimeMaxSec='+str(remaining)) if str(x).startswith('--property=RuntimeMaxSec=') else x for x in argv];R.write(root/'effective-root-starter.json',{'argv':effective,'originalStartTick':s['startTick'],'kernelAbsoluteWorkerEndTick':s['startTick']+840000,'readinessDeadlineTick':deadline});return effective
+
 def run_parent(s,argv):
  root=pathlib.Path(s['root']);proc=pidfd=None;error=None;transitioned=False;held=None
  try:
+  argv=wait_systemd_ready(s,argv)
   prior,_=Q.own_unit_show(s['unit'],min(s['startTick']+60000,R.clock()+2000));check(prior.get('LoadState')=='not-found','OWN_UNIT_ABSENT')
   with (root/'launcher-stdout.log').open('xb') as out,(root/'launcher-stderr.log').open('xb') as err:
    proc=subprocess.Popen(argv,stdout=out,stderr=err,env=Q.OS_ENV);deadline=min(s['startTick']+60000,R.clock()+20000)
@@ -179,7 +188,7 @@ def main():
   R.write(root/'COREHOST-HOLD.json',{'state':'HOLD','errorType':type(exc).__name__,'code':str(exc)[:180],'SDKAttemptProcessFiles':[str(p.relative_to(root)) for p in (root/'curation').glob('verify-*/process.json')]});export(root,'HOLD');raise
 
 def export(root,state):
- names=['NATIVE-WINDOWS-INPUT-FACT.json','NATIVE-WINDOWS-WORKER-FACT.json','CURRENT-PKI-RENEWAL.json','CURRENT-METADATA-RENEWAL.json','COREHOST-HOLD.json','NATIVE-HOLD.json','cleanup-terminal.json','stop-outcome.json','private-spec.json','held-worker-before-continue.json','source-current.json','own-current-caps.json','local-input-context.json','local-sdk-input.json','local-sdk-input-after.json','current-native-prerequisite-byte-reuse.json','network-transition-request.json','network-policy-applied.json','network-witness.json','network-transition-child-result.json','network-transition-child.stdout','network-transition-child.stderr','launcher-stdout.log','launcher-stderr.log'];files=[]
+ names=['systemd-readiness.json','effective-root-starter.json','NATIVE-WINDOWS-INPUT-FACT.json','NATIVE-WINDOWS-WORKER-FACT.json','CURRENT-PKI-RENEWAL.json','CURRENT-METADATA-RENEWAL.json','COREHOST-HOLD.json','NATIVE-HOLD.json','cleanup-terminal.json','stop-outcome.json','private-spec.json','held-worker-before-continue.json','source-current.json','own-current-caps.json','local-input-context.json','local-sdk-input.json','local-sdk-input-after.json','current-native-prerequisite-byte-reuse.json','network-transition-request.json','network-policy-applied.json','network-witness.json','network-transition-child-result.json','network-transition-child.stdout','network-transition-child.stderr','launcher-stdout.log','launcher-stderr.log'];files=[]
  for p in list((root/'curation').glob('verify-*/*'))+list((root/'curation').glob('graph-*/*'))+list((root/'curation').glob('locks/*'))+list((root/'curation').glob('metadata/**/*'))+list((root/'curation').glob('chain/*'))+list((root/'curation').glob('openssl-*/*')):
   if p.is_file():names.append(p.relative_to(root).as_posix())
  for name in names:

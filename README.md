@@ -518,3 +518,10 @@ scratch, rejects unexpected/nested root files and counts every allocated block
 under the same2GiB cap. Ten ownership cases pass. The successful signature and
 three native PKI operations are identity-bound reuse, without timestamp reset;
 only three remaining first package verifications and two graphs remain.
+
+A cold-start attempt could not connect systemd before any held main/SDK.
+A single bounded read-only systemd readiness wait now remains inside the
+original60-second startup and recomputes kernel RuntimeMax from the original
+absolute840-second worker end; no clock reset or service/config mutation.
+Four readiness cases pass. No-held creation failures retain UNKNOWN pidfd
+status and release only after exact unitabsence,launcherterminal,population0.
