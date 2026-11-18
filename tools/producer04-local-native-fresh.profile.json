@@ -10,7 +10,7 @@
   "cpuQuotaMicros": 200000,
   "cpuPeriodMicros": 100000,
   "ownedUnitPrefix": "admission04-sdk11-ci-",
-  "SDKCommandsMax": 6,
+  "SDKCommandsMax": 5,
   "existingCurationCeiling": 7,
   "SDKStageSecondsMax": 300,
   "workerEndSeconds": 840,
@@ -35,8 +35,14 @@
   "originalFiniteContractSDKCeiling": 6,
   "recoveryOwner05CompletionNoticeRequired": true,
   "freshMetadataGETsMax": 23,
-  "currentOpenSSLCommandsMax": 3,
+  "currentOpenSSLCommandsMax": 0,
   "currentMetadataDataSHA256": "c5ac974bf24e47ab69b7f13f0de6da0fca76de160c7cbe757495f6f90cf2a584",
   "currentMetadataTerminalSHA256": "727ad6cd3d7e31547c66b6d7d14e58115d8b01cb82204f87ff0e73a92136a480",
-  "metadataRuntimeGETsMax": 1
+  "metadataRuntimeGETsMax": 1,
+  "successfulSDKCommandsReused": 1,
+  "logicalSuccessfulSDKCommands": 6,
+  "reusedNativePKIReceiptSHA256": "405f806705e8e24a3a75185634cedaba8d79384ef89bf89e6f7c7a369ad41f03",
+  "reusedAspNetSignatureReceiptSHA256": "a05c84fb0fce8b9b7553a3c8a5883acae8d8f0571da67e84e4ead527a62749a9",
+  "previousActualOpenSSLCommandsReused": 3,
+  "scratchOwnership": "All storage counted. UID0 exact readonly-to-worker coordinator control files only at root; every other file/dir must remain UID1000. No chown, deletion, type/link or quota guard removed."
 }

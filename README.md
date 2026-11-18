@@ -509,3 +509,12 @@ retains one small current-cgroup HTTPS request for current clock/peer, original
 per-request10-second cap, complete snapshot expiry, native CRL/signature checks
 and actual kernel denial. Three data-loader delta checks pass; this source
 preparation does not itself admit packages, hosts or the product.
+
+The next actual row proved ABI64 network denial, native current CRL chains
+and the first Windows ASP.NET NuGet CMS/RFC3161/content hash. Its post-command
+quota guard then rejected root-owned coordinator control files. The correction
+retains exact UID0 nonwritable-to-worker control files and UID1000 mutable
+scratch, rejects unexpected/nested root files and counts every allocated block
+under the same2GiB cap. Ten ownership cases pass. The successful signature and
+three native PKI operations are identity-bound reuse, without timestamp reset;
+only three remaining first package verifications and two graphs remain.
