@@ -14,12 +14,12 @@ identity proof. The key is public; never share or request the private signing ke
 
 ## What is signed
 
-The example below verifies **v0.1.0-preview.2**. Its
+The example below verifies **v0.1.0-preview.3**. Its
 `SHA256SUMS.txt.sig` is an SSH signature over the exact `SHA256SUMS.txt` bytes in
 the `file` namespace. Verify that signature first, then the chosen archive's hash.
 A matching unsigned hash alone is not authenticated provenance.
 
-Use the [release page](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.2)
+Use the [release page](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.3)
 and its exact tag/commit when selecting assets. An annotated signed tag and
 exact-source package manifests accompany public previews. Missing assets or a
 missing checksum signature are an incomplete publication; do not skip verification.
@@ -49,8 +49,8 @@ from the signed checksum file to verify a different OS archive.
 
 ```sh
 repo='pouriajamali/data-admission-gate'
-tag='v0.1.0-preview.2'
-archive='data-admission-gate-v0.1.0-preview.2-source.zip'
+tag='v0.1.0-preview.3'
+archive='data-admission-gate-v0.1.0-preview.3-source.zip'
 for name in "$archive" SHA256SUMS.txt SHA256SUMS.txt.sig; do
   curl --fail --location --output "$name" "https://github.com/$repo/releases/download/$tag/$name" || exit 1
 done
@@ -81,8 +81,8 @@ These commands do not install tools or change security settings.
 ```powershell
 $ErrorActionPreference = 'Stop'
 $repo = 'pouriajamali/data-admission-gate'
-$tag = 'v0.1.0-preview.2'
-$archive = 'data-admission-gate-v0.1.0-preview.2-source.zip'
+$tag = 'v0.1.0-preview.3'
+$archive = 'data-admission-gate-v0.1.0-preview.3-source.zip'
 foreach ($name in @($archive, 'SHA256SUMS.txt', 'SHA256SUMS.txt.sig')) {
     Invoke-WebRequest -Uri "https://github.com/$repo/releases/download/$tag/$name" -OutFile $name
 }
@@ -177,17 +177,14 @@ Go Vulnerability Database CC-BY-4.0 license/attribution. Producer path strings
 are observations; fresh runtime reads only reviewed source and archive-relative
 inputs. See docs/ACTIONLINT-BUILD.md for controlled import/default/direct routes.
 
-## Unreleased preview.3 publication order
+## Preview.3 publication provenance
 
-The verification examples above identify the published preview.2. Preview.3
-is currently source preparation, with no downloadable assets or signature claim.
-Its new route must first aggregate the exact tested bytes in a private draft.
-The existing known-key operator signs the exact downloaded checksum bytes and
-verifies all six draft assets before a separately approved public publish.
-There is no unsigned public interval followed by signature patching.
+Aggregate exact already-tested native bytes in a private draft. Sign and verify
+checksums with the established independent fingerprint/principal/file namespace
+before public publication. The local delivery receipt records observed per-OS
+results, exact healthy-case reuse, host skips and the no-Actions boundary.
 
-The independent fingerprint/principal/file namespace remain unchanged. Keep
-runtime tag/source and later documentation commits separate. Never overwrite
-an earlier tag, archive, checksum, signature or key. Actual public downloads
-and live repository/release links are required after publication; source or CI
-success alone does not prove delivery.
+Never overwrite an earlier tag, archive, checksum, signature or key. Reopen the
+actual public tag, source, assets and landing page after publication. A source
+push or local build alone does not prove downloadable delivery. Application
+binaries are not Authenticode-signed; checksum signing remains a separate claim.

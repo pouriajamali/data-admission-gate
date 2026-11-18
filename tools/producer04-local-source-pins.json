@@ -52,12 +52,12 @@
     {
       "path": "PROVENANCE.md",
       "mode": "100644",
-      "gitBlob": "8938792956730133798fc31d99f4e31956b6145b"
+      "gitBlob": "ff0166e15e99273ddda9b891af21892012f6adcf"
     },
     {
       "path": "README.md",
       "mode": "100644",
-      "gitBlob": "5d69b29036be6fb55d5d60b8023e78f782249536"
+      "gitBlob": "a6bdab1429322ae575a7d2fe55f50430f50316e6"
     },
     {
       "path": "SIGNING-PUBLIC-KEY.pub",
@@ -102,7 +102,7 @@
     {
       "path": "docs/RELEASE-v0.1.0-preview.3.md",
       "mode": "100644",
-      "gitBlob": "daa3bd37d359da6e6cd094b8541f3890cecb07f6"
+      "gitBlob": "d9b5f903aa56c4e071dd20bf7c23d341735c0c5a"
     },
     {
       "path": "docs/SDK11_DELIVERY_HISTORY.md",
@@ -187,7 +187,7 @@
     {
       "path": "tests/Admission.Tests/DecisionOracle.cs",
       "mode": "100644",
-      "gitBlob": "3c97b49b1792d786b3d768b53cb10830531bb18b"
+      "gitBlob": "1457c802175abc0274f2c4c35984023a677647b9"
     },
     {
       "path": "tests/Admission.Tests/Program.cs",
@@ -472,7 +472,7 @@
     {
       "path": "tools/producer04-local-product-win-x64.profile.json",
       "mode": "100644",
-      "gitBlob": "62e2154d36ea69d6d9d069423580ee49428b978c"
+      "gitBlob": "4a5459cc1e0a958649ffe4397909aee608490d1f"
     },
     {
       "path": "tools/producer04-metadata-framing-diagnostic.profile.json",
@@ -532,7 +532,7 @@
     {
       "path": "tools/run_local_product04.py",
       "mode": "100644",
-      "gitBlob": "12c21f993f805fa742354eb9796a3f0c94a3be5b"
+      "gitBlob": "0502f11434fdf27d85861e0ca59645e9c0446990"
     },
     {
       "path": "tools/sdk11-ci-execution.profile.json",

@@ -14,7 +14,7 @@
   "nativeHandoffSHA256": "cc0b9022982f30f4dac7148932e8d8a326b03f4f81cda6df02bbaad289a60443",
   "scope": "Original product04 acceptance:109unit cases including one Linux-only case;17 extracted self-contained package checks;4 literal compatibility cases. One OS per phase, existing qualified SDK and exact native inputs only. No qualification/signature target replay, no GET, no Actions. Source/own caps/deadline/teardown independently enforced.",
   "SDKStageSecondsMax": 660,
-  "controlledTopLevelSDKVectors": 2,
+  "controlledTopLevelSDKVectors": 1,
   "packageScriptSDKPublishVectors": 1,
   "localInputRoute": {
     "rid": "win-x64",
@@ -26,5 +26,8 @@
   },
   "swapMaxBytes": null,
   "cpuCores": 2,
-  "ownedJobPrefix": "Local\\admission04-product-"
+  "ownedJobPrefix": "Local\\admission04-product-",
+  "reusedHealthyOriginalUnitCases": 103,
+  "actualRepairedOriginalOracleCases": 4,
+  "documentedOriginalHostSkips": 2
 }

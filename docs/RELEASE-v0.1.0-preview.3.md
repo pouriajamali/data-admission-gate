@@ -7,7 +7,7 @@ Identity/authenticity/legal rights remain NOT_PROVEN after ADMIT.
 
 The release's local receipt binds the tested commit to each actual native
 Windows/Linux x64 self-contained archive, the exact source archive and SHA256.
-Acceptance retains the109-case inventory (Windows has one Linux-only skip),
+Acceptance retains the109-case inventory (Windows skips the Linux-only FIFO case and, when local privilege is absent, the symlink-creation case),
 17 checks on each extracted native package and four literal actual-apphost
 compatibility cases per OS. Publication requires those actual results; old
 preview.2 receipts are not preview.3 evidence.
@@ -33,3 +33,9 @@ The software is MIT; bundled dependency/runtime notices retain their own terms.
 Software licensing never establishes input-data ownership or legal use rights.
 See README, PROVENANCE and bundled notices. Historical tooling/input checkpoints
 are retained separately in [SDK11_DELIVERY_HISTORY.md](SDK11_DELIVERY_HISTORY.md).
+
+Windows local test boundary: this experimental host cannot create the refused-file
+symlink fixture. That case is separately `LOCAL_SYMLINK_PRIVILEGE` skipped,
+in addition to `LINUX_ONLY` FIFO. Counts retain the109-case inventory; the
+release receipt separates actual new cases, exact healthy-case reuse and skips.
+No Developer Mode, privilege, path guard or security setting is changed.

@@ -80,7 +80,7 @@ internal static class DecisionOracle
                 Require(r.GetProperty("complete").GetBoolean() && r.GetProperty("decisionBindingMatches").GetBoolean(), "COMPLETE_BOUND_DECISION");
                 Require(r.GetProperty("ownerDecisionAcknowledged").GetBoolean() == vector.Ack, "INVOCATION_ACK");
                 Equal(r, "schema", "data-admission-report-v1");
-                Equal(r, "version", "0.1.0-preview.2");
+                Equal(r, "version", "0.1.0-preview.3");
                 Equal(r, "profile", "admission-ohlc-csv-v1");
                 Equal(r, "purpose", "offline-analysis");
                 Equal(r, "outcome", vector.Outcome);

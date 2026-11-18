@@ -240,3 +240,9 @@ and [single producer CI](https://github.com/pouriajamali/data-admission-gate/act
 have actual download/signature and Windows import/default-lint Job evidence.
 This tooling result is separate from app native verification and consumer05/06.
 
+
+Windows local test boundary: this experimental host cannot create the refused-file
+symlink fixture. That case is separately `LOCAL_SYMLINK_PRIVILEGE` skipped,
+in addition to `LINUX_ONLY` FIFO. Counts retain the109-case inventory; the
+release receipt separates actual new cases, exact healthy-case reuse and skips.
+No Developer Mode, privilege, path guard or security setting is changed.
