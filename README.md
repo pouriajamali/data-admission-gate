@@ -6,7 +6,7 @@ relative to an explicit historical asOf, provenance decision and data-use decisi
 **A quality pass or an owner assertion is not authenticity or legal-rights proof.**
 
 The original reusable companion is [MIT](LICENSE); public dependencies retain
-their separate full notices. [Preview releases and downloads](https://github.com/pouriajamali/data-admission-gate/releases)
+their separate full notices. [Current preview.3 release and downloads](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.3)
 provide Windows/Linux x64 bundles and source. Verify the signed checksums before
 extraction; missing signature assets mean incomplete publication. Software licensing
 does not prove ownership or legal use rights of input data. Customer-specific code,
@@ -31,6 +31,35 @@ branch/PR/tag validation and security settings are unchanged. Exact local
 receipts are published with the release; CI is `NOT_RUN_PER_OWNER_INSTRUCTION`.
 [Historical input/tooling checkpoints](docs/SDK11_DELIVERY_HISTORY.md) remain
 separate from product acceptance. Preview.2 evidence below is historical.
+
+## Install preview.3
+
+Download and extract the whole matching archive after verifying the
+[signed checksums](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/SHA256SUMS.txt)
+using [PROVENANCE.md](PROVENANCE.md):
+
+- [Windows x64 ZIP](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/data-admission-gate-v0.1.0-preview.3-win-x64.zip)
+- [Linux x64 tar.gz](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/data-admission-gate-v0.1.0-preview.3-linux-x64.tar.gz)
+- [Exact tested source ZIP](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/data-admission-gate-v0.1.0-preview.3-source.zip)
+- [Local delivery receipt](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/LOCAL-DELIVERY-RECEIPT.json),
+  [checksum signature](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/SHA256SUMS.txt.sig) and [public key](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/SIGNING-PUBLIC-KEY.pub)
+
+All seven release assets were downloaded anonymously and matched their exact
+sizes/SHA256; the downloaded checksum signature verified with the independently
+known key. The runtime archives and source ZIP are fixed to signed tag
+`v0.1.0-preview.3`, commit `e48e0bf5ca550fc736c2f6f551c34347f54c00ff`.
+Later documentation and input/finalization tooling on main do not relabel those
+unchanged artifacts.
+
+Local results: Linux **109 passed, 0 failed, 0 skipped**; Windows **107 passed,
+0 failed, 2 skipped**, including 103 unchanged healthy cases reused from their
+recorded source and four repaired independent version oracles. Both platforms
+passed **17 extracted-package checks and four literal compatibility cases**.
+The two original postcheck envelopes remain HOLD with the denied request target
+UNKNOWN/not retained. Separate fresh, source-bound, zero-request offline
+finalizers completed without replaying SDK/tests/build/package stages. See the
+[release notes](docs/RELEASE-v0.1.0-preview.3.md),
+[offline evidence boundary](docs/SDK11_OFFLINE_FINALIZATION.md) and public receipt.
 
 ## Run the generated example
 

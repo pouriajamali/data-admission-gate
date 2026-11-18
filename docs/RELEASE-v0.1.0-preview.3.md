@@ -44,3 +44,30 @@ Runtime/source archives bind to tested e48e0bf5ca550fc736c2f6f551c34347f54c00ff.
 Separate bounded offline finalization tooling is later source; both original
 postcheck envelope HOLDs remain unchanged. Publication requires actual per-OS
 offline final receipts. See SDK11_OFFLINE_FINALIZATION.md for the exact boundary.
+
+## Published delivery
+
+[Public preview.3 release](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.3)
+contains all seven signed-payload/signing assets. Each was downloaded from the
+private draft before publication and again anonymously from its public stable
+download URL, with exact size/SHA256 matching and the downloaded SSH checksum
+signature verified against the independently known fingerprint above.
+
+The immutable runtime/source commit is `e48e0bf5ca550fc736c2f6f551c34347f54c00ff`;
+the separate fresh offline finalization tooling source is
+`671d954bf3640afbb541c407f765674b27f087f5`. Later source
+`ebe8358b3abed35cbf5881276df8278f5c8f3f50` adds a shared-input verification
+correction, not a rebuild of these application packages.
+Linux has 109 PASS / 0 FAIL / 0 SKIP; Windows has 107 PASS / 0 FAIL / 2 SKIP,
+with the exact103 healthy-case reuse and four new original oracle results
+separately attributed in the public receipt. Both have 17 package checks and
+four actual-apphost literal compatibility cases. Original postcheck HOLDs and
+their unretained denied request target (UNKNOWN) remain unchanged; both later
+zero-request offline finalizations completed under fresh own-source/PID/caps
+and actual terminal evidence. No GitHub Actions ran for this release.
+
+| Archive | SHA256 |
+|---|---|
+| Windows x64 ZIP | `24daa8328285e98a6937a2f43fceb4e08c89bdee217ffddd10844f4d4bfb4396` |
+| Linux x64 tar.gz | `364184c80e8024921f64131a4aa57156f63af35e6af8e0cb7d366a040dde3cab` |
+| Exact source ZIP | `cb36f5d24f98452ed0dfaad904afa4b346e99cad280c9418cb3535e4c445df93` |
