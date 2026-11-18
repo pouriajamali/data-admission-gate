@@ -38,3 +38,10 @@ metadata, retained original notices and current complete advisory data. It rejec
 all reported warnings/errors/unknown revocation and records the actual standard
 online Windows verification boundary. It does not call the native-eight certificate
 supplement a proof for the distinct24-certificate managed pool.
+
+Managed continuation: the first command globally failed30 extra primary-signer
+fingerprint filters while four repository-primary packages explicitly succeeded.
+The original global exit1/HOLD remains. Only30 failed packages are retried; four
+exact independently successful package reports are reused with original times.
+The same three repository certs and untrusted-root=false remain mandatory, and
+each actual SDK repository role/leaf must match the official metadata allowlist.

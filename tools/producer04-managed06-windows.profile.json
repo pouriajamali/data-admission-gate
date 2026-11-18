@@ -12,7 +12,7 @@
   "scratchMaxBytes": 2147483648,
   "proofBytesMax": 8388608,
   "nativeHandoffSHA256": "cc0b9022982f30f4dac7148932e8d8a326b03f4f81cda6df02bbaad289a60443",
-  "scope": "Exactly34 existing managed consumer06 input identities: one actual Windows04 SDK11 full verify vector, actual SDK-normalized hashes and no reported unknown revocation/issue. Native standard RFC3161 lifetime policy; historic expired certs not described as currently valid. Exact own source/MainPID/Job/SDK bytes/caps/deadline/teardown. No qualification/test/build/package/raw acquisition replay, no consumer06 graph/host/product admission.",
+  "scope": "One corrected30-package verification vector plus4 exact actual independent package successes from prior partial command. Preserve original global exit1/HOLD and original successful-package observation times. Required three repository signers, signature=require, allowUntrustedRoot=false, native full verification, fatal reported issue/unknown and actual SDK repository leaf binding are unchanged. No primary-only CLI filter on author certificate. No healthy package-signature replay.",
   "SDKStageSecondsMax": 300,
   "controlledTopLevelSDKVectors": 1,
   "packageScriptSDKPublishVectors": 0,
@@ -35,10 +35,155 @@
     "5a2901d6ada3d18260b9c6dfe2133c95d74b9eef6ae0e5dc334c8454d1477df4",
     "1f4b311d9acc115c8dc8018b5a49e00fce6da8e2855f9f014ca6f34570bc482d"
   ],
-  "reportParserSHA256": "1e148a362a4eb9a2a24ba85547d5fe5b7dba13bf88b556c949d891bbc0abac79",
+  "reportParserSHA256": "847f53b50269e671379d0b43fab95dd972e4543035d742edcfbca81e59248306",
   "SDKPolicyData": {
     "path": "C:\\Users\\Office\\.codex\\visualizations\\2026\\11\\10\\01a1c661-2773-7f81-9ae7-c5756abd8095\\metadata-framing\\SDK-NUGET-EXACT-VERIFY-POLICY-IL.json",
     "bytes": 3054,
     "sha256": "a758f486bee16f4a3d56c5ccbc33dcae5c50bc4f9bd38b3147c2dfd1d8492a84"
-  }
+  },
+  "reusedFourActualSuccesses": {
+    "path": "C:\\Users\\Office\\.codex\\visualizations\\2026\\11\\10\\01a1c661-2773-7f81-9ae7-c5756abd8095\\metadata-framing\\MANAGED06-FIRST-FOUR-ACTUAL-SUCCESS-FACTS.json",
+    "bytes": 64421,
+    "sha256": "522c1b7cf834a651e9a6c906139688b7a52bf05bb4b048a4f70f4ccddcb33249"
+  },
+  "reusedPackageIdentities": [
+    {
+      "id": "Npgsql",
+      "version": "10.0.3"
+    },
+    {
+      "id": "OpenTelemetry",
+      "version": "1.20.1"
+    },
+    {
+      "id": "OpenTelemetry.Api",
+      "version": "1.20.1"
+    },
+    {
+      "id": "OpenTelemetry.Api.ProviderBuilderExtensions",
+      "version": "1.20.1"
+    }
+  ],
+  "failedThirtyIdentities": [
+    {
+      "id": "Microsoft.ApplicationInsights",
+      "version": "2.23.0"
+    },
+    {
+      "id": "Microsoft.Bcl.AsyncInterfaces",
+      "version": "6.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Configuration",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Configuration.Abstractions",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Configuration.Binder",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Configuration.EnvironmentVariables",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.DependencyInjection",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.DependencyInjection.Abstractions",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Diagnostics.Abstractions",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Logging",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Logging.Abstractions",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Logging.Configuration",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Options",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Options.ConfigurationExtensions",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Extensions.Primitives",
+      "version": "10.0.0"
+    },
+    {
+      "id": "Microsoft.Testing.Extensions.Telemetry",
+      "version": "2.5.2"
+    },
+    {
+      "id": "Microsoft.Testing.Extensions.TrxReport.Abstractions",
+      "version": "2.5.2"
+    },
+    {
+      "id": "Microsoft.Testing.Platform",
+      "version": "2.5.2"
+    },
+    {
+      "id": "Microsoft.Testing.Platform.MSBuild",
+      "version": "2.5.2"
+    },
+    {
+      "id": "Microsoft.Win32.Registry",
+      "version": "5.0.0"
+    },
+    {
+      "id": "System.Security.AccessControl",
+      "version": "6.0.1"
+    },
+    {
+      "id": "xunit.analyzers",
+      "version": "2.3.0"
+    },
+    {
+      "id": "xunit.v3",
+      "version": "4.0.3"
+    },
+    {
+      "id": "xunit.v3.assert",
+      "version": "4.0.3"
+    },
+    {
+      "id": "xunit.v3.common",
+      "version": "4.0.3"
+    },
+    {
+      "id": "xunit.v3.core.mtp-v2",
+      "version": "4.0.3"
+    },
+    {
+      "id": "xunit.v3.extensibility.core",
+      "version": "4.0.3"
+    },
+    {
+      "id": "xunit.v3.mtp-v2",
+      "version": "4.0.3"
+    },
+    {
+      "id": "xunit.v3.runner.common",
+      "version": "4.0.3"
+    },
+    {
+      "id": "xunit.v3.runner.inproc.console",
+      "version": "4.0.3"
+    }
+  ]
 }

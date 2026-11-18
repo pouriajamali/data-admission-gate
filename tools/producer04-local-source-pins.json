@@ -122,7 +122,7 @@
     {
       "path": "docs/SDK11_OFFLINE_FINALIZATION.md",
       "mode": "100644",
-      "gitBlob": "d9513f75ece5f740d5db1966a9ede67b0f2b5892"
+      "gitBlob": "611245488a80d4bcb03a8c82539a67105c20b13b"
     },
     {
       "path": "docs/SDK11_SHARED_INPUT_INTERFACE.json",
@@ -267,7 +267,7 @@
     {
       "path": "tools/curate_managed06_windows.py",
       "mode": "100644",
-      "gitBlob": "774d4cb271aae9c4d62bb50bc24b72260c1d65fe"
+      "gitBlob": "97ee294c83c555e7a96d9797b1abcb8a01fcb7a0"
     },
     {
       "path": "tools/curate_windows_corehost_local_linux.py",
@@ -387,7 +387,7 @@
     {
       "path": "tools/managed06_sdk_report_parser.py",
       "mode": "100644",
-      "gitBlob": "01b7c6d7bfe2a97bc9cce68ca7ae4bc5294674c8"
+      "gitBlob": "4f96946c1f02051d929c35ceef4d0a085457566d"
     },
     {
       "path": "tools/materialize_qualification_linux.py",
@@ -507,7 +507,7 @@
     {
       "path": "tools/producer04-managed06-windows.profile.json",
       "mode": "100644",
-      "gitBlob": "5df1bbf00c5366116cb6b164bb036c78f4961b95"
+      "gitBlob": "691476c03396a8e2463c29b1037cb53bb3794d99"
     },
     {
       "path": "tools/producer04-metadata-framing-diagnostic.profile.json",
