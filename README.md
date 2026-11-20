@@ -1,9 +1,52 @@
 # Data Admission Gate
 
+A CSV can pass row checks and still have missing timestamps, stale data or an
+unacknowledged owner decision. This offline .NET 11 / C# 15 CLI reports
+**ADMIT, HOLD or REJECT**
+for an explicit dataset and policy, with the reason for each decision.
+
 A bounded companion to the public Integrity Lab CSV validator. Four separate
 policy axes make the decision inspectable: declared-grid coverage, freshness
 relative to an explicit historical asOf, provenance decision and data-use decision.
 **A quality pass or an owner assertion is not authenticity or legal-rights proof.**
+
+[Current preview.3 release](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.3)
+· [Exact tested runtime source](https://github.com/pouriajamali/data-admission-gate/tree/e48e0bf5ca550fc736c2f6f551c34347f54c00ff)
+· [Input/report contract](docs/CONTRACT.md)
+
+## Smallest runnable example
+
+Download the [Windows x64 ZIP](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/data-admission-gate-v0.1.0-preview.3-win-x64.zip)
+or [Linux x64 tar.gz](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/data-admission-gate-v0.1.0-preview.3-linux-x64.tar.gz),
+[verify the signed checksums](PROVENANCE.md), then extract the whole directory.
+Run from that directory with a fresh output name; no installed SDK is required.
+
+Windows PowerShell:
+
+```powershell
+.\admission.exe demo .\demo-new
+```
+
+Linux shell:
+
+```sh
+./admission demo ./demo-new
+```
+
+Expected: exit **0**, JSON outcome `EXPECTED_OUTCOMES_OBSERVED`, and
+`demo-new/summary.json` plus `demo-new/summary.txt`. The generated cases are:
+
+| Synthetic case | Expected policy outcome |
+|---|---|
+| Clean rows; owner decision unacknowledged | HOLD |
+| Same clean rows; bound owner decision acknowledged | ADMIT |
+| Missing timestamps and stale rows | REJECT |
+| Owner decision bound to the wrong dataset | REJECT |
+| Owner decision denies this data use | REJECT |
+
+Demo success means those five expected outcomes matched. ADMIT performs no
+downstream action and does not establish identity, authenticity or legal rights.
+This is a local synthetic example, not a performance or production claim.
 
 The original reusable companion is [MIT](LICENSE); public dependencies retain
 their separate full notices. [Current preview.3 release and downloads](https://github.com/pouriajamali/data-admission-gate/releases/tag/v0.1.0-preview.3)
@@ -11,26 +54,6 @@ provide Windows/Linux x64 bundles and source. Verify the signed checksums before
 extraction; missing signature assets mean incomplete publication. Software licensing
 does not prove ownership or legal use rights of input data. Customer-specific code,
 data, configuration, deployments and unpublished commercial additions stay private.
-
-## Technology maintenance preview.3
-
-Version `0.1.0-preview.3` targets SDK11.0.100, net11.0, runtime11.0.0
-and stable C#15. The v1 input/report contracts, fixed integer CSV scales and
-ADMIT/HOLD/REJECT rules are unchanged. There is no new feature or performance claim.
-
-Release notes bind each downloadable self-contained Windows/Linux x64 archive to
-its exact source commit, local acceptance receipts and signed checksums.
-Ubuntu24.04/WSL2 and the recorded experimental Windows26H2/build26300.9974
-are the local validation environments. Formal .NET11 support for that Windows
-build is **NOT_CONFIRMED**; this preview makes no clean-OS or vendor certification claim.
-The app requires no installed SDK. Its OS/native prerequisites still apply.
-
-GitHub Actions are not run for this preview by explicit owner instruction.
-The single `v0.1.0-preview.3` tag is excluded from automatic Actions; other
-branch/PR/tag validation and security settings are unchanged. Exact local
-receipts are published with the release; CI is `NOT_RUN_PER_OWNER_INSTRUCTION`.
-[Historical input/tooling checkpoints](docs/SDK11_DELIVERY_HISTORY.md) remain
-separate from product acceptance. Preview.2 evidence below is historical.
 
 ## Install preview.3
 
@@ -44,24 +67,18 @@ using [PROVENANCE.md](PROVENANCE.md):
 - [Local delivery receipt](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/LOCAL-DELIVERY-RECEIPT.json),
   [checksum signature](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/SHA256SUMS.txt.sig) and [public key](https://github.com/pouriajamali/data-admission-gate/releases/download/v0.1.0-preview.3/SIGNING-PUBLIC-KEY.pub)
 
-All seven release assets were downloaded anonymously and matched their exact
-sizes/SHA256; the downloaded checksum signature verified with the independently
-known key. The runtime archives and source ZIP are fixed to signed tag
+These runtime archives and their source ZIP bind to signed tag
 `v0.1.0-preview.3`, commit `e48e0bf5ca550fc736c2f6f551c34347f54c00ff`.
-Later documentation and input/finalization tooling on main do not relabel those
-unchanged artifacts.
-
-Local results: Linux **109 passed, 0 failed, 0 skipped**; Windows **107 passed,
-0 failed, 2 skipped**, including 103 unchanged healthy cases reused from their
-recorded source and four repaired independent version oracles. Both platforms
-passed **17 extracted-package checks and four literal compatibility cases**.
-The two original postcheck envelopes remain HOLD with the denied request target
-UNKNOWN/not retained. Separate fresh, source-bound, zero-request offline
-finalizers completed without replaying SDK/tests/build/package stages. See the
-[release notes](docs/RELEASE-v0.1.0-preview.3.md),
-[offline evidence boundary](docs/SDK11_OFFLINE_FINALIZATION.md) and public receipt.
+Later main documentation does not relabel them. Self-contained apps still need
+the runtime's native OS/CPU prerequisites. The release used Ubuntu24.04/WSL2 and
+an experimental Windows26H2/build26300.9974 host; formal .NET11 support for that
+Windows build is **NOT_CONFIRMED**. See [release notes](docs/RELEASE-v0.1.0-preview.3.md)
+and [servicing/acceptance boundaries](docs/SDK11_DELIVERY_HISTORY.md#preview3-technology-and-acceptance).
 
 ## Run the generated example
+
+The quick start above created `demo-new`. Reuse that bundle below and choose
+fresh report directories; do not regenerate the same output directory.
 
 The preview includes self-contained Windows x64 and Ubuntu24.04/glibc x64
 directory bundles. No installed .NET SDK is required to run those bundles; native
@@ -70,14 +87,12 @@ using [current online verification guide](https://github.com/pouriajamali/data-a
 
 ```powershell
 .\admission.exe --version
-.\admission.exe demo .\demo-new
 .\admission.exe assess .\demo-new\clean-acknowledged-bundle .\report-hold-new
 .\admission.exe assess .\demo-new\clean-acknowledged-bundle .\report-ack-new --ack-owner-decision
 ```
 
 ```sh
 ./admission --version
-./admission demo ./demo-new
 ./admission assess ./demo-new/clean-acknowledged-bundle ./report-hold-new
 ./admission assess ./demo-new/clean-acknowledged-bundle ./report-ack-new --ack-owner-decision
 ```
@@ -115,73 +130,12 @@ REJECT, otherwise UNKNOWN gives HOLD. ADMIT performs no downstream action.
 Identity/authenticity/legal rights always remain NOT_PROVEN. Data-use decisions
 are separate from the MIT license of this software.
 
-## Preview.2 report and evidence
+## Historical release evidence
 
-The preview.2 app tag and its runtime/source archives are bound to signed commit
-b1012c1dec61c8d1a23cd604a77b36fb0062f0b0, tree
-09c3bf9b6da12eacdb6df903b2cc9452e9a620a0. The release notes link its exact
-Windows/Linux hosted native verification and actual archive checks. Later main
-documentation is separate from these frozen app assets.
-
-Earlier private localCandidate archives and their17-check receipts belong to
-9893583976da8d5042d063cabc58f65885001858. They were neither relabelled nor uploaded.
-Public archives were produced and checked by the exact app-tag pipeline.
-It preserves the JSON v1 contract and ADMIT/HOLD/REJECT decision rules.
-
-The preview.2 `summary.txt` shows each of `rowQuality`, `coverage`, `freshness`,
-`provenance` and `useLicense` with its status, basis and reason. It also prints the
-declared historical asOf, latest accepted timestamp, age and threshold. A displayed
-PASS describes that axis's policy basis; it does not verify authenticity, legal
-rights, external completeness or actual source freshness.
-
-The new independent oracle uses one invented row at `2026-01-01T00:02:00Z`, an
-explicit one-slot grid, asOf `2026-01-01T00:03:00Z` and a 60-second threshold.
-Its literal expectations are:
-
-| Bound owner assertion | Per-invocation ACK | Expected policy result |
-|---|---|---|
-| provenance unknown; useLicense allow | yes | HOLD/2, although row quality, coverage, freshness and useLicense PASS |
-| provenance allow; useLicense allow | yes | ADMIT/0; identity/authenticity/legal rights still NOT_PROVEN |
-| provenance allow; useLicense unknown | yes | HOLD/2 |
-| exact same allow/allow bundle bytes as the second case | no | HOLD/2; both owner axes UNKNOWN |
-
-Local evidence: Windows units **107 passed, 0 failed, 2 skipped** (symlink
-privilege and Linux-only FIFO). On 2026-11-12 the complete unchanged Ubuntu/WSL
-suite passed **109 passed, 0 failed, 0 skipped**, including the FIFO regression
-using the approved native-filesystem fixture. All four literal CLI oracles passed.
-The fixture evidence was exported and verified before owned cleanup; the actual
-SDK child inherited a 4GiB memory/zero-swap, two-CPU, 64-task cgroup. This replaces
-the earlier Windows-mounted-fixture failure; it does not establish clean-OS or
-packaged apphost acceptance.
-
-All twelve CI-policy checks passed, retaining the original ten classification
-checks. The local maintainer actionlint1.7.12 build is now admitted by exact
-source/compiler/module/binary/proof identity. Four fresh builds produced two
-byte-identical outputs per target. Source and exact-binary analyses completed
-for Windows and Linux; all36 metadata matches have target-specific dispositions.
-The imported Windows SDK DNS source is tied to its exact upstream-fixed blob.
-All90 original tooling notice texts are retained separately from the app runtime.
-
-The same50 negative vectors passed in normal Python, `-O`, and real
-`PYTHONOPTIMIZE=2`: **150 rejections, zero candidate executions**. Actual version,
-fixed valid/invalid YAML, default and direct lint controls then passed on both
-native hosts under4GiB/two-CPU/64-task supervision, with zero Linux swap. The old
-vendor executable remains unexecuted. Missing, mutated or unadmitted input still
-fails closed. See [tooling recipe and limits](docs/ACTIONLINT-BUILD.md).
-
-Packaging disables extra runtime/targeting-pack downloads for frameworks the
-console project does not reference; its declared .NETCore runtime and NuGet
-auditing remain enabled. Each extracted self-contained app archive has a separate17-check acceptance
-suite, including an independent literal unknown-provenance/HOLD counterexample.
-Locked restores, native Release builds and exact runtime-package
-signature/content/notices observations exist; the observed official-feed
-snapshot had no range matching either selected10.0.15 runtime package. This is
-scoped version evidence, not general security certification. Exact candidate
-archive acceptance, signatures, CI, actual downloads and public metadata are
-separate delivery checks. The shared linter handoff does not establish them.
-The local results retain their original commit/host boundary; public delivery
-is established separately by the exact app-tag CI and six verified release assets.
-
+[Preview.2 report, local checks and tooling history](docs/SDK11_DELIVERY_HISTORY.md#preview2-report-and-evidence)
+retain their original source, date and host boundaries. Current preview.3
+[servicing and acceptance](docs/SDK11_DELIVERY_HISTORY.md#preview3-technology-and-acceptance)
+and [release notes](docs/RELEASE-v0.1.0-preview.3.md) identify its separate evidence.
 
 ## Supported local bundle
 
@@ -241,6 +195,9 @@ schema, contracts or ideas were transferred. CV/profile and existing repos/relea
 remain outside this work.
 
 Documentation update: v0.1.0-preview.1 runtime/source archives remain exact79b55551092ba427c457c8e87eb094b31ebe81be, including their historical raw-key guide. Use the current online guide above for immutable release-key retrieval. Archive/tag/SUMS/signature bytes are unchanged.
+
+Actions are `NOT_RUN_PER_OWNER_INSTRUCTION`; this presentation edit uses local
+documentation checks only.
 
 [CI resource policy](docs/CI-POLICY.md): documentation-only changes get real lightweight document/pipeline checks; source, tag and manual runs retain native validation. Published runtime tags and release assets remain unchanged.
 

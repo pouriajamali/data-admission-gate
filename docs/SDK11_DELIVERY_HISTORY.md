@@ -4,7 +4,7 @@ These dated source-stage observations are historical. Current product evidence b
 
 ## Proposed SDK11 supported hosted route
 
-The [supported host source candidate](docs/SDK11_SUPPORTED_HOSTS.md) prepares
+The [supported host source candidate](SDK11_SUPPORTED_HOSTS.md) prepares
 Windows Server2025 and Ubuntu24.04 producer qualification and consumer04's own
 host admission. It is untested, unapplied source; SDK_READY remains false.
 Normal admission stays closed until exact accepted per-RID facts and independent
@@ -71,7 +71,7 @@ SGR colour only in the classifier copy. New68 normal and68 -O fixture checks
 passed; no raw log/path/URL/env/args are exported. Recipe, environment, caps,
 SDK pins and eight commands remain unchanged. No Windows/product PASS claim.
 
-The [shared normal SDK input source proposal](docs/SDK11_SHARED_NORMAL_INPUT.md) supplies one callable
+The [shared normal SDK input source proposal](SDK11_SHARED_NORMAL_INPUT.md) supplies one callable
 Linux normal-input implementation and accepted producer fact/authority pair for
 all six own controllers. Windows normal input stays denied. New SDK-free
 synthetic normal/-O boundaries were checked; no shared source was applied or SDK
@@ -159,10 +159,10 @@ Retained official channel11 metadata from run44071519118/1 still names SDK11.0.1
 
 Known HTTP, URL, TLS and protocol exceptions now retain only exact trusted type categories, bounded numeric status/errno/verification code and fixed operation. No exception reason, URL value, raw header/body or private error text is exposed. Malformed service/repository objects fail with existing fixed Hold codes. This closes a concrete avoidable-UNKNOWN branch before the one permitted full run.
 
-Shared SDK11 input evidence and the single Linux/Windows source API are described in [the shared-input notes](docs/SDK11_SHARED_NORMAL_INPUT.md). Historical host qualification and three Linux native package facts require each consumer own source/caps/graph/freshness gate; this does not change this product release or declare global readiness.
+Shared SDK11 input evidence and the single Linux/Windows source API are described in [the shared-input notes](SDK11_SHARED_NORMAL_INPUT.md). Historical host qualification and three Linux native package facts require each consumer own source/caps/graph/freshness gate; this does not change this product release or declare global readiness.
 
 Local non-Actions qualification source and exact limits are described in
-[the local qualification delta](docs/SDK11_LOCAL_QUALIFICATION.md). Its local
+[the local qualification delta](SDK11_LOCAL_QUALIFICATION.md). Its local
 receipt is separate from historical CI and does not admit product inputs.
 
 The local Ubuntu24.04/WSL2 SDK11 qualification has now completed eight commands
@@ -173,7 +173,7 @@ not confirmed. Neither fact alone establishes preview.3 product delivery.
 Windows04 completed all eight logical qualification commands using nine total
 attempts (five original healthy results plus the approved three-command
 continuation). Both Jobs ended with population0; no healthy command was replayed.
-The [local input facade](docs/SDK11_LOCAL_INPUT_INTERFACE.md) preserves the old
+The [local input facade](SDK11_LOCAL_INPUT_INTERFACE.md) preserves the old
 62 shared files and CI schema while checking each caller's actual current
 source, caps, original clock and kernel supervisor. Consumer06 Windows scope
 comes from its fresh direct task instruction. Its original P3 perOS SDK/build
@@ -507,3 +507,107 @@ checks and two actual own04 WinRID restores) is prepared on qualified Linux,
 using the existing exact-unit network-denial method and finite raw originals.
 Desktop was explicitly added as one input; no SDK/native acceptance is claimed
 for it before execution. No release or product compatibility claim yet.
+
+## Preview.3 technology and acceptance
+
+Version `0.1.0-preview.3` targets SDK11.0.100, net11.0, runtime11.0.0
+and stable C#15. The v1 input/report contracts, fixed integer CSV scales and
+ADMIT/HOLD/REJECT rules are unchanged. There is no new feature or performance claim.
+
+Release notes bind each downloadable self-contained Windows/Linux x64 archive to
+its exact source commit, local acceptance receipts and signed checksums.
+Ubuntu24.04/WSL2 and the recorded experimental Windows26H2/build26300.9974
+are the local validation environments. Formal .NET11 support for that Windows
+build is **NOT_CONFIRMED**; this preview makes no clean-OS or vendor certification claim.
+The app requires no installed SDK. Its OS/native prerequisites still apply.
+
+GitHub Actions are not run for this preview by explicit owner instruction.
+The single `v0.1.0-preview.3` tag is excluded from automatic Actions; other
+branch/PR/tag validation and security settings are unchanged. Exact local
+receipts are published with the release; CI is `NOT_RUN_PER_OWNER_INSTRUCTION`.
+[Historical input/tooling checkpoints](#proposed-sdk11-supported-hosted-route) remain
+separate from product acceptance. Preview.2 evidence below is historical.
+
+All seven release assets were downloaded anonymously and matched their exact
+sizes/SHA256; the downloaded checksum signature verified with the independently
+known key. The runtime archives and source ZIP are fixed to signed tag
+`v0.1.0-preview.3`, commit `e48e0bf5ca550fc736c2f6f551c34347f54c00ff`.
+Later documentation and input/finalization tooling on main do not relabel those
+unchanged artifacts.
+
+Local results: Linux **109 passed, 0 failed, 0 skipped**; Windows **107 passed,
+0 failed, 2 skipped**, including 103 unchanged healthy cases reused from their
+recorded source and four repaired independent version oracles. Both platforms
+passed **17 extracted-package checks and four literal compatibility cases**.
+The two original postcheck envelopes remain HOLD with the denied request target
+UNKNOWN/not retained. Separate fresh, source-bound, zero-request offline
+finalizers completed without replaying SDK/tests/build/package stages. See the
+[release notes](RELEASE-v0.1.0-preview.3.md),
+[offline evidence boundary](SDK11_OFFLINE_FINALIZATION.md) and public receipt.
+
+## Preview.2 report and evidence
+
+The preview.2 app tag and its runtime/source archives are bound to signed commit
+b1012c1dec61c8d1a23cd604a77b36fb0062f0b0, tree
+09c3bf9b6da12eacdb6df903b2cc9452e9a620a0. The release notes link its exact
+Windows/Linux hosted native verification and actual archive checks. Later main
+documentation is separate from these frozen app assets.
+
+Earlier private localCandidate archives and their17-check receipts belong to
+9893583976da8d5042d063cabc58f65885001858. They were neither relabelled nor uploaded.
+Public archives were produced and checked by the exact app-tag pipeline.
+It preserves the JSON v1 contract and ADMIT/HOLD/REJECT decision rules.
+
+The preview.2 `summary.txt` shows each of `rowQuality`, `coverage`, `freshness`,
+`provenance` and `useLicense` with its status, basis and reason. It also prints the
+declared historical asOf, latest accepted timestamp, age and threshold. A displayed
+PASS describes that axis's policy basis; it does not verify authenticity, legal
+rights, external completeness or actual source freshness.
+
+The new independent oracle uses one invented row at `2026-01-01T00:02:00Z`, an
+explicit one-slot grid, asOf `2026-01-01T00:03:00Z` and a 60-second threshold.
+Its literal expectations are:
+
+| Bound owner assertion | Per-invocation ACK | Expected policy result |
+|---|---|---|
+| provenance unknown; useLicense allow | yes | HOLD/2, although row quality, coverage, freshness and useLicense PASS |
+| provenance allow; useLicense allow | yes | ADMIT/0; identity/authenticity/legal rights still NOT_PROVEN |
+| provenance allow; useLicense unknown | yes | HOLD/2 |
+| exact same allow/allow bundle bytes as the second case | no | HOLD/2; both owner axes UNKNOWN |
+
+Local evidence: Windows units **107 passed, 0 failed, 2 skipped** (symlink
+privilege and Linux-only FIFO). On 2026-11-12 the complete unchanged Ubuntu/WSL
+suite passed **109 passed, 0 failed, 0 skipped**, including the FIFO regression
+using the approved native-filesystem fixture. All four literal CLI oracles passed.
+The fixture evidence was exported and verified before owned cleanup; the actual
+SDK child inherited a 4GiB memory/zero-swap, two-CPU, 64-task cgroup. This replaces
+the earlier Windows-mounted-fixture failure; it does not establish clean-OS or
+packaged apphost acceptance.
+
+All twelve CI-policy checks passed, retaining the original ten classification
+checks. The local maintainer actionlint1.7.12 build is now admitted by exact
+source/compiler/module/binary/proof identity. Four fresh builds produced two
+byte-identical outputs per target. Source and exact-binary analyses completed
+for Windows and Linux; all36 metadata matches have target-specific dispositions.
+The imported Windows SDK DNS source is tied to its exact upstream-fixed blob.
+All90 original tooling notice texts are retained separately from the app runtime.
+
+The same50 negative vectors passed in normal Python, `-O`, and real
+`PYTHONOPTIMIZE=2`: **150 rejections, zero candidate executions**. Actual version,
+fixed valid/invalid YAML, default and direct lint controls then passed on both
+native hosts under4GiB/two-CPU/64-task supervision, with zero Linux swap. The old
+vendor executable remains unexecuted. Missing, mutated or unadmitted input still
+fails closed. See [tooling recipe and limits](ACTIONLINT-BUILD.md).
+
+Packaging disables extra runtime/targeting-pack downloads for frameworks the
+console project does not reference; its declared .NETCore runtime and NuGet
+auditing remain enabled. Each extracted self-contained app archive has a separate17-check acceptance
+suite, including an independent literal unknown-provenance/HOLD counterexample.
+Locked restores, native Release builds and exact runtime-package
+signature/content/notices observations exist; the observed official-feed
+snapshot had no range matching either selected10.0.15 runtime package. This is
+scoped version evidence, not general security certification. Exact candidate
+archive acceptance, signatures, CI, actual downloads and public metadata are
+separate delivery checks. The shared linter handoff does not establish them.
+The local results retain their original commit/host boundary; public delivery
+is established separately by the exact app-tag CI and six verified release assets.
